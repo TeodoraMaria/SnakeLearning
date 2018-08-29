@@ -5,9 +5,6 @@
 
 class Snake
 {
-private:
-	size_t m_snakeNumber;
-	std::list<Coordinate> m_snakeBody;
 public:
 	Snake(const size_t& snakeNumber=0);
 	~Snake();
@@ -17,6 +14,7 @@ public:
 	Coordinate GetSnakeTail() const;
 	std::list<Coordinate> GetSnakeBody() const;
 	size_t GetSnakeSize() const;
+	Coordinate GetOrientation() const;
 
 	bool operator ==(const Snake& snake);
 
@@ -25,5 +23,8 @@ public:
 	void Move(const Coordinate& newPosition);
 	void Eat(const Coordinate& foodPosition);
 	void Die(std::vector<std::vector<int>>& board);
-	Coordinate GetOrientation() const;
+
+private:
+	size_t m_snakeNumber;
+	std::list<Coordinate> m_snakeBody;
 };

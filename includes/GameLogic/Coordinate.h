@@ -3,10 +3,6 @@
 
 class Coordinate
 {
-private:
-	size_t m_x;
-	size_t m_y;
-
 public:
 	static const Coordinate UP;
 	static const Coordinate RIGHT;
@@ -19,11 +15,16 @@ public:
 	size_t GetX() const;
 	size_t GetY() const;
 
-	void GenerateCoordinate(const size_t& dimension);
-	bool CheckCoord(const std::vector<std::vector<int>>& board) const;
-	
 	Coordinate operator + (const Coordinate& coord) const;
 	Coordinate operator - (const Coordinate& coord) const;
+
 	Coordinate Rotate90Left() const;
 	Coordinate Rotate90Right() const;
+
+	void GenerateCoordinate(const size_t& dimension);
+	bool CheckCoord(const std::vector<std::vector<int>>& board) const;
+
+private:
+	size_t m_x;
+	size_t m_y;
 };
