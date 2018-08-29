@@ -21,9 +21,4 @@ public:
 	size_t GetBoardDimension() const;
 	size_t GetNumberOfPlayers() const;
 	size_t GetFoodPortions() const;
-
-	void SetGameBoardType(const GameBoardType& gameBoardType);
-	void SetBoardDimension(const size_t& boardDimension);
-	void SetNumberOfPlayers(const size_t& numberOfPlayers);
-	void SetFoodPortions(const size_t& foodPortions);
 };
