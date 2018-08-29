@@ -18,9 +18,9 @@ private:
 	void AddLimitsToBoard();
 	void InitSnakes();
 	void InitFood();
-	void AddSnakeToGame(size_t snakeNumber);
+	void AddSnakeToGame(const size_t& snakeNumber);
 public:
-	Game(bool limitless = false, size_t boardDimension = 10, size_t numberOfPlayers = 1, size_t foodNo = 1);
+	Game(const bool& limitless = false, const size_t& boardDimension = 10, const size_t& numberOfPlayers = 1, const size_t& foodNo = 1);
 	~Game();
 	void InitGame();
 	GameBoard GetGameBoard() const;

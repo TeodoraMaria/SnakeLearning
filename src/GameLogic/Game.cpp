@@ -4,7 +4,7 @@
 #include <ctime>
 #include "Game.h"
 
-Game::Game(bool limitless, size_t boardDimension, size_t numberOfPlayers, size_t foodNo)
+Game::Game(const bool& limitless, const size_t& boardDimension, const size_t& numberOfPlayers, const size_t& foodNo)
 	:m_isLimitless(limitless), m_numberOfFoods(foodNo)
 {
 	m_gameBoard.resize(boardDimension);
@@ -66,7 +66,7 @@ void Game::InitSnakes()
 	}
 }
 
-void Game::AddSnakeToGame(size_t snakeNumber)
+void Game::AddSnakeToGame(const size_t& snakeNumber)
 {
 	Snake snake(snakeNumber);
 	snake.InitSnake(m_gameBoard);
