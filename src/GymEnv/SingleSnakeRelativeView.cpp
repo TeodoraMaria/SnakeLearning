@@ -5,10 +5,6 @@ using namespace GymEnv;
 
 const std::array<int, 3> SingleSnakeRelativeView::actions = {{-1, 0, 1}};
 
-/*
-** 2^3 * 4
-*/
-
 size_t SingleSnakeRelativeView::GetNumbOfObservations() const
 {
 	static const size_t viewGridSize = 3;
@@ -19,7 +15,7 @@ size_t SingleSnakeRelativeView::GetNumbOfObservations() const
 	return std::pow(viewGridSize, cellStatesCount);
 }
 
-SnakeState SingleSnakeRelativeView::GetState() const
+int SingleSnakeRelativeView::GetState() const
 {
 	int state = 0;
 	

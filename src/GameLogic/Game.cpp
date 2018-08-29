@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <stdlib.h>
 #include <tuple>
-#include <windows.h>
 #include <iostream>
 #include <iomanip>
 #include "Game.h"
