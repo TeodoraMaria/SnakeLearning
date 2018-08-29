@@ -33,12 +33,12 @@ void Game::InitGame()
 	InitFood();
 }
 
-std::vector<std::vector<int>> Game::GetGameBoard() const
+Game::GameBoard Game::GetGameBoard() const
 {
 	return m_gameBoard;
 }
 
-std::vector<std::list<std::tuple<int, int, int>>> Game::GetSnakes() const
+std::vector<Snake> Game::GetSnakes() const
 {
 	return m_snakes;
 }
@@ -68,81 +68,20 @@ void Game::InitSnakes()
 
 void Game::AddSnakeToGame(size_t snakeNumber)
 {
-	std::list<std::tuple<int, int, int>> snake;
-	std::tuple<int, int> coord, auxCoord;
-	// generate snake head
-	do {
-		auto lineCoord = GenerateCoordinate();
-		auto colCoord = GenerateCoordinate();
-		coord = std::make_tuple(lineCoord, colCoord);
-	} while (!CheckCoord(coord));
-	snake.push_back(std::make_tuple(std::get<0>(coord), std::get<1>(coord), snakeNumber));
-	m_gameBoard[std::get<0>(coord)][std::get<1>(coord)] = snakeNumber;
-
-	// generate snake body
-	for (size_t snakeDim = 1; snakeDim < 3; snakeDim++)
-	{
-		auxCoord = std::make_tuple(std::get<0>(coord)-1, std::get<1>(coord));
-		if (CheckCoord(auxCoord))
-		{
-			coord = auxCoord;
-			snake.push_back(std::make_tuple(std::get<0>(coord), std::get<1>(coord), snakeNumber));
-			m_gameBoard[std::get<0>(coord)][std::get<1>(coord)] = snakeNumber;
-			continue;
-		}
-		auxCoord = std::make_tuple(std::get<0>(coord) + 1, std::get<1>(coord));
-		if (CheckCoord(auxCoord))
-		{
-			coord = auxCoord;
-			snake.push_back(std::make_tuple(std::get<0>(coord), std::get<1>(coord), snakeNumber));
-			m_gameBoard[std::get<0>(coord)][std::get<1>(coord)] = snakeNumber;
-			continue;
-		}
-		auxCoord = std::make_tuple(std::get<0>(coord), std::get<1>(coord)-1);
-		if (CheckCoord(auxCoord))
-		{
-			coord = auxCoord;
-			snake.push_back(std::make_tuple(std::get<0>(coord), std::get<1>(coord), snakeNumber));
-			m_gameBoard[std::get<0>(coord)][std::get<1>(coord)] = snakeNumber;
-			continue;
-		}
-		auxCoord = std::make_tuple(std::get<0>(coord), std::get<1>(coord)+1);
-		if (CheckCoord(auxCoord))
-		{
-			coord = auxCoord;
-			snake.push_back(std::make_tuple(std::get<0>(coord), std::get<1>(coord), snakeNumber));
-			m_gameBoard[std::get<0>(coord)][std::get<1>(coord)] = snakeNumber;
-			continue;
-		}
-	}
-
-	// add snake to game
+	Snake snake(snakeNumber);
+	snake.InitSnake(m_gameBoard);
 	m_snakes.push_back(snake);
 }
 
 void Game::InitFood() {
-	std::tuple<int, int> coord;
+	Coordinate coord;
 	for (size_t foodIndex = 0; foodIndex < m_numberOfFoods; ++foodIndex)
 	{
 		do {
-			auto lineCoord = GenerateCoordinate();
-			auto colCoord = GenerateCoordinate();
-			coord = std::make_tuple(lineCoord, colCoord);
-		} while (!CheckCoord(coord));
-		m_gameBoard[std::get<0>(coord)][std::get<1>(coord)] = 1;
+			coord.GenerateCoordinate(m_gameBoard.size());
+		} while (!coord.CheckCoord(m_gameBoard));
+		m_gameBoard[coord.lineCoord][coord.colCoord] = 1;
 	}
 }
 
-bool Game::CheckCoord(std::tuple<int, int> coord) const
-{
-	if (std::get<0>(coord) < 0 || std::get<0>(coord) >= m_gameBoard.size())
-		return false;
-	if (std::get<1>(coord) < 0 || std::get<1>(coord) >= m_gameBoard.size())
-		return false;
-	return m_gameBoard[std::get<0>(coord)][std::get<1>(coord)] == 0;
-}
 
-int Game::GenerateCoordinate() const
-{
-	return rand() % m_gameBoard.size();
-}

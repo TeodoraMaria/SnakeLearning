@@ -30,7 +30,7 @@ namespace GymEnv
 		SnakeGameState GetState() const;
 		
 		void Reset();
-		void Render();
+		void Render(); //what does render actually do?
 		StepResult Step(const SnakeGameAction& action);
 		
 	private:
