@@ -34,7 +34,7 @@ private:
 	void InitSnakes();
 	void InitFood(const size_t& foodPortions = 0);
 	void AddSnakeToGame(const size_t& snakeNumber);
-	void MoveSnake(const size_t& snakeNumber, const int& move);
+	void MoveSnake(const size_t& snakeNumber, const SnakeMove& move);
 	bool IsFood(const Coordinate& location);
 	void CheckIfGameOver();
 	void PrintBoard();

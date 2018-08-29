@@ -104,7 +104,7 @@ void Game::PrintBoard()
 	std::cout << std::endl;
 }
 
-void Game::MoveSnake(const size_t & snakeNumber, const int& move)
+void Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 {
 	auto snakeToMoveIterator = std::find_if(m_snakes.begin(), m_snakes.end(), 
 		[snakeNumber](const auto& snake) 
@@ -114,11 +114,11 @@ void Game::MoveSnake(const size_t & snakeNumber, const int& move)
 
 	auto& snakeToMove = *snakeToMoveIterator;
 	Coordinate snakeOrientation = snakeToMove.GetOrientation();
-	if (move == -1)
+	if (move == SnakeMove::LEFT)
 	{
 		snakeOrientation = snakeOrientation.Rotate90Left();
 	}
-	else if (move == 1)
+	else if (move == SnakeMove::RIGHT)
 	{
 		snakeOrientation = snakeOrientation.Rotate90Right();
 	}

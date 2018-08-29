@@ -1,4 +1,5 @@
 #pragma once
+#include "GameUtils.h"
 
 class IPlayer
 {
@@ -7,5 +8,5 @@ public:
 
 	virtual void SetSnakeNumber(const size_t& snakeNumber) = 0;
 
-	virtual int GetNextAction() const = 0;
+	virtual SnakeMove GetNextAction() const = 0;
 };

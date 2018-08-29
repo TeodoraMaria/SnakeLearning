@@ -24,19 +24,19 @@ void HumanPlayer::SetSnakeNumber(const size_t & snakeNumber)
 #define KEY_LEFT 75
 #define KEY_RIGHT 77
 
-int HumanPlayer::GetNextAction() const
+SnakeMove HumanPlayer::GetNextAction() const
 {
 	std::cout << "Action for snake " << m_snakeNumber << std::endl;
 	int action = getch();
 	action = getch();
 	switch (action) {
 	case KEY_UP:
-		return 0;
+		return SnakeMove::FORWARD;
 	case KEY_LEFT:
-		return -1;
+		return SnakeMove::LEFT;
 	case KEY_RIGHT:
-		return 1;
+		return SnakeMove::RIGHT;
 	default:
-		return 0;
+		return SnakeMove::FORWARD;
 	}
 }
