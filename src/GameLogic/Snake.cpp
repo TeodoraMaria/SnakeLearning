@@ -19,6 +19,11 @@ Coordinate Snake::GetSnakeHead() const
 	return m_snakeBody.front();
 }
 
+Coordinate Snake::GetSnakeTail() const
+{
+	return m_snakeBody.back();
+}
+
 std::list<Coordinate> Snake::GetSnakeBody() const
 {
 	return m_snakeBody;
@@ -32,42 +37,23 @@ bool Snake::InitSnake(std::vector<std::vector<int>>& board)
 		coord.GenerateCoordinate(board.size());
 	} while (!coord.CheckCoord(board));
 	m_snakeBody.push_front(coord);
-	board[coord.lineCoord][coord.colCoord] = m_snakeNumber;
+	board[coord.GetX()][coord.GetY()] = m_snakeNumber;
 
 	// generate snake body
+	std::vector<Coordinate> directions{ Coordinate::UP, Coordinate::DOWN, Coordinate::LEFT, Coordinate::RIGHT };
+
 	for (size_t snakeDim = 1; snakeDim < 3; snakeDim++)
 	{
-		auxCoord.lineCoord = coord.lineCoord -1;
-		auxCoord.colCoord = coord.colCoord;
-		if (auxCoord.CheckCoord(board))
+		for (auto& direction : directions)
 		{
-			goto FOUND;
-		}
-		auxCoord.lineCoord = coord.lineCoord + 1;
-		auxCoord.colCoord = coord.colCoord;
-		if (auxCoord.CheckCoord(board))
-		{
-			goto FOUND;
-		}
-		auxCoord.lineCoord = coord.lineCoord;
-		auxCoord.colCoord = coord.colCoord - 1;
-		if (auxCoord.CheckCoord(board))
-		{
-			goto FOUND;
-		}
-		auxCoord.lineCoord = coord.lineCoord;
-		auxCoord.colCoord = coord.colCoord +1;
-		if (auxCoord.CheckCoord(board))
-		{
-			goto FOUND;
-		}
-
-		if (false)
-		{
-		FOUND:
-			m_snakeBody.push_back(auxCoord);
-			coord = auxCoord;
-			board[coord.lineCoord][coord.colCoord] = m_snakeNumber;
+			auxCoord = coord + direction;
+			if (auxCoord.CheckCoord(board))
+			{
+				m_snakeBody.push_back(auxCoord);
+				coord = auxCoord;
+				board[coord.GetX()][coord.GetY()] = m_snakeNumber;
+				break;
+			}
 		}
 	}
 	if (m_snakeBody.size() == 3)
@@ -91,8 +77,24 @@ size_t Snake::GetSnakeSize() const
 	return m_snakeBody.size();
 }
 
-void Snake::Die()
+bool Snake::operator==(const Snake & snake)
 {
+	return m_snakeNumber==snake.m_snakeNumber;
+}
+
+void Snake::Die(std::vector<std::vector<int>>& board)
+{
+	for (const auto& location : m_snakeBody)
+	{
+		board[location.GetX()][location.GetY()] = 0;
+	}
 	m_snakeNumber = 0;
 	m_snakeBody.clear();
+}
+
+Coordinate Snake::GetOrientation() const
+{
+	auto neck = m_snakeBody.begin();
+	std::advance(neck, 1);
+	return m_snakeBody.front() - *neck;
 }
