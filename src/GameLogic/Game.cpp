@@ -4,15 +4,14 @@
 #include <ctime>
 #include "Game.h"
 
-Game::Game(const bool& limitless, const size_t& boardDimension, const size_t& numberOfPlayers, const size_t& foodNo)
-	:m_isLimitless(limitless), m_numberOfFoods(foodNo)
+Game::Game(const GameOptions& gameOptions): m_gameOptions(gameOptions)
 {
-	m_gameBoard.resize(boardDimension);
-	for (size_t index = 0; index < boardDimension; ++index)
+	m_gameBoard.resize(gameOptions.GetBoardDimension());
+	for (size_t index = 0; index < gameOptions.GetBoardDimension(); ++index)
 	{
-		m_gameBoard[index].resize(boardDimension);
+		m_gameBoard[index].resize(gameOptions.GetBoardDimension());
 	}
-	m_players.resize(numberOfPlayers);
+	m_players.resize(gameOptions.GetNumberOfPlayers());
 }
 
 Game::~Game()
@@ -25,7 +24,7 @@ void Game::InitGame()
 		for (auto& elem : line)
 			elem = 0;
 
-	if (!m_isLimitless)
+	if (!(m_gameOptions.GetGameBoardType()==GameBoardType::LIMITLESS))
 	{
 		AddLimitsToBoard();
 	}
@@ -75,7 +74,7 @@ void Game::AddSnakeToGame(const size_t& snakeNumber)
 
 void Game::InitFood() {
 	Coordinate coord;
-	for (size_t foodIndex = 0; foodIndex < m_numberOfFoods; ++foodIndex)
+	for (size_t foodIndex = 0; foodIndex < m_gameOptions.GetFoodPortions(); ++foodIndex)
 	{
 		do {
 			coord.GenerateCoordinate(m_gameBoard.size());

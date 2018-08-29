@@ -4,7 +4,8 @@
 
 int main()
 {
-	Game game(false,10,3,3);
+	GameOptions gameOptions(GameBoardType::BOX, 10, 3, 3);
+	Game game(gameOptions);
 	srand(time(NULL));
 	game.InitGame();
 	auto board = game.GetGameBoard();

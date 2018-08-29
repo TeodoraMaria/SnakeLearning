@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 struct Coordinate {
 	int lineCoord;
@@ -19,3 +20,5 @@ struct Coordinate {
 		return board[lineCoord][colCoord] == 0;
 	}
 };
+
+enum class GameBoardType {LIMITLESS, BOX, CUSTOM};
