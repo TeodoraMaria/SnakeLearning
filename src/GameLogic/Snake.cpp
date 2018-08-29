@@ -1,4 +1,4 @@
-#include "..\..\includes\GameLogic\Snake.h"
+#include "Snake.h"
 #include "GameUtils.h"
 
 Snake::Snake(const size_t& snakeNumber):m_snakeNumber(snakeNumber)

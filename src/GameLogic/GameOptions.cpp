@@ -1,4 +1,4 @@
-#include "..\..\includes\GameLogic\GameOptions.h"
+#include "GameOptions.h"
 
 GameOptions::GameOptions(const GameBoardType & gameBoardType, 
 	const size_t & boardDimension, 
