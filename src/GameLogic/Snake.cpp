@@ -35,39 +35,20 @@ bool Snake::InitSnake(std::vector<std::vector<int>>& board)
 	board[coord.lineCoord][coord.colCoord] = m_snakeNumber;
 
 	// generate snake body
+	std::vector<Coordinate::Direction> directions{ Coordinate::UP, Coordinate::DOWN, Coordinate::LEFT, Coordinate::RIGHT };
+
 	for (size_t snakeDim = 1; snakeDim < 3; snakeDim++)
 	{
-		auxCoord.lineCoord = coord.lineCoord -1;
-		auxCoord.colCoord = coord.colCoord;
-		if (auxCoord.CheckCoord(board))
+		for (auto& direction : directions)
 		{
-			goto FOUND;
-		}
-		auxCoord.lineCoord = coord.lineCoord + 1;
-		auxCoord.colCoord = coord.colCoord;
-		if (auxCoord.CheckCoord(board))
-		{
-			goto FOUND;
-		}
-		auxCoord.lineCoord = coord.lineCoord;
-		auxCoord.colCoord = coord.colCoord - 1;
-		if (auxCoord.CheckCoord(board))
-		{
-			goto FOUND;
-		}
-		auxCoord.lineCoord = coord.lineCoord;
-		auxCoord.colCoord = coord.colCoord +1;
-		if (auxCoord.CheckCoord(board))
-		{
-			goto FOUND;
-		}
-
-		if (false)
-		{
-		FOUND:
-			m_snakeBody.push_back(auxCoord);
-			coord = auxCoord;
-			board[coord.lineCoord][coord.colCoord] = m_snakeNumber;
+			auxCoord = coord + direction;
+			if (auxCoord.CheckCoord(board))
+			{
+				m_snakeBody.push_back(auxCoord);
+				coord = auxCoord;
+				board[coord.lineCoord][coord.colCoord] = m_snakeNumber;
+				break;
+			}
 		}
 	}
 	if (m_snakeBody.size() == 3)
