@@ -12,7 +12,7 @@ void Bot::SetSnakeNumber(const size_t& snakeNumber)
 	m_snakeNb = snakeNumber;
 }
 
-SnakeMove Bot::GetNextAction() const
+SnakeMove Bot::GetNextAction(const GameState& gameState) const
 {
 	throw;
 }

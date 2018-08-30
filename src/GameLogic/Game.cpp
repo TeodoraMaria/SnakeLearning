@@ -3,6 +3,7 @@
 #include <tuple>
 #include <iostream>
 #include <iomanip>
+#include <windows.h>
 #include "Game.h"
 
 Game::Game(const GameOptions& gameOptions, const std::vector<HumanPlayer>& players)
@@ -159,7 +160,7 @@ void Game::RunRound()
 	std::random_shuffle(m_players.begin(), m_players.end());
 	for (const auto& player : m_players)
 	{
-		auto chosenMove = player.GetNextAction();
+		auto chosenMove = player.GetNextAction(GameState(m_gameBoard, m_snakes));
 		size_t snakeNumber = player.GetSnakeNumber();
 		MoveSnake(snakeNumber, chosenMove);
 	}

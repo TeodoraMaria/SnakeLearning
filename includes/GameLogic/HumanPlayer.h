@@ -11,7 +11,7 @@ public:
 
 	void SetSnakeNumber(const size_t& snakeNumber) override;
 
-	SnakeMove GetNextAction() const override;
+	SnakeMove GetNextAction(const GameState& gameState) const override;
 
 private:
 	size_t m_snakeNumber;

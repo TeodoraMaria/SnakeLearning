@@ -4,6 +4,7 @@
 #include <vector>
 #include <random>
 #include <cmath>
+#include <assert.h>
 
 using namespace AI::QLearning;
 

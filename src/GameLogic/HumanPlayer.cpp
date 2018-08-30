@@ -24,7 +24,7 @@ void HumanPlayer::SetSnakeNumber(const size_t & snakeNumber)
 #define KEY_LEFT 75
 #define KEY_RIGHT 77
 
-SnakeMove HumanPlayer::GetNextAction() const
+SnakeMove HumanPlayer::GetNextAction(const GameState& gameState) const
 {
 	std::cout << "Action for snake " << m_snakeNumber << std::endl;
 	int action = getch();

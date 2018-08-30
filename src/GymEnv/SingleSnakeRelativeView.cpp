@@ -1,5 +1,6 @@
 #include "SingleSnakeRelativeView.hpp"
 #include <cmath>
+#include <assert.h>
 
 using namespace GymEnv;
 
