@@ -75,3 +75,8 @@ void GameBoard::PlaceFood()
 	} while (!coord.CheckCoord(m_board));
 	(*this)[coord] = 1;
 }
+
+bool GameBoard::IsFood(const Coordinate & location)
+{
+	return (*this)[location] == 1;
+}

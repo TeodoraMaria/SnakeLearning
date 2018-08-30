@@ -63,11 +63,6 @@ void Game::AddSnakeToGame(const size_t& snakeNumber)
 	m_snakes.push_back(snake);
 }
 
-bool Game::IsFood(const Coordinate & location)
-{
-	return m_gameBoard[location]==1;
-}
-
 void Game::CheckIfGameOver()
 {
 	m_isGameOver = (GetLivingSnakes().size() == 0);
@@ -113,7 +108,7 @@ void Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 
 		Coordinate newSnakeHeadPosition = snakeToMove.GetSnakeHead() + snakeOrientation;
 
-		if (IsFood(newSnakeHeadPosition))
+		if (m_gameBoard.IsFood(newSnakeHeadPosition))
 		{
 			snakeToMove.Eat(newSnakeHeadPosition);
 			m_gameBoard[newSnakeHeadPosition] = snakeNumber;

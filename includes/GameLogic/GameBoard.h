@@ -22,6 +22,7 @@ public:
 
 	void Init();
 	void PlaceFood();
+	bool IsFood(const Coordinate& location);
 
 private:
 	void AddLimitsToBoard();
