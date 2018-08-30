@@ -15,6 +15,8 @@ public:
 	std::list<Coordinate> GetSnakeBody() const;
 	size_t GetSnakeSize() const;
 	Coordinate GetOrientation() const;
+	size_t GetScore() const;
+	bool IsAlive() const;
 
 	bool operator ==(const Snake& snake);
 
@@ -27,4 +29,6 @@ public:
 private:
 	size_t m_snakeNumber;
 	std::list<Coordinate> m_snakeBody;
+	size_t m_score;
+	bool m_isAlive;
 };

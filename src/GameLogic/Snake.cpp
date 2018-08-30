@@ -1,7 +1,7 @@
 #include "Snake.h"
 #include "GameUtils.h"
 
-Snake::Snake(const size_t& snakeNumber):m_snakeNumber(snakeNumber)
+Snake::Snake(const size_t& snakeNumber):m_snakeNumber(snakeNumber), m_score(0), m_isAlive(true)
 {
 }
 
@@ -70,6 +70,7 @@ void Snake::Move(const Coordinate & newPosition)
 void Snake::Eat(const Coordinate & foodPosition)
 {
 	m_snakeBody.push_front(foodPosition);
+	m_score++;
 }
 
 size_t Snake::GetSnakeSize() const
@@ -88,8 +89,8 @@ void Snake::Die(std::vector<std::vector<int>>& board)
 	{
 		board[location.GetX()][location.GetY()] = 0;
 	}
-	m_snakeNumber = 0;
 	m_snakeBody.clear();
+	m_isAlive = false;
 }
 
 Coordinate Snake::GetOrientation() const
@@ -97,4 +98,14 @@ Coordinate Snake::GetOrientation() const
 	auto neck = m_snakeBody.begin();
 	std::advance(neck, 1);
 	return m_snakeBody.front() - *neck;
+}
+
+size_t Snake::GetScore() const
+{
+	return m_score;
+}
+
+bool Snake::IsAlive() const
+{
+	return m_isAlive;
 }

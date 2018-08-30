@@ -12,7 +12,8 @@ public:
 	~Game();
 
 	GameBoard GetGameBoard() const;
-	std::vector<Snake> GetSnakes() const;
+	std::vector<Snake> GetAllSnakes() const;
+	std::vector<Snake> GetLivingSnakes() const;
 
 	void InitGame();
 	void RunRound();
