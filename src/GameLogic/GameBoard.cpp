@@ -103,3 +103,12 @@ bool GameBoard::CheckCoord(const Coordinate& coord) const
 		return false;
 	return (*this)[coord] == 0;
 }
+
+Coordinate& GameBoard::GenerateCoordinate() const
+{
+	Coordinate coord;
+	do {
+		coord.GenerateCoordinate(m_width, m_length);
+	} while (!CheckCoord(coord));
+	return coord;
+}

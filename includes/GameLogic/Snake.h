@@ -28,6 +28,9 @@ public:
 	void Die();
 
 private:
+	void GenerateHead(GameBoard& gameBoard);
+	void GenerateBody(GameBoard& gameBoard, const Coordinate& head);
+
 	size_t m_snakeNumber;
 	std::list<Coordinate> m_snakeBody;
 	size_t m_score;

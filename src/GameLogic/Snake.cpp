@@ -31,31 +31,9 @@ std::list<Coordinate> Snake::GetSnakeBody() const
 
 bool Snake::InitSnake(GameBoard& gameBoard)
 {
-	Coordinate coord, auxCoord;
-	// generate snake head
-	do {
-		coord.GenerateCoordinate(gameBoard.GetBoardWidth(), gameBoard.GetBoardLength());
-	} while (!gameBoard.CheckCoord(coord));
-	m_snakeBody.push_front(coord);
-	gameBoard[coord] = m_snakeNumber;
-
-	// generate snake body
-	std::vector<Coordinate> directions{ Coordinate::UP, Coordinate::DOWN, Coordinate::LEFT, Coordinate::RIGHT };
-
-	for (size_t snakeDim = 1; snakeDim < 3; snakeDim++)
-	{
-		for (auto& direction : directions)
-		{
-			auxCoord = coord + direction;
-			if (gameBoard.CheckCoord(auxCoord))
-			{
-				m_snakeBody.push_back(auxCoord);
-				coord = auxCoord;
-				gameBoard[coord] = m_snakeNumber;
-				break;
-			}
-		}
-	}
+	GenerateHead(gameBoard);
+	GenerateBody(gameBoard, GetSnakeHead());
+	
 	if (m_snakeBody.size() == 3)
 		return true;
 	return false;
@@ -87,6 +65,35 @@ void Snake::Die()
 {
 	m_snakeBody.clear();
 	m_isAlive = false;
+}
+
+void Snake::GenerateHead(GameBoard & gameBoard)
+{
+	Coordinate coord = gameBoard.GenerateCoordinate();
+	m_snakeBody.push_front(coord);
+	gameBoard[coord] = m_snakeNumber;
+}
+
+void Snake::GenerateBody(GameBoard & gameBoard, const Coordinate & head)
+{
+	Coordinate coord, auxCoord;
+	coord = head;
+	std::vector<Coordinate> directions{ Coordinate::UP, Coordinate::DOWN, Coordinate::LEFT, Coordinate::RIGHT };
+
+	for (size_t snakeDim = 1; snakeDim < 3; snakeDim++)
+	{
+		for (auto& direction : directions)
+		{
+			auxCoord = coord + direction;
+			if (gameBoard.CheckCoord(auxCoord))
+			{
+				m_snakeBody.push_back(auxCoord);
+				coord = auxCoord;
+				gameBoard[coord] = m_snakeNumber;
+				break;
+			}
+		}
+	}
 }
 
 Coordinate Snake::GetOrientation() const
