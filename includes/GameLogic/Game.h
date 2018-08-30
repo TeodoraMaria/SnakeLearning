@@ -24,10 +24,9 @@ private:
 	void CheckIfGameOver();
 	void PrintBoard();
 	void InitFood();
-	void PlaceFood();
 	void AddSnakeToGame(const size_t& snakeNumber);
 	bool IsSnakeHead(const Coordinate& coord) const;
-	bool IsFood(const Coordinate& location);
+	
 
 	GameBoard m_gameBoard;
 	GameOptions m_gameOptions;

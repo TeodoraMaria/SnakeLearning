@@ -21,9 +21,12 @@ public:
 	int operator [](const Coordinate& coord) const;
 
 	void Init();
+	void PlaceFood();
+	bool IsFood(const Coordinate& location);
 
 private:
 	void AddLimitsToBoard();
+	
 
 	Board m_board;
 	size_t m_length;
