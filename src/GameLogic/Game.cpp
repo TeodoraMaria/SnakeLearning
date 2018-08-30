@@ -87,7 +87,7 @@ void Game::RemovePlayer(const size_t & snakeNumber)
 	if (m_players.size()>1)
 	{
 		auto deleteFrom = std::remove_if(m_players.begin(), m_players.end(), 
-			[snakeNumber](const auto* player) {return player->GetSnakeNumber() == snakeNumber; });
+			[snakeNumber](auto player) {return player->GetSnakeNumber() == snakeNumber; });
 		m_players.erase(deleteFrom);
 	}
 }
