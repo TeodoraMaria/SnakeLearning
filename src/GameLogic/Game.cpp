@@ -9,12 +9,8 @@
 Game::Game(const GameOptions& gameOptions, const std::vector<HumanPlayer>& players)
 	: m_gameOptions(gameOptions), m_players(players)
 {
-	m_gameBoard.resize(gameOptions.GetBoardDimension());
-	for (size_t index = 0; index < gameOptions.GetBoardDimension(); ++index)
-	{
-		m_gameBoard[index].resize(gameOptions.GetBoardDimension());
-	}
 	m_players.resize(gameOptions.GetNumberOfPlayers());
+	m_gameBoard = GameBoard(gameOptions.GetGameBoardType(), gameOptions.GetBoardLength(), gameOptions.GetBoardWidth());
 }
 
 Game::~Game()
@@ -23,19 +19,12 @@ Game::~Game()
 
 void Game::InitGame()
 {
-	for (auto& line : m_gameBoard)
-		for (auto& elem : line)
-			elem = 0;
-
-	if (!(m_gameOptions.GetGameBoardType()==GameBoardType::LIMITLESS))
-	{
-		AddLimitsToBoard();
-	}
+	m_gameBoard.Init();
 	InitSnakes();
 	InitFood();
 }
 
-Game::GameBoard Game::GetGameBoard() const
+GameBoard Game::GetGameBoard() const
 {
 	return m_gameBoard;
 }
@@ -55,17 +44,6 @@ std::vector<Snake> Game::GetAllSnakes() const
 	return m_snakes;
 }
 
-void Game::AddLimitsToBoard()
-{
-	size_t dimension = m_gameBoard.size() - 1;
-	for (size_t index = 0; index <= dimension; ++index)
-	{
-		m_gameBoard[index][0] = -1;
-		m_gameBoard[index][dimension] = -1;
-		m_gameBoard[0][index] = -1;
-		m_gameBoard[dimension][index] = -1;
-	}
-}
 
 void Game::InitSnakes()
 {
@@ -81,13 +59,13 @@ void Game::InitSnakes()
 void Game::AddSnakeToGame(const size_t& snakeNumber)
 {
 	Snake snake(snakeNumber);
-	snake.InitSnake(m_gameBoard);
+	snake.InitSnake(m_gameBoard.GetBoard());
 	m_snakes.push_back(snake);
 }
 
 bool Game::IsFood(const Coordinate & location)
 {
-	return m_gameBoard[location.GetX()][location.GetY()]==1;
+	return m_gameBoard[location]==1;
 }
 
 void Game::CheckIfGameOver()
@@ -97,12 +75,12 @@ void Game::CheckIfGameOver()
 
 void Game::PrintBoard()
 {
-	for (size_t i = 0; i<m_gameBoard.size(); i++)
+	for (size_t i = 0; i<m_gameBoard.GetBoardWidth(); i++)
 	{
-		for (size_t j = 0; j<m_gameBoard.size(); j++)
+		for (size_t j = 0; j<m_gameBoard.GetBoardLength(); j++)
 		{
-			const auto targetPrint = m_gameBoard[i][j];
-			if (IsSnakeHead(i, j))
+			const auto targetPrint = m_gameBoard[Coordinate(i,j)];
+			if (IsSnakeHead(Coordinate(i,j)))
 			{
 				std::cout << "  ";
 				MultiPlatform::PrintColoredStr(
@@ -143,18 +121,18 @@ void Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 		if (IsFood(newSnakeHeadPosition))
 		{
 			snakeToMove.Eat(newSnakeHeadPosition);
-			m_gameBoard[newSnakeHeadPosition.GetX()][newSnakeHeadPosition.GetY()] = snakeNumber;
+			m_gameBoard[newSnakeHeadPosition] = snakeNumber;
 			PlaceFood();
 		}
-		else if (newSnakeHeadPosition.CheckCoord(m_gameBoard))
+		else if (newSnakeHeadPosition.CheckCoord(m_gameBoard.GetBoard()))
 		{
 			Coordinate freedPosition = snakeToMove.GetSnakeTail();
-			m_gameBoard[freedPosition.GetX()][freedPosition.GetY()] = 0;
+			m_gameBoard[freedPosition] = 0;
 			snakeToMove.Move(newSnakeHeadPosition);
-			m_gameBoard[newSnakeHeadPosition.GetX()][newSnakeHeadPosition.GetY()] = snakeNumber;
+			m_gameBoard[newSnakeHeadPosition] = snakeNumber;
 		}
 		else {
-			snakeToMove.Die(m_gameBoard);
+			snakeToMove.Die(m_gameBoard.GetBoard());
 		}
 	}
 }
@@ -193,16 +171,16 @@ void Game::PlaceFood()
 {
 	Coordinate coord;
 	do {
-		coord.GenerateCoordinate(m_gameBoard.size());
-	} while (!coord.CheckCoord(m_gameBoard));
-	m_gameBoard[coord.GetX()][coord.GetY()] = 1;
+		coord.GenerateCoordinate(m_gameBoard.GetBoardWidth(), m_gameBoard.GetBoardLength());
+	} while (!coord.CheckCoord(m_gameBoard.GetBoard()));
+	m_gameBoard[coord] = 1;
 }
 
-bool Game::IsSnakeHead(const int& i, const int& j) const
+bool Game::IsSnakeHead(const Coordinate& coord) const
 {
-	if (m_gameBoard[i][j] <= 10)
+	if (m_gameBoard[coord] <= 10)
 		return false;
-	size_t snakeNumber = m_gameBoard[i][j];
+	size_t snakeNumber = m_gameBoard[coord];
 	auto snake = *std::find_if(m_snakes.begin(), m_snakes.end(),
 		[snakeNumber](const auto& snake)
 	{
@@ -211,5 +189,5 @@ bool Game::IsSnakeHead(const int& i, const int& j) const
 
 	auto head = snake.GetSnakeHead();
 
-	return (head.GetX() == i && head.GetY() == j);
+	return (head==coord);
 }

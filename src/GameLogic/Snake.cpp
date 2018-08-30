@@ -34,7 +34,7 @@ bool Snake::InitSnake(std::vector<std::vector<int>>& board)
 	Coordinate coord, auxCoord;
 	// generate snake head
 	do {
-		coord.GenerateCoordinate(board.size());
+		coord.GenerateCoordinate(board.size(), board[0].size());
 	} while (!coord.CheckCoord(board));
 	m_snakeBody.push_front(coord);
 	board[coord.GetX()][coord.GetY()] = m_snakeNumber;

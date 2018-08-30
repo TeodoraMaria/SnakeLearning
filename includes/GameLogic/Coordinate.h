@@ -17,11 +17,12 @@ public:
 
 	Coordinate operator + (const Coordinate& coord) const;
 	Coordinate operator - (const Coordinate& coord) const;
+	bool operator == (const Coordinate& coord) const;
 
 	Coordinate Rotate90Left() const;
 	Coordinate Rotate90Right() const;
 
-	void GenerateCoordinate(const size_t& dimension);
+	void GenerateCoordinate(const size_t& width, const size_t& length);
 	bool CheckCoord(const std::vector<std::vector<int>>& board) const;
 
 private:

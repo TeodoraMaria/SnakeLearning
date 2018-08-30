@@ -1,7 +1,6 @@
 #pragma once
 #include "Snake.h"
-
-typedef std::vector<std::vector<int>> GameBoard;
+#include "GameBoard.h"
 
 class GameState
 {
