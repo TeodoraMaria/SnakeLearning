@@ -96,8 +96,8 @@ void MultiPlatform::PrintColoredStr(const Color color, const std::string str)
 int MultiPlatform::getch()
 {
 	#ifdef _WIN32
-		const auto result = ::getch();
 		::getch();
+		const auto result = ::getch();
 		return result;
 	#else
 		int buf = 0;
