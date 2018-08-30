@@ -113,9 +113,9 @@ void GameBoard::KillSnake(const std::list<Coordinate>& snakeBody)
 
 bool GameBoard::CheckCoord(const Coordinate& coord) const
 {
-	if (coord.GetX() < 0 || coord.GetX() >= m_width)
+	if (coord.GetX() >= m_width)
 		return false;
-	if (coord.GetY() < 0 || coord.GetY() >= m_length)
+	if (coord.GetY() >= m_length)
 		return false;
 	return (*this)[coord] == 0;
 }
