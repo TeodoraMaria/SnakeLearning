@@ -28,7 +28,7 @@ public:
 	void MoveSnake(const Coordinate& freedLocation, const Coordinate& newLocation);
 	void KillSnake(const std::list<Coordinate>& snakeBody);
 	bool CheckCoord(const Coordinate& coord) const;
-	Coordinate& GenerateCoordinate() const;
+	Coordinate GenerateCoordinate() const;
 
 private:
 	void AddLimitsToBoard();

@@ -1,8 +1,13 @@
 #include "GameBoard.h"
 #include <algorithm>
 
-GameBoard::GameBoard(const GameBoardType & gameBoardType, const size_t & length, const size_t & width)
-	:m_gameBoardType(gameBoardType), m_length(length), m_width(width)
+GameBoard::GameBoard(
+	const GameBoardType& gameBoardType,
+	const size_t& length,
+	const size_t& width) :
+	m_length(length),
+	m_width(width),
+	m_gameBoardType(gameBoardType)
 {
 	m_board.resize(m_width);
 	for (size_t index = 0; index < m_width; ++index)
@@ -115,7 +120,7 @@ bool GameBoard::CheckCoord(const Coordinate& coord) const
 	return (*this)[coord] == 0;
 }
 
-Coordinate& GameBoard::GenerateCoordinate() const
+Coordinate GameBoard::GenerateCoordinate() const
 {
 	Coordinate coord;
 	do {
