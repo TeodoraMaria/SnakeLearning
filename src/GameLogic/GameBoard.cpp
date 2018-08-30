@@ -80,3 +80,22 @@ bool GameBoard::IsFood(const Coordinate & location)
 {
 	return (*this)[location] == 1;
 }
+
+void GameBoard::GrowSnake(const size_t & snakeNumber, const Coordinate & location)
+{
+	(*this)[location] = snakeNumber;
+}
+
+void GameBoard::MoveSnake(const Coordinate & freedLocation, const Coordinate & newLocation)
+{
+	(*this)[newLocation] = (*this)[freedLocation];
+	(*this)[freedLocation] = 0;
+}
+
+void GameBoard::KillSnake(const Snake & snake)
+{
+	for (const auto& part : snake.GetSnakeBody())
+	{
+		(*this)[part] = 0;
+	}
+}

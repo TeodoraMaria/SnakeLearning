@@ -1,6 +1,7 @@
 #pragma once
 #include "GameUtils.h"
 #include "Coordinate.h"
+#include "Snake.h"
 #include <vector>
 
 typedef std::vector<std::vector<int>> Board;
@@ -23,6 +24,9 @@ public:
 	void Init();
 	void PlaceFood();
 	bool IsFood(const Coordinate& location);
+	void GrowSnake(const size_t& snakeNumber, const Coordinate& location);
+	void MoveSnake(const Coordinate& freedLocation, const Coordinate& newLocation);
+	void KillSnake(const Snake& snake);
 
 private:
 	void AddLimitsToBoard();

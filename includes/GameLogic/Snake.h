@@ -24,7 +24,7 @@ public:
 	bool InitSnake(std::vector<std::vector<int>>& board);
 	void Move(const Coordinate& newPosition);
 	void Eat(const Coordinate& foodPosition);
-	void Die(std::vector<std::vector<int>>& board);
+	void Die();
 
 private:
 	size_t m_snakeNumber;
