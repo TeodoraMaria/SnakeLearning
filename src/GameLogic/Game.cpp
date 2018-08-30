@@ -53,6 +53,11 @@ std::vector<Snake> Game::GetLivingSnakes() const
 	return livingSnakes;
 }
 
+GameState Game::GetGameState() const
+{
+	return GameState(m_gameBoard, m_snakes);
+}
+
 std::vector<Snake> Game::GetAllSnakes() const
 {
 	return m_snakes;
@@ -175,7 +180,7 @@ void Game::RunRound()
 	for (auto player : m_players)
 	{
 		const auto chosenMove =
-			player->GetNextAction(GameState(m_gameBoard, m_snakes));
+			player->GetNextAction(GetGameState());
 		
 		const auto snakeNumber = player->GetSnakeNumber();
 		MoveSnake(snakeNumber, chosenMove);
