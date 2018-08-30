@@ -117,7 +117,7 @@ void Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 		{
 			snakeToMove.Eat(newSnakeHeadPosition);
 			m_gameBoard[newSnakeHeadPosition] = snakeNumber;
-			PlaceFood();
+			m_gameBoard.PlaceFood();
 		}
 		else if (newSnakeHeadPosition.CheckCoord(m_gameBoard.GetBoard()))
 		{
@@ -158,17 +158,8 @@ void Game::InitFood()
 {
 	for (size_t foodIndex = 0; foodIndex < m_gameOptions.GetFoodPortions(); ++foodIndex)
 	{
-		PlaceFood();
+		m_gameBoard.PlaceFood();
 	}
-}
-
-void Game::PlaceFood()
-{
-	Coordinate coord;
-	do {
-		coord.GenerateCoordinate(m_gameBoard.GetBoardWidth(), m_gameBoard.GetBoardLength());
-	} while (!coord.CheckCoord(m_gameBoard.GetBoard()));
-	m_gameBoard[coord] = 1;
 }
 
 bool Game::IsSnakeHead(const Coordinate& coord) const

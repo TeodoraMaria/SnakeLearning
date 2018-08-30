@@ -66,3 +66,12 @@ void GameBoard::AddLimitsToBoard()
 		m_board[m_width-1][index] = -1;
 	}
 }
+
+void GameBoard::PlaceFood()
+{
+	Coordinate coord;
+	do {
+		coord.GenerateCoordinate(m_width, m_length);
+	} while (!coord.CheckCoord(m_board));
+	(*this)[coord] = 1;
+}
