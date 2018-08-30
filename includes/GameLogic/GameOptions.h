@@ -1,5 +1,6 @@
 #pragma once
 #include "GameUtils.h"
+#include <cstddef>
 
 class GameOptions
 {

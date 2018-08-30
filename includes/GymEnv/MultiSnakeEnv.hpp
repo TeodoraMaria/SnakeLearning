@@ -1,23 +1,21 @@
 #pragma once
 
+#include "StepResult.h"
+#include <cstddef>
+
 namespace GymEnv
 {
 	/*
 	** Env containers.
 	*/
 	
-	struct StepResult
-	{
-		int reward = 0;
-		bool isDone = false;
-	};
-	
 	struct SnakeGameState
 	{
 	};
 	
-	struct SnakeGameAction
+	struct SnakeAction
 	{
+		int direction;
 	};
 
 	/*
@@ -27,11 +25,13 @@ namespace GymEnv
 	class MultiSnakeEnv
 	{
 	public:
+		MultiSnakeEnv(size_t nbOfSnakes = 1);
+	
 		SnakeGameState GetState() const;
 		
 		void Reset();
 		void Render(); //what does render actually do?
-		StepResult Step(const SnakeGameAction& action);
+		StepResult Step(const SnakeAction& action);
 		
 	private:
 	};
