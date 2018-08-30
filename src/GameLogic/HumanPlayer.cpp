@@ -1,6 +1,7 @@
 #include "HumanPlayer.h"
 #include "MultiPlatformTerm.hpp"
 #include <iostream>
+#include <conio.h>
 
 HumanPlayer::HumanPlayer()
 {
@@ -20,17 +21,17 @@ void HumanPlayer::SetSnakeNumber(const size_t & snakeNumber)
 	m_snakeNumber = snakeNumber;
 }
 
-#define KEY_UP 'w'
-#define KEY_LEFT 'a'
-#define KEY_RIGHT 'd'
+
+#define KEY_UP 72
+#define KEY_LEFT 75
+#define KEY_RIGHT 77
 
 SnakeMove HumanPlayer::GetNextAction(const GameState& gameState) const
 {
 	std::cout << "Action for snake " << m_snakeNumber << std::endl;
-	int action = MultiPlatform::getch();
-	
-	switch (action)
-	{
+	int action = getch();
+	action = getch();
+	switch (action) {
 	case KEY_UP:
 		return SnakeMove::FORWARD;
 	case KEY_LEFT:

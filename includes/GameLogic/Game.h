@@ -2,11 +2,10 @@
 #include "HumanPlayer.h"
 #include "Snake.h"
 #include "GameOptions.h"
+#include "GameBoard.h"
 
 class Game
 {
-	typedef std::vector<std::vector<int>> GameBoard;
-
 public:
 	Game(const GameOptions& gameOptions, const std::vector<HumanPlayer>& players);
 	~Game();
@@ -21,14 +20,13 @@ public:
 	void MoveSnake(const size_t& snakeNumber, const SnakeMove& move);
 
 private:
-	void AddLimitsToBoard();
 	void InitSnakes();
 	void CheckIfGameOver();
 	void PrintBoard();
 	void InitFood();
 	void PlaceFood();
 	void AddSnakeToGame(const size_t& snakeNumber);
-	bool IsSnakeHead(const int& i, const int& j) const;
+	bool IsSnakeHead(const Coordinate& coord) const;
 	bool IsFood(const Coordinate& location);
 
 	GameBoard m_gameBoard;

@@ -33,6 +33,13 @@ Coordinate Coordinate::operator-(const Coordinate & coord) const
 	return Coordinate(m_x - coord.m_x, m_y - coord.m_y);
 }
 
+bool Coordinate::operator==(const Coordinate & coord) const
+{
+	if (m_x == coord.m_x)
+		return m_y == coord.m_y;
+	return false;
+}
+
 Coordinate Coordinate::Rotate90Left() const
 {
 	return Coordinate(-m_y,m_x);
@@ -43,10 +50,10 @@ Coordinate Coordinate::Rotate90Right() const
 	return Coordinate(m_y, -m_x);
 }
 
-void Coordinate::GenerateCoordinate(const size_t& dimension)
+void Coordinate::GenerateCoordinate(const size_t& width, const size_t& length)
 {
-	m_x = rand() % dimension;
-	m_y = rand() % dimension;
+	m_x = rand() % width;
+	m_y = rand() % length;
 }
 
 bool Coordinate::CheckCoord(const std::vector<std::vector<int>>& board) const
