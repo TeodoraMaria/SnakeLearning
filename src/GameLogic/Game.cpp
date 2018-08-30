@@ -63,7 +63,7 @@ void Game::InitSnakes()
 void Game::AddSnakeToGame(const size_t& snakeNumber)
 {
 	Snake snake(snakeNumber);
-	snake.InitSnake(m_gameBoard.GetBoard());
+	snake.InitSnake(m_gameBoard);
 	m_snakes.push_back(snake);
 }
 
@@ -144,14 +144,14 @@ void Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 			m_gameBoard[newSnakeHeadPosition] = snakeNumber;
 			m_gameBoard.PlaceFood();
 		}
-		else if (newSnakeHeadPosition.CheckCoord(m_gameBoard.GetBoard()))
+		else if (m_gameBoard.CheckCoord(newSnakeHeadPosition))
 		{
 			Coordinate freedPosition = snakeToMove.GetSnakeTail();
 			snakeToMove.Move(newSnakeHeadPosition);
 			m_gameBoard.MoveSnake(freedPosition, newSnakeHeadPosition);
 		}
 		else {
-			m_gameBoard.KillSnake(snakeToMove);
+			m_gameBoard.KillSnake(snakeToMove.GetSnakeBody());
 			snakeToMove.Die();
 		}
 	}

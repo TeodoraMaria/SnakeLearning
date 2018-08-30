@@ -56,11 +56,3 @@ void Coordinate::GenerateCoordinate(const size_t& width, const size_t& length)
 	m_y = rand() % length;
 }
 
-bool Coordinate::CheckCoord(const std::vector<std::vector<int>>& board) const
-{
-	if (m_x < 0 || m_x >= board.size())
-		return false;
-	if (m_y < 0 || m_y >= board.size())
-		return false;
-	return board[m_x][m_y] == 0;
-}

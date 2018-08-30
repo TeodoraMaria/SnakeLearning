@@ -37,6 +37,7 @@ SnakeMove HumanPlayer::GetNextAction(const GameState& gameState) const
 	case KEY_RIGHT:
 		return SnakeMove::RIGHT;
 	default:
+		std::cout << "Invalid input";
 		return SnakeMove::FORWARD;
 	}
 }

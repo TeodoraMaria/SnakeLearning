@@ -1,7 +1,8 @@
 #pragma once
+#include "Coordinate.h"
+#include "GameBoard.h"
 #include <list>
 #include <vector>
-#include "Coordinate.h"
 
 class Snake
 {
@@ -21,7 +22,7 @@ public:
 	bool operator ==(const Snake& snake);
 
 	//Initializes snake and return true if initialization was succesfull, false otherwise
-	bool InitSnake(std::vector<std::vector<int>>& board);
+	bool InitSnake(GameBoard& gameBoard);
 	void Move(const Coordinate& newPosition);
 	void Eat(const Coordinate& foodPosition);
 	void Die();

@@ -23,7 +23,6 @@ public:
 	Coordinate Rotate90Right() const;
 
 	void GenerateCoordinate(const size_t& width, const size_t& length);
-	bool CheckCoord(const std::vector<std::vector<int>>& board) const;
 
 private:
 	size_t m_x;

@@ -29,15 +29,15 @@ std::list<Coordinate> Snake::GetSnakeBody() const
 	return m_snakeBody;
 }
 
-bool Snake::InitSnake(std::vector<std::vector<int>>& board)
+bool Snake::InitSnake(GameBoard& gameBoard)
 {
 	Coordinate coord, auxCoord;
 	// generate snake head
 	do {
-		coord.GenerateCoordinate(board.size(), board[0].size());
-	} while (!coord.CheckCoord(board));
+		coord.GenerateCoordinate(gameBoard.GetBoardWidth(), gameBoard.GetBoardLength());
+	} while (!gameBoard.CheckCoord(coord));
 	m_snakeBody.push_front(coord);
-	board[coord.GetX()][coord.GetY()] = m_snakeNumber;
+	gameBoard[coord] = m_snakeNumber;
 
 	// generate snake body
 	std::vector<Coordinate> directions{ Coordinate::UP, Coordinate::DOWN, Coordinate::LEFT, Coordinate::RIGHT };
@@ -47,11 +47,11 @@ bool Snake::InitSnake(std::vector<std::vector<int>>& board)
 		for (auto& direction : directions)
 		{
 			auxCoord = coord + direction;
-			if (auxCoord.CheckCoord(board))
+			if (gameBoard.CheckCoord(auxCoord))
 			{
 				m_snakeBody.push_back(auxCoord);
 				coord = auxCoord;
-				board[coord.GetX()][coord.GetY()] = m_snakeNumber;
+				gameBoard[coord] = m_snakeNumber;
 				break;
 			}
 		}

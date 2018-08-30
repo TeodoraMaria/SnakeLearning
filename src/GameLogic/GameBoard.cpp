@@ -14,11 +14,6 @@ GameBoard::~GameBoard()
 {
 }
 
-Board& GameBoard::GetBoard() 
-{
-	return m_board;
-}
-
 size_t GameBoard::GetBoardLength() const
 {
 	return m_length;
@@ -72,7 +67,7 @@ void GameBoard::PlaceFood()
 	Coordinate coord;
 	do {
 		coord.GenerateCoordinate(m_width, m_length);
-	} while (!coord.CheckCoord(m_board));
+	} while (!CheckCoord(coord));
 	(*this)[coord] = 1;
 }
 
@@ -92,10 +87,19 @@ void GameBoard::MoveSnake(const Coordinate & freedLocation, const Coordinate & n
 	(*this)[freedLocation] = 0;
 }
 
-void GameBoard::KillSnake(const Snake & snake)
+void GameBoard::KillSnake(const std::list<Coordinate>& snakeBody)
 {
-	for (const auto& part : snake.GetSnakeBody())
+	for (const auto& part : snakeBody)
 	{
 		(*this)[part] = 0;
 	}
+}
+
+bool GameBoard::CheckCoord(const Coordinate& coord) const
+{
+	if (coord.GetX() < 0 || coord.GetX() >= m_width)
+		return false;
+	if (coord.GetY() < 0 || coord.GetY() >= m_length)
+		return false;
+	return (*this)[coord] == 0;
 }
