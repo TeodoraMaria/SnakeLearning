@@ -7,8 +7,6 @@ namespace AI { namespace HardCoded
 	class Bot : public IPlayer
 	{
 	public:
-		Bot();
-	
 		size_t GetSnakeNumber() const override;
 		void SetSnakeNumber(const size_t& snakeNumber) override;
 		
