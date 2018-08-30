@@ -12,5 +12,5 @@ public:
 	virtual SnakeMove GetNextAction(const GameState& gameState) const = 0;
 };
 
-//typedef std::shared_ptr<IPlayer> IPlayerPtr;
-typedef IPlayer* IPlayerPtr;
+typedef std::shared_ptr<IPlayer> IPlayerPtr;
+//typedef IPlayer* IPlayerPtr;
