@@ -82,6 +82,16 @@ void Game::AddSnakeToGame(const size_t& snakeNumber)
 	m_snakes.push_back(snake);
 }
 
+void Game::RemovePlayer(const size_t & snakeNumber)
+{
+	if (m_players.size()>1)
+	{
+		auto deleteFrom = std::remove_if(m_players.begin(), m_players.end(), 
+			[snakeNumber](const auto* player) {return player->GetSnakeNumber() == snakeNumber; });
+		m_players.erase(deleteFrom);
+	}
+}
+
 void Game::CheckIfGameOver()
 {
 	m_isGameOver = (GetLivingSnakes().size() == 0);
@@ -166,9 +176,11 @@ void Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 			snakeToMove.Move(newSnakeHeadPosition);
 			m_gameBoard.MoveSnake(freedPosition, newSnakeHeadPosition);
 		}
-		else {
+		else 
+		{
 			m_gameBoard.KillSnake(snakeToMove.GetSnakeBody());
 			snakeToMove.Die();
+			RemovePlayer(snakeNumber);
 		}
 	}
 }

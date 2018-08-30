@@ -27,7 +27,9 @@ private:
 	void InitFood();
 	void RestockFood();
 	void AddSnakeToGame(const size_t& snakeNumber);
+	void RemovePlayer(const size_t& snakeNumber);
 	bool IsSnakeHead(const Coordinate& coord) const;
+
 	
 
 	GameBoard m_gameBoard;
