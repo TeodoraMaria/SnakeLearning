@@ -1,4 +1,5 @@
 #include "GameState.h"
+#include <algorithm>
 
 GameState::GameState(const GameBoard & gameBoard, const std::vector<Snake>& snakes)
 	:m_gameBoard(gameBoard), m_snakes(snakes)
@@ -17,5 +18,14 @@ const GameBoard & GameState::GetGameBoard() const
 const std::vector<Snake>& GameState::GetSnakes() const
 {
 	return m_snakes;
+}
+
+const Snake & GameState::GetSnake(const int & snakeNumber) const
+{
+	return *std::find_if(m_snakes.begin(), m_snakes.end(),
+		[snakeNumber](const auto& snake)
+	{
+		return snake.GetSnakeNumber() == snakeNumber;
+	});
 }
 

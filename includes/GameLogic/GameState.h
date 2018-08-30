@@ -10,6 +10,7 @@ public:
 
 	const GameBoard& GetGameBoard() const;
 	const std::vector<Snake>& GetSnakes() const;
+	const Snake& GetSnake(const int& snakeNumber) const;
 
 private:	
 	const GameBoard& m_gameBoard;

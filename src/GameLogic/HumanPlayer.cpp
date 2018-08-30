@@ -57,11 +57,7 @@ SnakeMove HumanPlayer::GetUserInput() const
 
 void HumanPlayer::TranslateMoveToSnakeView(SnakeMove & move, const GameState& gameState) const
 {
-	const auto& snake = *std::find_if(gameState.GetSnakes().begin(), gameState.GetSnakes().end(),
-		[&](const auto& snake)
-	{
-		return snake.GetSnakeNumber() == GetSnakeNumber();
-	});
+	const auto& snake = gameState.GetSnake(GetSnakeNumber());
 	auto orientation = snake.GetOrientation();
 	if (orientation == Coordinate::RIGHT)
 	{
