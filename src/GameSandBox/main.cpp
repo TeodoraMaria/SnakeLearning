@@ -12,8 +12,7 @@ int main()
 	std::vector<IPlayerPtr> players(
 	{
 		IPlayerPtr(new HumanPlayer()),
-		IPlayerPtr(new HumanPlayer()),
-//		IPlayerPtr(new AI::HardCoded::Bot()),
+		IPlayerPtr(new AI::HardCoded::Bot()),
 	});
 	
 	const GameOptions gameOptions(GameBoardType::BOX, 10, 20, players.size());
