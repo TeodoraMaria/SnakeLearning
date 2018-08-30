@@ -14,5 +14,9 @@ public:
 	SnakeMove GetNextAction(const GameState& gameState) const override;
 
 private:
+	SnakeMove GetUserInput() const;
+	void TranslateMoveToSnakeView(SnakeMove& move, const GameState& gameState) const;
+	void RotateLeft(SnakeMove& move) const;
+
 	size_t m_snakeNumber;
 };

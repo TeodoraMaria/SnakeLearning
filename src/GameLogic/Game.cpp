@@ -82,6 +82,16 @@ void Game::AddSnakeToGame(const size_t& snakeNumber)
 	m_snakes.push_back(snake);
 }
 
+void Game::RemovePlayer(const size_t & snakeNumber)
+{
+	if (m_players.size()>1)
+	{
+		auto deleteFrom = std::remove_if(m_players.begin(), m_players.end(), 
+			[snakeNumber](auto player) {return player->GetSnakeNumber() == snakeNumber; });
+		m_players.erase(deleteFrom);
+	}
+}
+
 void Game::CheckIfGameOver()
 {
 	m_isGameOver = (GetLivingSnakes().size() == 0);
@@ -132,49 +142,46 @@ void Game::CheckIfGameOver()
 	}
 #endif
 
-int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
+void Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 {
 	auto& snakeToMove = *std::find_if(m_snakes.begin(), m_snakes.end(), 
 		[snakeNumber](const auto& snake) 
 		{
 		return snake.GetSnakeNumber() == snakeNumber; 
 		});
-	
-	if (!snakeToMove.IsAlive())
-		return 0;
-	
-	auto snakeOrientation = snakeToMove.GetOrientation();
-	if (move == SnakeMove::LEFT)
+	if (snakeToMove.IsAlive())
 	{
-		snakeOrientation = snakeOrientation.Rotate90Left();
-	}
-	else if (move == SnakeMove::RIGHT)
-	{
-		snakeOrientation = snakeOrientation.Rotate90Right();
-	}
+		Coordinate snakeOrientation = snakeToMove.GetOrientation();
+		if (move == SnakeMove::LEFT)
+		{
+			snakeOrientation = snakeOrientation.Rotate90Left();
+		}
+		else if (move == SnakeMove::RIGHT)
+		{
+			snakeOrientation = snakeOrientation.Rotate90Right();
+		}
 
-	const auto newSnakeHeadPosition =
-		snakeToMove.GetSnakeHead() + snakeOrientation;
+		const auto newSnakeHeadPosition =
+			snakeToMove.GetSnakeHead() + snakeOrientation;
 
-	if (m_gameBoard.IsFood(newSnakeHeadPosition))
-	{
-		snakeToMove.Eat(newSnakeHeadPosition);
-		m_gameBoard[newSnakeHeadPosition] = snakeNumber;
-		m_gameBoard.PlaceFood();
-		return 1;
-	}
-	else if (m_gameBoard.CheckCoord(newSnakeHeadPosition))
-	{
-		const auto freedPosition = snakeToMove.GetSnakeTail();
-		snakeToMove.Move(newSnakeHeadPosition);
-		m_gameBoard.MoveSnake(freedPosition, newSnakeHeadPosition);
-		return 0;
-	}
-	else
-	{
-		m_gameBoard.KillSnake(snakeToMove.GetSnakeBody());
-		snakeToMove.Die();
-		return -1;
+		if (m_gameBoard.IsFood(newSnakeHeadPosition))
+		{
+			snakeToMove.Eat(newSnakeHeadPosition);
+			m_gameBoard[newSnakeHeadPosition] = snakeNumber;
+			m_gameBoard.PlaceFood();
+		}
+		else if (m_gameBoard.CheckCoord(newSnakeHeadPosition))
+		{
+			Coordinate freedPosition = snakeToMove.GetSnakeTail();
+			snakeToMove.Move(newSnakeHeadPosition);
+			m_gameBoard.MoveSnake(freedPosition, newSnakeHeadPosition);
+		}
+		else 
+		{
+			m_gameBoard.KillSnake(snakeToMove.GetSnakeBody());
+			snakeToMove.Die();
+			RemovePlayer(snakeNumber);
+		}
 	}
 }
 
