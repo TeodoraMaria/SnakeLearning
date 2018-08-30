@@ -83,12 +83,8 @@ bool Snake::operator==(const Snake & snake)
 	return m_snakeNumber==snake.m_snakeNumber;
 }
 
-void Snake::Die(std::vector<std::vector<int>>& board)
+void Snake::Die()
 {
-	for (const auto& location : m_snakeBody)
-	{
-		board[location.GetX()][location.GetY()] = 0;
-	}
 	m_snakeBody.clear();
 	m_isAlive = false;
 }

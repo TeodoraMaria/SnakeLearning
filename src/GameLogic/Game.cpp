@@ -121,7 +121,8 @@ void Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 			m_gameBoard.MoveSnake(freedPosition, newSnakeHeadPosition);
 		}
 		else {
-			snakeToMove.Die(m_gameBoard.GetBoard());
+			m_gameBoard.KillSnake(snakeToMove);
+			snakeToMove.Die();
 		}
 	}
 }

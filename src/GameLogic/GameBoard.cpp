@@ -94,4 +94,8 @@ void GameBoard::MoveSnake(const Coordinate & freedLocation, const Coordinate & n
 
 void GameBoard::KillSnake(const Snake & snake)
 {
+	for (const auto& part : snake.GetSnakeBody())
+	{
+		(*this)[part] = 0;
+	}
 }
