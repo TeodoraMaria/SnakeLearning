@@ -18,7 +18,8 @@ public:
 	void InitGame();
 	void RunRound();
 	void Play();
-	void MoveSnake(const size_t& snakeNumber, const SnakeMove& move);
+	
+	int MoveSnake(const size_t& snakeNumber, const SnakeMove& move);
 
 private:
 	void InitSnakes();

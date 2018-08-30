@@ -37,14 +37,15 @@ void Bot::SetSnakeNumber(const size_t& snakeNumber)
 
 SnakeMove Bot::GetNextAction(const GameState& gameState) const
 {
-	const auto& snake = *std::find_if(gameState.GetSnakes().begin(), gameState.GetSnakes().end(),
+	const auto& snake = *std::find_if(
+		gameState.GetSnakes().begin(),
+		gameState.GetSnakes().end(),
 		[&](const auto& snake)
-	{
-		return snake.GetSnakeNumber() == GetSnakeNumber();
-	});
+		{
+			return snake.GetSnakeNumber() == GetSnakeNumber();
+		});
 
 	const auto& board = gameState.GetGameBoard();
-	
 	const auto& head = snake.GetSnakeHead();
 
 	const auto snakeOrientation = snake.GetOrientation();
