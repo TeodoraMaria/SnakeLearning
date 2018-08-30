@@ -15,6 +15,8 @@ Game::Game(
 	const std::vector<IPlayerPtr>& players) :
 	m_gameOptions(gameOptions),
 	m_players(players)
+Game::Game(const GameOptions& gameOptions, const std::vector<HumanPlayer>& players)
+	: m_gameOptions(gameOptions), m_players(players)
 {
 	m_players.resize(gameOptions.GetNumberOfPlayers());
 	m_gameBoard = GameBoard(
@@ -180,10 +182,7 @@ void Game::RunRound()
 		const auto snakeNumber = player->GetSnakeNumber();
 		MoveSnake(snakeNumber, chosenMove);
 	}
-	std::cout
-		<< "All: " << GetAllSnakes().size() << std::endl
-		<< "Alive: " << GetLivingSnakes().size()
-		<< std::endl;
+	RestockFood();
 }
 
 void Game::Play()
@@ -198,6 +197,14 @@ void Game::Play()
 void Game::InitFood() 
 {
 	for (auto i = 0u; i < m_gameOptions.GetFoodPortions(); ++i)
+	{
+		m_gameBoard.PlaceFood();
+	}
+}
+
+void Game::RestockFood()
+{
+	while (m_gameBoard.GetFoodPortions() < m_gameOptions.GetFoodPortions())
 	{
 		m_gameBoard.PlaceFood();
 	}
