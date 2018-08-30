@@ -16,7 +16,7 @@ namespace GymEnv
 	class SingleSnakeRelativeView
 	{
 	public:
-		static const std::array<int, 3> actions;
+		static const std::array<SnakeMove, 3> actions;
 
 		SingleSnakeRelativeView();
 		

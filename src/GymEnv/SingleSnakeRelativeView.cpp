@@ -5,7 +5,12 @@
 
 using namespace GymEnv;
 
-const std::array<int, 3> SingleSnakeRelativeView::actions = {{-1, 0, 1}};
+const std::array<SnakeMove, 3> SingleSnakeRelativeView::actions =
+{{
+	SnakeMove::LEFT,
+	SnakeMove::FORWARD,
+	SnakeMove::RIGHT,
+}};
 
 SingleSnakeRelativeView::SingleSnakeRelativeView()
 {
@@ -58,7 +63,7 @@ int SingleSnakeRelativeView::GetState() const
 		{
 			return snake.GetSnakeNumber() == m_student->GetSnakeNumber();
 		});
-
+	const auto& board = m_game->GetGameBoard();
 	const auto& head = snake.GetSnakeHead();
 	const auto snakeOrientation = snake.GetOrientation();
 	
@@ -71,17 +76,17 @@ int SingleSnakeRelativeView::GetState() const
 	int state = 0;
 	for (auto i = 0u; i < viewGrid.size(); i++)
 	{
-		if (viewGrid[i] == 0)
+		if (board[viewGrid[i]] == 0)
 			continue;
 		
 		auto cellValue = 0;
 		
 		// Non food.
-		if (!(viewGrid[i] == 1))
+		if (board[viewGrid[i]] != 1)
 			cellValue = 1;
 		
 		// Food
-		if (viewGrid[i] == 1)
+		if (board[viewGrid[i]] == 1)
 			cellValue = 2;
 		
 		state += cellValue * std::pow(3, i);
@@ -102,4 +107,9 @@ StepResult SingleSnakeRelativeView::Step(const SnakeMove moveDirection)
 	
 	stepResult.isDone = stepResult.reward == -1;
 	return stepResult;
+}
+
+void SingleSnakeRelativeView::Render()
+{
+	m_game->PrintBoard();
 }

@@ -19,12 +19,12 @@ public:
 	void RunRound();
 	void Play();
 	
+	void PrintBoard();
 	int MoveSnake(const size_t& snakeNumber, const SnakeMove& move);
 
 private:
 	void InitSnakes();
 	void CheckIfGameOver();
-	void PrintBoard();
 	void InitFood();
 	void RestockFood();
 	void AddSnakeToGame(const size_t& snakeNumber);
