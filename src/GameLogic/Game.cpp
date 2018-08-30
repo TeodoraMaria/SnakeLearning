@@ -10,11 +10,17 @@
 	#include <windows.h>
 #endif
 
-Game::Game(const GameOptions& gameOptions, const std::vector<HumanPlayer>& players)
-	: m_gameOptions(gameOptions), m_players(players)
+Game::Game(
+	const GameOptions& gameOptions,
+	const std::vector<IPlayerPtr>& players) :
+	m_gameOptions(gameOptions),
+	m_players(players)
 {
 	m_players.resize(gameOptions.GetNumberOfPlayers());
-	m_gameBoard = GameBoard(gameOptions.GetGameBoardType(), gameOptions.GetBoardLength(), gameOptions.GetBoardWidth());
+	m_gameBoard = GameBoard(
+		gameOptions.GetGameBoardType(),
+		gameOptions.GetBoardLength(),
+		gameOptions.GetBoardWidth());
 }
 
 Game::~Game()
@@ -37,7 +43,11 @@ std::vector<Snake> Game::GetLivingSnakes() const
 {
 	std::vector<Snake> livingSnakes(m_snakes.size());
 
-	auto it = std::copy_if(m_snakes.begin(), m_snakes.end(), livingSnakes.begin(), [](const auto& snake) {return snake.IsAlive(); });
+	auto it = std::copy_if(
+		m_snakes.begin(),
+		m_snakes.end(),
+		livingSnakes.begin(), [](const auto& snake) {return snake.IsAlive(); });
+
 	livingSnakes.resize(std::distance(livingSnakes.begin(), it));
 
 	return livingSnakes;
@@ -52,11 +62,11 @@ std::vector<Snake> Game::GetAllSnakes() const
 void Game::InitSnakes()
 {
 	size_t snakeIndex = 10;
-	for (auto& player : m_players)
+	for (auto player : m_players)
 	{
 		++snakeIndex;
 		AddSnakeToGame(snakeIndex);
-		player.SetSnakeNumber(snakeIndex);
+		player->SetSnakeNumber(snakeIndex);
 	}
 }
 
@@ -136,7 +146,8 @@ void Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 			snakeOrientation = snakeOrientation.Rotate90Right();
 		}
 
-		Coordinate newSnakeHeadPosition = snakeToMove.GetSnakeHead() + snakeOrientation;
+		const auto newSnakeHeadPosition =
+			snakeToMove.GetSnakeHead() + snakeOrientation;
 
 		if (m_gameBoard.IsFood(newSnakeHeadPosition))
 		{
@@ -161,13 +172,18 @@ void Game::RunRound()
 {
 	PrintBoard();
 	std::random_shuffle(m_players.begin(), m_players.end());
-	for (const auto& player : m_players)
+	for (auto player : m_players)
 	{
-		auto chosenMove = player.GetNextAction(GameState(m_gameBoard, m_snakes));
-		size_t snakeNumber = player.GetSnakeNumber();
+		const auto chosenMove =
+			player->GetNextAction(GameState(m_gameBoard, m_snakes));
+		
+		const auto snakeNumber = player->GetSnakeNumber();
 		MoveSnake(snakeNumber, chosenMove);
 	}
-	std::cout << "All: " << GetAllSnakes().size() << "\nALive: " << GetLivingSnakes().size() << std::endl;
+	std::cout
+		<< "All: " << GetAllSnakes().size() << std::endl
+		<< "Alive: " << GetLivingSnakes().size()
+		<< std::endl;
 }
 
 void Game::Play()
@@ -181,7 +197,7 @@ void Game::Play()
 
 void Game::InitFood() 
 {
-	for (size_t foodIndex = 0; foodIndex < m_gameOptions.GetFoodPortions(); ++foodIndex)
+	for (auto i = 0u; i < m_gameOptions.GetFoodPortions(); ++i)
 	{
 		m_gameBoard.PlaceFood();
 	}
@@ -191,8 +207,11 @@ bool Game::IsSnakeHead(const Coordinate& coord) const
 {
 	if (m_gameBoard[coord] <= 10)
 		return false;
-	size_t snakeNumber = m_gameBoard[coord];
-	auto snake = *std::find_if(m_snakes.begin(), m_snakes.end(),
+	
+	auto snakeNumber = m_gameBoard[coord];
+	auto snake = *std::find_if(
+		m_snakes.begin(),
+		m_snakes.end(),
 		[snakeNumber](const auto& snake)
 	{
 		return snake.GetSnakeNumber() == snakeNumber;
@@ -200,5 +219,5 @@ bool Game::IsSnakeHead(const Coordinate& coord) const
 
 	auto head = snake.GetSnakeHead();
 
-	return (head==coord);
+	return (head == coord);
 }

@@ -3,16 +3,24 @@
 #include <vector>
 #include "GameLogic/Game.h"
 #include "GameLogic/HumanPlayer.h"
+#include "AI/HardCoded/Bot.hpp"
 
 int main()
 {
-	std::vector<HumanPlayer> players;
-	players.push_back(HumanPlayer());
-	players.push_back(HumanPlayer());
-	GameOptions gameOptions(GameBoardType::BOX, 10, 20, players.size());
-	std::cout << "W for foward, A for left, D for right\n\n";
-	Game game(gameOptions, players);
 	srand(time(NULL));
+
+	std::vector<IPlayerPtr> players(
+	{
+		IPlayerPtr(new HumanPlayer()),
+		IPlayerPtr(new HumanPlayer()),
+//		IPlayerPtr(new AI::HardCoded::Bot()),
+	});
+	
+	const GameOptions gameOptions(GameBoardType::BOX, 10, 20, players.size());
+	Game game(gameOptions, players);
+	
+	std::cout << "W for foward, A for left, D for right\n\n";
+	
 	game.InitGame();
 	game.Play();
 	return 0;

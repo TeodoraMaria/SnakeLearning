@@ -7,7 +7,7 @@
 class Game
 {
 public:
-	Game(const GameOptions& gameOptions, const std::vector<HumanPlayer>& players);
+	Game(const GameOptions& gameOptions, const std::vector<IPlayerPtr>& players);
 	~Game();
 
 	GameBoard GetGameBoard() const;
@@ -30,7 +30,7 @@ private:
 
 	GameBoard m_gameBoard;
 	GameOptions m_gameOptions;
-	std::vector<HumanPlayer> m_players;
+	std::vector<IPlayerPtr> m_players;
 	std::vector<Snake> m_snakes;
 	bool m_isGameOver = false;
 };

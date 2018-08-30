@@ -86,8 +86,8 @@ void TabularTrainer::Train()
 				break;
 
 			randomActionChance = lerp(
-				minRandActionChance,
 				randomActionChance,
+				minRandActionChance,
 				randActionDecayFactor);
 			totalNbOfSteps++;
 		}

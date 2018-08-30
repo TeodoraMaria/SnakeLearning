@@ -16,6 +16,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	
 target_link_libraries(${PROJECT_NAME} PUBLIC
 	GameLogic
+	HardCoded
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
