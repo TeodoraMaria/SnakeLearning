@@ -6,6 +6,10 @@
 #include <iostream>
 #include <iomanip>
 
+#ifdef _WIN32
+	#include <windows.h>
+#endif
+
 Game::Game(const GameOptions& gameOptions, const std::vector<HumanPlayer>& players)
 	: m_gameOptions(gameOptions), m_players(players)
 {
@@ -68,29 +72,50 @@ void Game::CheckIfGameOver()
 	m_isGameOver = (GetLivingSnakes().size() == 0);
 }
 
-void Game::PrintBoard()
-{
-	for (size_t i = 0; i<m_gameBoard.GetBoardWidth(); i++)
+#ifdef _WIN32
+	void Game::PrintBoard()
 	{
-		for (size_t j = 0; j<m_gameBoard.GetBoardLength(); j++)
+		HANDLE  hConsole;
+		int k;
+
+		hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		for (size_t i = 0; i<m_gameBoard.GetBoardWidth(); i++)
 		{
-			const auto targetPrint = m_gameBoard[Coordinate(i, j)];
-			if (IsSnakeHead(Coordinate(i, j)))
+			for (size_t j = 0; j<m_gameBoard.GetBoardLength(); j++)
 			{
-				std::cout << "  ";
-				MultiPlatform::PrintColoredStr(
-					MultiPlatform::Color::RED,
-					std::to_string(targetPrint));
+				k = IsSnakeHead(Coordinate(i, j)) ? 12 : 15;
+				SetConsoleTextAttribute(hConsole, k);
+				std::cout << std::setw(4) << m_gameBoard[Coordinate(i, j)] << " ";
 			}
-			else
-				std::cout << std::setw(4) << targetPrint;
-			
-			std::cout << " ";
+			std::cout << std::endl;
 		}
 		std::cout << std::endl;
 	}
-	std::cout << std::endl;
-}
+#else
+	void Game::PrintBoard()
+	{
+		for (size_t i = 0; i<m_gameBoard.GetBoardWidth(); i++)
+		{
+			for (size_t j = 0; j<m_gameBoard.GetBoardLength(); j++)
+			{
+				const auto targetPrint = m_gameBoard[Coordinate(i, j)];
+				if (IsSnakeHead(Coordinate(i, j)))
+				{
+					std::cout << "  ";
+					MultiPlatform::PrintColoredStr(
+						MultiPlatform::Color::RED,
+						std::to_string(targetPrint));
+				}
+				else
+					std::cout << std::setw(4) << targetPrint;
+				
+				std::cout << " ";
+			}
+			std::cout << std::endl;
+		}
+		std::cout << std::endl;
+	}
+#endif
 
 void Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 {

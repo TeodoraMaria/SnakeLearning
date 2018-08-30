@@ -84,11 +84,11 @@ void TabularTrainer::Train()
 			
 			if (stepResult.isDone)
 				break;
-			
+
 			randomActionChance = lerp(
 				minRandActionChance,
-				maxRandActionChance,
-				std::exp(-randActionDecayFactor * totalNbOfSteps));
+				randomActionChance,
+				randActionDecayFactor);
 			totalNbOfSteps++;
 		}
 		
