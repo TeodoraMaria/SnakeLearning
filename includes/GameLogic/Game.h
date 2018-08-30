@@ -18,18 +18,18 @@ public:
 	void InitGame();
 	void RunRound();
 	void Play();
+	void MoveSnake(const size_t& snakeNumber, const SnakeMove& move);
 
 private:
 	void AddLimitsToBoard();
 	void InitSnakes();
 	void CheckIfGameOver();
 	void PrintBoard();
-	void InitFood(const size_t& foodPortions = 0);
+	void InitFood();
+	void PlaceFood();
 	void AddSnakeToGame(const size_t& snakeNumber);
-	void MoveSnake(const size_t& snakeNumber, const SnakeMove& move);
 	bool IsSnakeHead(const int& i, const int& j) const;
 	bool IsFood(const Coordinate& location);
-
 
 	GameBoard m_gameBoard;
 	GameOptions m_gameOptions;
