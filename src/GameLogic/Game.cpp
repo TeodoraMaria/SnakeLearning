@@ -15,8 +15,6 @@ Game::Game(
 	const std::vector<IPlayerPtr>& players) :
 	m_gameOptions(gameOptions),
 	m_players(players)
-Game::Game(const GameOptions& gameOptions, const std::vector<HumanPlayer>& players)
-	: m_gameOptions(gameOptions), m_players(players)
 {
 	m_players.resize(gameOptions.GetNumberOfPlayers());
 	m_gameBoard = GameBoard(
