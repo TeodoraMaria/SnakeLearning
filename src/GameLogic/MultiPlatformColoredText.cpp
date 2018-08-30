@@ -45,14 +45,14 @@ using namespace MultiPlatform;
 	void PrintColoredCharWindows(Color color, const char c)
 	{
 		HANDLE hConsole;
-		int colorInt = 12;
+		int colorInt = 15;
 
 		hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 		
 		switch (color)
 		{
 			case MultiPlatform::Color::RED:
-				colorInt = 15;
+				colorInt = 12;
 				break;
 		}
 		
