@@ -117,9 +117,8 @@ void Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 		else if (newSnakeHeadPosition.CheckCoord(m_gameBoard.GetBoard()))
 		{
 			Coordinate freedPosition = snakeToMove.GetSnakeTail();
-			m_gameBoard[freedPosition] = 0;
 			snakeToMove.Move(newSnakeHeadPosition);
-			m_gameBoard[newSnakeHeadPosition] = snakeNumber;
+			m_gameBoard.MoveSnake(freedPosition, newSnakeHeadPosition);
 		}
 		else {
 			snakeToMove.Die(m_gameBoard.GetBoard());
