@@ -142,15 +142,13 @@ void Game::CheckIfGameOver()
 	}
 #endif
 
-void Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
+int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 {
 	auto& snakeToMove = *std::find_if(m_snakes.begin(), m_snakes.end(), 
 		[snakeNumber](const auto& snake) 
 		{
 		return snake.GetSnakeNumber() == snakeNumber; 
 		});
-	if (snakeToMove.IsAlive())
-	{
 		Coordinate snakeOrientation = snakeToMove.GetOrientation();
 		if (move == SnakeMove::LEFT)
 		{
@@ -169,20 +167,22 @@ void Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 			snakeToMove.Eat(newSnakeHeadPosition);
 			m_gameBoard[newSnakeHeadPosition] = snakeNumber;
 			m_gameBoard.PlaceFood();
+			return 1;
 		}
 		else if (m_gameBoard.CheckCoord(newSnakeHeadPosition))
 		{
 			Coordinate freedPosition = snakeToMove.GetSnakeTail();
 			snakeToMove.Move(newSnakeHeadPosition);
 			m_gameBoard.MoveSnake(freedPosition, newSnakeHeadPosition);
+			return 0;
 		}
 		else 
 		{
 			m_gameBoard.KillSnake(snakeToMove.GetSnakeBody());
 			snakeToMove.Die();
 			RemovePlayer(snakeNumber);
+			return -1;
 		}
-	}
 }
 
 void Game::RunRound()
