@@ -1,4 +1,5 @@
 #include "GameBoard.h"
+#include <algorithm>
 
 GameBoard::GameBoard(const GameBoardType & gameBoardType, const size_t & length, const size_t & width)
 	:m_gameBoardType(gameBoardType), m_length(length), m_width(width)
@@ -22,6 +23,16 @@ size_t GameBoard::GetBoardLength() const
 size_t GameBoard::GetBoardWidth() const
 {
 	return m_width;
+}
+
+size_t GameBoard::GetFoodPortions() const
+{
+	size_t sum = 0;
+	for (const auto& line : m_board)
+	{
+		sum+= std::count_if(line.cbegin(), line.cend(), [](const auto& elem) {return elem == 1; });
+	}
+	return sum;
 }
 
 int& GameBoard::operator[](const Coordinate & coord)

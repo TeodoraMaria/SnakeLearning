@@ -167,7 +167,7 @@ void Game::RunRound()
 		size_t snakeNumber = player.GetSnakeNumber();
 		MoveSnake(snakeNumber, chosenMove);
 	}
-	std::cout << "All: " << GetAllSnakes().size() << "\nALive: " << GetLivingSnakes().size() << std::endl;
+	RestockFood();
 }
 
 void Game::Play()
@@ -182,6 +182,14 @@ void Game::Play()
 void Game::InitFood() 
 {
 	for (size_t foodIndex = 0; foodIndex < m_gameOptions.GetFoodPortions(); ++foodIndex)
+	{
+		m_gameBoard.PlaceFood();
+	}
+}
+
+void Game::RestockFood()
+{
+	while (m_gameBoard.GetFoodPortions() < m_gameOptions.GetFoodPortions())
 	{
 		m_gameBoard.PlaceFood();
 	}
