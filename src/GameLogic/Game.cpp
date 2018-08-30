@@ -1,10 +1,10 @@
 #include "Game.h"
-#include "MultiPlatformTerm.hpp"
 #include <algorithm>
 #include <stdlib.h>
 #include <tuple>
 #include <iostream>
 #include <iomanip>
+#include <Windows.h>
 
 Game::Game(const GameOptions& gameOptions, const std::vector<HumanPlayer>& players)
 	: m_gameOptions(gameOptions), m_players(players)
@@ -75,22 +75,17 @@ void Game::CheckIfGameOver()
 
 void Game::PrintBoard()
 {
+	HANDLE  hConsole;
+	int k;
+
+	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	for (size_t i = 0; i<m_gameBoard.GetBoardWidth(); i++)
 	{
 		for (size_t j = 0; j<m_gameBoard.GetBoardLength(); j++)
 		{
-			const auto targetPrint = m_gameBoard[Coordinate(i,j)];
-			if (IsSnakeHead(Coordinate(i,j)))
-			{
-				std::cout << "  ";
-				MultiPlatform::PrintColoredStr(
-					MultiPlatform::Color::RED,
-					std::to_string(targetPrint));
-			}
-			else
-				std::cout << std::setw(4) << targetPrint;
-			
-			std::cout << " ";
+			k = IsSnakeHead(Coordinate(i, j)) ? 12 : 15;
+			SetConsoleTextAttribute(hConsole, k);
+			std::cout << std::setw(4) << m_gameBoard[Coordinate(i,j)] << " ";
 		}
 		std::cout << std::endl;
 	}
