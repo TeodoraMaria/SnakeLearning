@@ -1,4 +1,4 @@
-#include "Bot.hpp"
+#include "SingleBot.hpp"
 #include <random>
 
 using namespace AI::HardCoded;
@@ -25,17 +25,17 @@ Iter select_randomly(Iter start, Iter end) {
 ** The actual Bot implementation.
 */
 
-size_t Bot::GetSnakeNumber() const
+size_t SingleBot::GetSnakeNumber() const
 {
 	return m_snakeNb;
 }
 
-void Bot::SetSnakeNumber(const size_t& snakeNumber)
+void SingleBot::SetSnakeNumber(const size_t& snakeNumber)
 {
 	m_snakeNb = snakeNumber;
 }
 
-SnakeMove Bot::GetNextAction(const GameState& gameState) const
+SnakeMove SingleBot::GetNextAction(const GameState& gameState) const
 {
 	const auto& snake = gameState.GetSnake(GetSnakeNumber());
 

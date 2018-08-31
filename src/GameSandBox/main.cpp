@@ -3,7 +3,7 @@
 #include <vector>
 #include "GameLogic/Game.h"
 #include "GameLogic/HumanPlayer.h"
-#include "AI/HardCoded/Bot.hpp"
+#include "AI/HardCoded/SingleBot.hpp"
 
 int main()
 {
@@ -12,7 +12,7 @@ int main()
 	std::vector<IPlayerPtr> players(
 	{
 		IPlayerPtr(new HumanPlayer()),
-		IPlayerPtr(new AI::HardCoded::Bot()),
+		IPlayerPtr(new AI::HardCoded::SingleBot()),
 	});
 	
 	const GameOptions gameOptions(GameBoardType::BOX, 10, 20, players.size());

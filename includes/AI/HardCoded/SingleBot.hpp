@@ -4,7 +4,7 @@
 
 namespace AI { namespace HardCoded
 {
-	class Bot : public IPlayer
+	class SingleBot : public IPlayer
 	{
 	public:
 		size_t GetSnakeNumber() const override;
