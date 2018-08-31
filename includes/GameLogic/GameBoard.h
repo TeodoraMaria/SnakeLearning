@@ -21,13 +21,15 @@ public:
 	int& operator [](const Coordinate& coord);
 	int operator [](const Coordinate& coord) const;
 
+	bool IsFood(const Coordinate& location);
+	bool CheckCoord(const Coordinate& coord) const;
+	bool CoordIsBounded(const Coordinate& coord) const;
+
 	void Init();
 	void PlaceFood();
-	bool IsFood(const Coordinate& location);
 	void GrowSnake(const size_t& snakeNumber, const Coordinate& location);
 	void MoveSnake(const Coordinate& freedLocation, const Coordinate& newLocation);
 	void KillSnake(const std::list<Coordinate>& snakeBody);
-	bool CheckCoord(const Coordinate& coord) const;
 	Coordinate GenerateCoordinate() const;
 
 private:

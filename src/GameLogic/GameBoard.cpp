@@ -1,6 +1,10 @@
 #include "GameBoard.h"
 #include <algorithm>
 
+/*
+** Constructors & Destructors.
+*/
+
 GameBoard::GameBoard(
 	const GameBoardType& gameBoardType,
 	const size_t& length,
@@ -19,6 +23,10 @@ GameBoard::GameBoard(
 GameBoard::~GameBoard()
 {
 }
+
+/*
+** Getters.
+*/
 
 size_t GameBoard::GetBoardLength() const
 {
@@ -40,6 +48,10 @@ size_t GameBoard::GetFoodPortions() const
 	return sum;
 }
 
+/*
+** Operators.
+*/
+
 int& GameBoard::operator[](const Coordinate & coord)
 {
 	return m_board[coord.GetX()][coord.GetY()];
@@ -49,6 +61,33 @@ int GameBoard::operator[](const Coordinate & coord) const
 {
 	return m_board[coord.GetX()][coord.GetY()];
 }
+
+/*
+** Bool states.
+*/
+
+bool GameBoard::IsFood(const Coordinate & location)
+{
+	return (*this)[location] == 1;
+}
+
+bool GameBoard::CheckCoord(const Coordinate& coord) const
+{
+	return  CoordIsBounded(coord) && (*this)[coord] == 0;
+}
+
+bool GameBoard::CoordIsBounded(const Coordinate& coord) const
+{
+	if (coord.GetX() >= m_width)
+		return false;
+	if (coord.GetY() >= m_length)
+		return false;
+	return true;
+}
+
+/*
+** Other public methods.
+*/
 
 void GameBoard::Init()
 {
@@ -87,11 +126,6 @@ void GameBoard::PlaceFood()
 	(*this)[coord] = 1;
 }
 
-bool GameBoard::IsFood(const Coordinate & location)
-{
-	return (*this)[location] == 1;
-}
-
 void GameBoard::GrowSnake(const size_t & snakeNumber, const Coordinate & location)
 {
 	(*this)[location] = snakeNumber;
@@ -109,15 +143,6 @@ void GameBoard::KillSnake(const std::list<Coordinate>& snakeBody)
 	{
 		(*this)[part] = 0;
 	}
-}
-
-bool GameBoard::CheckCoord(const Coordinate& coord) const
-{
-	if (coord.GetX() >= m_width)
-		return false;
-	if (coord.GetY() >= m_length)
-		return false;
-	return (*this)[coord] == 0;
 }
 
 Coordinate GameBoard::GenerateCoordinate() const
