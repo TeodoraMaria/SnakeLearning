@@ -1,4 +1,3 @@
-#define GLEW_STATIC
 #pragma once
 
 #include "utils.h"
@@ -15,6 +14,19 @@ namespace GameView
       ~Cell();
 
       void draw();
+
+      void drawUpperLeftCorner();
+      void drawUpperRightCorner();
+      void drawLowerRightCorner();
+      void drawlowerLeftCorner();
+
+      void drawSnakeHead();
+      void drawSnakeBody();
+
+      void drawFood();
+      
+
+
       void printConsole();
 
    private:

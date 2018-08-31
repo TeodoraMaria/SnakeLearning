@@ -13,8 +13,7 @@ namespace GameView
 
    }
 
-   Cell::Cell(double x, double y, double width, double height, int value) 
-      :m_x(x), m_y(y), m_width(width), m_height(height), m_value(value)
+   Cell::Cell(double x, double y, double width, double height, int value) :m_x(x), m_y(y), m_width(width), m_height(height), m_value(value)
    {
 
    }
@@ -38,6 +37,27 @@ namespace GameView
       glVertex2d(m_x + m_width, m_y + m_height);
       glEnd();
    }
+
+   void Cell::drawUpperLeftCorner()
+   {}
+
+   void Cell::drawUpperRightCorner()
+   {}
+
+   void Cell::drawLowerRightCorner()
+   {}
+
+   void Cell::drawlowerLeftCorner()
+   {}
+
+   void Cell::drawSnakeHead()
+   {}
+
+   void Cell::drawSnakeBody()
+   {}
+
+   void Cell::drawFood()
+   {}
 
    void Cell::printConsole()
    {

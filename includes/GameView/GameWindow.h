@@ -1,20 +1,16 @@
 #pragma once
 
 #include "Board.h"
-//#include <sdl\SDL.h>
-
-#define GLEW_STATIC
-
-#include <SDL.h>
-
+#include "Controller.h"
+#include <sdl\SDL.h>
 
 namespace GameView
 {
 
    enum class EGameState
    {
-      play,
-      exit
+      PLAY,
+      EXIT
    };
 
    class GameWindow
@@ -29,6 +25,8 @@ namespace GameView
       void gameLoop();
       void drawGame();
 
+      void exitGame();
+
    private:
 
       SDL_Window* m_window;
@@ -36,9 +34,11 @@ namespace GameView
       size_t m_screenWidth;
       size_t m_screenHeight;
 
-      EGameState m_gameSate = EGameState::play;
+      EGameState m_gameSate = EGameState::PLAY;
 
       Board* m_board;
+
+      Controller m_controller;
 
    };
 }

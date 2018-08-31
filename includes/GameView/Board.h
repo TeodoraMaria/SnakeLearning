@@ -10,7 +10,6 @@ namespace GameView
    public:
       Board();
       Board(std::vector<std::vector<int>> board, size_t windowWidth, size_t windowheigth);
-      Board(const size_t& rows, const size_t& cols);
       ~Board();
 
       void consolePrint();

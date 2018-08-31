@@ -2,9 +2,8 @@
 #include <iostream>
 #include <string>
 
-#include <SDL.h>
+#include <sdl/SDL.h>
 #include <GL/glew.h>
-
 
 
 
@@ -64,7 +63,7 @@ namespace GameView
       glOrtho(0.0f, m_screenWidth, m_screenHeight, 0.0f, 0.0f, 1.0f);
       glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-
+      //remove this
       std::vector<std::vector<int>> m_gameBoard;
 
       m_gameBoard.resize(10);
@@ -86,21 +85,24 @@ namespace GameView
 
    void GameWindow::processInput()
    {
+     // m_controller.pro
+      /*
       SDL_Event currentEvent;
 
       while (SDL_PollEvent(&currentEvent)) {
          switch (currentEvent.type) {
             case SDL_QUIT: {
-               m_gameSate = EGameState::exit;
+               m_gameSate = EGameState::EXIT;
                break;
             }
          }
       }
+      */
    }
 
    void GameWindow::gameLoop()
    {
-      while (m_gameSate != EGameState::exit) {
+      while (m_gameSate != EGameState::EXIT) {
          processInput();
          drawGame();
       }
@@ -115,5 +117,9 @@ namespace GameView
 
       SDL_GL_SwapWindow(m_window);
 
+   }
+   void GameWindow::exitGame()
+   {
+      m_gameSate = EGameState::EXIT;
    }
 }
