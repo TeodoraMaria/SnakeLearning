@@ -11,11 +11,13 @@ int main()
 
 	std::vector<IPlayerPtr> players(
 	{
-		IPlayerPtr(new HumanPlayer()),
+		IPlayerPtr(new AI::HardCoded::SingleBot()),
+		IPlayerPtr(new AI::HardCoded::SingleBot()),
+		IPlayerPtr(new AI::HardCoded::SingleBot()),
 		IPlayerPtr(new AI::HardCoded::SingleBot()),
 	});
 	
-	const GameOptions gameOptions(GameBoardType::BOX, 10, 20, players.size());
+	const GameOptions gameOptions(GameBoardType::BOX, 10, 20, players.size(),3);
 	Game game(gameOptions, players);
 	
 	std::cout << "W for foward, A for left, D for right\n\n";
