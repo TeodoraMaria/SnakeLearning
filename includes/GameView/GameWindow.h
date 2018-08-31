@@ -2,7 +2,7 @@
 
 #include "Board.h"
 #include "Controller.h"
-#include <sdl\SDL.h>
+#include <SDL.h>
 
 namespace GameView
 {

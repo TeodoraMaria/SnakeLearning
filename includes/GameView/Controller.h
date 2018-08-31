@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <sdl/SDL.h>
+#include <SDL.h>
 
 class Board;
 

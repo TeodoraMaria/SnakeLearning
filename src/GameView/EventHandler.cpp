@@ -1,7 +1,7 @@
 #include "EventHandler.h"
 #include "GameWindow.h"
 
-#include <sdl\SDL.h>
+#include <SDL.h>
 
 namespace GameView
 {

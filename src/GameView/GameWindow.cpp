@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-#include <sdl/SDL.h>
+#include <SDL.h>
 #include <GL/glew.h>
 
 
