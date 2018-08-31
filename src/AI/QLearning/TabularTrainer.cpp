@@ -1,4 +1,5 @@
 #include "TabularTrainer.hpp"
+#include "TrainedTabularAgent.hpp"
 #include "GymEnv/SingleSnakeRelativeView.hpp"
 #include "GameLogic/GameUtils.h"
 #include <vector>
@@ -11,12 +12,77 @@
 
 using namespace AI::QLearning;
 
+static bool approx(const double a, const double b)
+{
+	return std::abs(a - b) < std::numeric_limits<double>::epsilon();
+}
+
+static size_t countElementsWithValue(
+	const std::vector<double>& tab,
+	const double targetValue)
+{
+	return std::count_if(
+		tab.begin(),
+		tab.end(),
+		[&](const auto& value)
+		{
+			return approx(value, targetValue);
+		});
+}
+
+int TabularTrainer::GetAction(
+	const std::vector<double>& qActions,
+	const double noise,
+	std::mt19937& merseneTwister)
+{
+	auto chanceDistrib = std::uniform_real_distribution<double>(0, 1.0);
+	
+	// Random action.
+	if (chanceDistrib(merseneTwister) < noise)
+	{
+		auto actionDistrib = std::uniform_int_distribution<int>(
+			0,
+			qActions.size() - 1);
+		
+		return actionDistrib(merseneTwister);
+	}
+	
+	// If multiple actions have the same max quality, choose a random one from
+	// those.
+	const auto maxActionQ = *std::max_element(qActions.begin(), qActions.end());
+	const auto maxElementsCount = countElementsWithValue(qActions, maxActionQ);
+
+	// - Get the index from the max elements.
+	auto maxActionIndex = 0;
+	if (maxElementsCount == 1)
+		maxActionIndex = 0;
+	else
+	{
+		auto maxActionDistrib = std::uniform_int_distribution<int>(
+			0, maxElementsCount - 1);
+		maxActionIndex = maxActionDistrib(merseneTwister);
+	}
+
+	// - Get the maxActionIndex'th max element.
+	for (auto i = 0u; i < qActions.size(); i++)
+	{
+		if (approx(qActions[i], maxActionQ))
+		{
+			if (maxActionIndex == 0)
+				return i;
+			
+			maxActionIndex--;
+		}
+	}
+	throw;
+}
+
 static double lerp(const double a, const double b, const double scalar)
 {
 	return a + (b - a) * scalar;
 }
 
-void printTable(std::vector<std::vector<double>>& table)
+static void printTable(std::vector<std::vector<double>>& table)
 {
 	for (auto i = 0u; i < table.size(); i++)
 	{
@@ -31,12 +97,7 @@ void printTable(std::vector<std::vector<double>>& table)
 	}
 }
 
-bool approx(const double a, const double b)
-{
-	return std::abs(a - b) < std::numeric_limits<double>::epsilon();
-}
-
-void TabularTrainer::Train()
+IPlayer* TabularTrainer::Train()
 {
 	auto env = GymEnv::SingleSnakeRelativeView();
 	
@@ -66,8 +127,6 @@ void TabularTrainer::Train()
 	
 	std::random_device randomDevice;
 	std::mt19937 merseneTwister(randomDevice());
-	std::uniform_real_distribution<double> chanceDistrib(0, 1.0);
-	std::uniform_int_distribution<int> actionDistrib(0, env.actions.size() - 1);
 
 	auto dieStates = std::map<int, int>();
 	
@@ -84,43 +143,10 @@ void TabularTrainer::Train()
 		for (auto step = 0; step < maxNumSteps; step++)
 		{
 			// Get action with a random noise.
-			auto actionIndex = 0u;
-			if (chanceDistrib(merseneTwister) < randomActionChance)
-			{
-				actionIndex = actionDistrib(merseneTwister);
-			}
-			else
-			{
-				const auto qActions = qTable[state];
-				const auto maxActionQ = *std::max_element(
-					qActions.begin(),
-					qActions.end());
-				
-				const auto maxElementsCount = std::count_if(
-					qActions.begin(),
-					qActions.end(),
-					[&](const auto& actionQ)
-					{
-						return approx(actionQ, maxActionQ);
-					});
-				
-				auto maxActionDistrib = std::uniform_int_distribution<int>(0, maxElementsCount - 1);
-				auto maxActionIndex = maxActionDistrib(merseneTwister);
-				
-				for (auto i = 0u; i < qActions.size(); i++)
-				{
-					if (approx(qActions[i], maxActionQ))
-					{
-						if (maxActionIndex == 0)
-						{
-							actionIndex = i;
-							break;
-						}
-						
-						maxActionIndex--;
-					}
-				}
-			}
+			const auto actionIndex = GetAction(
+				qTable[state],
+				randomActionChance,
+				merseneTwister);
 			
 			const auto action = env.actions[actionIndex];
 			const auto stepResult = env.Step(action);
@@ -138,7 +164,6 @@ void TabularTrainer::Train()
 				reward -= 1;
 			else
 				reward -= 0.1;
-			
 			
 			qTable[state][actionIndex] +=
 				learningRate *
@@ -189,4 +214,8 @@ void TabularTrainer::Train()
 	{
 		std::cout << pair.first << ") " << pair.second << std::endl;
 	}
+	
+	return new AI::QLearning::TrainedAgent::TrainedTabularAgent(
+		env.actions,
+		qTable);
 }

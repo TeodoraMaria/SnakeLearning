@@ -2,9 +2,9 @@
 
 #include "StepResult.h"
 #include "SnakeStudent.hpp"
+#include "StateExtractor.hpp"
 #include "GameLogic/Game.h"
 #include <cstddef>
-#include <array>
 #include <vector>
 
 /*
@@ -16,7 +16,7 @@ namespace GymEnv
 	class SingleSnakeRelativeView
 	{
 	public:
-		static const std::array<SnakeMove, 3> actions;
+		static const std::vector<SnakeMove> actions;
 
 		SingleSnakeRelativeView();
 		
@@ -30,5 +30,6 @@ namespace GymEnv
 	private:
 		std::unique_ptr<Game> m_game;
 		std::shared_ptr<SnakeStudent> m_student;
+		const GymEnv::Utils::StateExtractor m_stateExtractor;
 	};
 }

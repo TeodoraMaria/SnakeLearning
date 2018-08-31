@@ -5,7 +5,7 @@
 
 using namespace GymEnv;
 
-const std::array<SnakeMove, 3> SingleSnakeRelativeView::actions =
+const std::vector<SnakeMove> SingleSnakeRelativeView::actions =
 {{
 	SnakeMove::LEFT,
 	SnakeMove::FORWARD,
@@ -44,56 +44,11 @@ void SingleSnakeRelativeView::Reset()
 	m_game->InitGame();
 }
 
-/*
-**	for cell, cell_index in viewGrid:
-**		if cell != 0:
-**			state += cell * 3 ^ cell_index
-**
-**	Where cell is { 0, NonFood = 1, FOOD = 2 }
-*/
-
 int SingleSnakeRelativeView::GetState() const
 {
-	const auto gameState = m_game->GetGameState();
-	
-	const auto& snake = *std::find_if(
-		gameState.GetSnakes().begin(),
-		gameState.GetSnakes().end(),
-		[&](const auto& snake)
-		{
-			return snake.GetSnakeNumber() == m_student->GetSnakeNumber();
-		});
-	const auto& board = m_game->GetGameBoard();
-	const auto& head = snake.GetSnakeHead();
-	const auto snakeOrientation = snake.GetOrientation();
-	
-	const auto left = head + snakeOrientation.Rotate90Left();
-	const auto right = head + snakeOrientation.Rotate90Right();
-	const auto forward = head + snakeOrientation;
-	
-	const auto viewGrid = std::array<Coordinate, 3>({{left, forward, right}});
-
-	int state = 0;
-	for (auto i = 0u; i < viewGrid.size(); i++)
-	{
-		if (board[viewGrid[i]] == 0)
-			continue;
-		
-		auto cellValue = 0;
-		
-		// Non food.
-		if (board[viewGrid[i]] != 1)
-			cellValue = 1;
-		
-		// Food
-		if (board[viewGrid[i]] == 1)
-			cellValue = 2;
-		
-		state += cellValue * std::pow(3, i);
-	}
-	
-	assert(state < GetNumbOfObservations());
- 	return state;
+	return m_stateExtractor.GetRelativeViewStateBase3(
+		m_game->GetGameState(),
+		m_student->GetSnakeNumber());
 }
 
 StepResult SingleSnakeRelativeView::Step(const SnakeMove moveDirection)

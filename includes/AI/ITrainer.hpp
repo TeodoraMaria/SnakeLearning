@@ -1,10 +1,12 @@
 #pragma once
 
+#include "GameLogic/IPlayer.h"
+
 namespace AI
 {
 	class ITrainer
 	{
 	public:
-		virtual void Train() = 0;
+		virtual IPlayer* Train() = 0;
 	};
 }
