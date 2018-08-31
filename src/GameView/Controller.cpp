@@ -1,6 +1,8 @@
 #include "Controller.h"
 #include <SDL.h>
 
+namespace GameView
+{
 
 
 Controller::Controller()
@@ -45,4 +47,5 @@ void Controller::setPlayerDirection()
 
    }
 
+}
 }

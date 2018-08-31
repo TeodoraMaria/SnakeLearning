@@ -1,6 +1,7 @@
 #include "GameWindow.h"
 #include <iostream>
 #include <string>
+#include "EventHandler.h"
 
 #include <SDL.h>
 #include <GL/glew.h>
@@ -10,8 +11,12 @@
 namespace GameView
 {
 
-   GameWindow::GameWindow(size_t screenWidth, size_t screenHeight) :m_screenWidth(screenWidth), m_screenHeight(screenHeight)
-   {}
+   GameWindow::GameWindow(size_t screenWidth, size_t screenHeight) 
+      :m_screenWidth(screenWidth), m_screenHeight(screenHeight)
+   {
+      m_eventHandler = new EventHandler();
+      m_eventHandler->addGameWindow(this);
+   }
 
    GameWindow::~GameWindow()
    {}
@@ -85,6 +90,8 @@ namespace GameView
 
    void GameWindow::processInput()
    {
+
+      m_eventHandler->processInput();
      // m_controller.pro
       /*
       SDL_Event currentEvent;

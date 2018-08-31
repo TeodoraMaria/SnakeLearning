@@ -2,8 +2,10 @@
 #include <vector>
 #include <SDL.h>
 
-class Board;
+namespace GameView
+{
 
+class Board;
 
 enum class InputDirection
 {
@@ -33,3 +35,4 @@ private:
    std::vector<InputDirection> m_playersDirection;
 };
 
+}

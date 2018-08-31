@@ -1,5 +1,6 @@
 #include "EventHandler.h"
 #include "GameWindow.h"
+#include "Controller.h"
 
 #include <SDL.h>
 
@@ -31,10 +32,14 @@ void EventHandler::processInput()
 
 }
 
-void EventHandler::addGameWindow(GameWindow & gameWindow)
-{}
+void EventHandler::addGameWindow(GameWindow*  gameWindow)
+{
+   m_gameWindow = gameWindow;
+}
 
-void EventHandler::addGameController(Controller & controller)
-{}
+void EventHandler::addGameController(Controller*  controller)
+{
+   m_controller = controller;
+}
 
 }

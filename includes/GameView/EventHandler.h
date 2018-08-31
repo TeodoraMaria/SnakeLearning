@@ -1,11 +1,12 @@
 #pragma once
-#include "Controller.h"
-#include "GameWindow.h"
 #include <memory>
+
+
 
 namespace GameView
 {
-
+   class GameWindow;
+   class Controller;
 
 class EventHandler
 {
@@ -15,8 +16,8 @@ public:
 
    void processInput();
 
-   void addGameWindow(GameWindow& gameWindow);
-   void addGameController(Controller& controller);
+   void addGameWindow(GameWindow* gameWindow);
+   void addGameController(Controller* controller);
 
 private:
    GameWindow* m_gameWindow;

@@ -2,10 +2,12 @@
 
 #include "Board.h"
 #include "Controller.h"
+
 #include <SDL.h>
 
 namespace GameView
 {
+   class EventHandler;
 
    enum class EGameState
    {
@@ -38,7 +40,9 @@ namespace GameView
 
       Board* m_board;
 
-      Controller m_controller;
+      Controller* m_controller;
+
+     EventHandler* m_eventHandler;
 
    };
 }
