@@ -9,11 +9,11 @@ public:
 	static const Coordinate DOWN;
 	static const Coordinate LEFT;
 
-	Coordinate(const size_t& x = 0, const size_t& y = 0);
+	Coordinate(const int& x = 0, const int& y = 0);
 	~Coordinate();
 
-	size_t GetX() const;
-	size_t GetY() const;
+	int GetX() const;
+	int GetY() const;
 
 	Coordinate operator + (const Coordinate& coord) const;
 	Coordinate operator - (const Coordinate& coord) const;
@@ -22,9 +22,9 @@ public:
 	Coordinate Rotate90Left() const;
 	Coordinate Rotate90Right() const;
 
-	void GenerateCoordinate(const size_t& width, const size_t& length);
+	void GenerateCoordinate(const int& width, const int& length);
 
 private:
-	size_t m_x;
-	size_t m_y;
+	int m_x;
+	int m_y;
 };

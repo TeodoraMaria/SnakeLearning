@@ -5,7 +5,7 @@ const Coordinate Coordinate::RIGHT(0, 1);
 const Coordinate Coordinate::DOWN(1, 0);
 const Coordinate Coordinate::LEFT(0, -1);
 
-Coordinate::Coordinate(const size_t & x, const size_t & y): m_x(x),m_y(y)
+Coordinate::Coordinate(const int & x, const int & y): m_x(x),m_y(y)
 {
 }
 
@@ -13,12 +13,12 @@ Coordinate::~Coordinate()
 {
 }
 
-size_t Coordinate::GetX() const
+int Coordinate::GetX() const
 {
 	return m_x;
 }
 
-size_t Coordinate::GetY() const
+int Coordinate::GetY() const
 {
 	return m_y;
 }
@@ -50,7 +50,7 @@ Coordinate Coordinate::Rotate90Right() const
 	return Coordinate(m_y, -m_x);
 }
 
-void Coordinate::GenerateCoordinate(const size_t& width, const size_t& length)
+void Coordinate::GenerateCoordinate(const int& width, const int& length)
 {
 	m_x = rand() % width;
 	m_y = rand() % length;
