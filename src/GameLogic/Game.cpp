@@ -116,6 +116,7 @@ void Game::CheckIfGameOver()
 		}
 		std::cout << std::endl;
 	}
+	
 #else
 	void Game::PrintBoard()
 	{
@@ -141,6 +142,20 @@ void Game::CheckIfGameOver()
 		std::cout << std::endl;
 	}
 #endif
+
+void Game::DisplayScoreBoard()
+{ 
+	std::sort(m_snakes.begin(), m_snakes.end(),
+		[](const auto& snakeOne, const auto& snakeTwo)
+		{
+		return snakeOne.GetScore() > snakeTwo.GetScore();
+		});
+	std::cout << "\nSCORE BOARD:\n";
+	for (const auto& snake : m_snakes) 
+	{
+		std::cout <<std::setw(4)<< snake.GetSnakeNumber() << " - " << snake.GetScore()<<std::endl;
+	}
+}
 
 int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 {
@@ -191,6 +206,8 @@ void Game::RunRound()
 	std::random_shuffle(m_players.begin(), m_players.end());
 	for (auto player : m_players)
 	{
+		if (player == nullptr)
+			return;
 		const auto chosenMove =
 			player->GetNextAction(GetGameState());
 		
@@ -198,6 +215,7 @@ void Game::RunRound()
 		MoveSnake(snakeNumber, chosenMove);
 	}
 	RestockFood();
+	//Sleep(200);
 }
 
 void Game::Play()
@@ -207,6 +225,8 @@ void Game::Play()
 		RunRound();
 		CheckIfGameOver();
 	}
+
+	DisplayScoreBoard();
 }
 
 void Game::InitFood() 

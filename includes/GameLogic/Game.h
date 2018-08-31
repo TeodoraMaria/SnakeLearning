@@ -20,6 +20,7 @@ public:
 	void Play();
 	
 	void PrintBoard();
+	void DisplayScoreBoard();
 	int MoveSnake(const size_t& snakeNumber, const SnakeMove& move);
 
 private:
