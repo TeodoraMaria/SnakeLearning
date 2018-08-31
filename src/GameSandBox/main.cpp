@@ -11,10 +11,10 @@ int main()
 
 	std::vector<IPlayerPtr> players(
 	{
-		IPlayerPtr(new AI::HardCoded::SingleBot()),
-		IPlayerPtr(new AI::HardCoded::SingleBot()),
-		IPlayerPtr(new AI::HardCoded::SingleBot()),
-		IPlayerPtr(new AI::HardCoded::SingleBot()),
+		std::make_shared<AI::HardCoded::SingleBot>(),
+		std::make_shared<HumanPlayer>()
+//		IPlayerPtr(new AI::HardCoded::SingleBot()),
+//		IPlayerPtr(new AI::HardCoded::SingleBot()),
 	});
 	
 	const GameOptions gameOptions(GameBoardType::BOX, 10, 20, players.size(),3);

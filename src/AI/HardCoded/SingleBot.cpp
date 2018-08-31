@@ -25,28 +25,18 @@ Iter select_randomly(Iter start, Iter end) {
 ** The actual Bot implementation.
 */
 
-size_t SingleBot::GetSnakeNumber() const
-{
-	return m_snakeNb;
-}
-
-void SingleBot::SetSnakeNumber(const size_t& snakeNumber)
-{
-	m_snakeNb = snakeNumber;
-}
-
 SnakeMove SingleBot::GetNextAction(const GameState& gameState) const
 {
-	const auto& snake = gameState.GetSnake(GetSnakeNumber());
+	const Snake& snake = gameState.GetSnake(GetSnakeNumber());
 
-	const auto& board = gameState.GetGameBoard();
-	const auto& head = snake.GetSnakeHead();
+	const GameBoard& board = gameState.GetGameBoard();
+	const Coordinate& head = snake.GetSnakeHead();
 
-	const auto snakeOrientation = snake.GetOrientation();
-	const auto left = head + snakeOrientation.Rotate90Left();
-	const auto right = head + snakeOrientation.Rotate90Right();
-	const auto forward = head + snakeOrientation;
-	
+	const Coordinate snakeOrientation = snake.GetOrientation();
+	const Coordinate left = head + snakeOrientation.Rotate90Left();
+	const Coordinate right = head + snakeOrientation.Rotate90Right();
+	const Coordinate forward = head + snakeOrientation;
+
 	const auto isValidPos = [&](const Coordinate& coord)
 	{
 		return board[coord] == 0 || board[coord] == 1;

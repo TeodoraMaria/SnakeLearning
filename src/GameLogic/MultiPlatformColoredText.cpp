@@ -13,7 +13,7 @@
 	int getch()
 	{
 		int buf = 0;
-		struct termios old = { 0 };
+		struct termios old = { 0, 0};
 	
 		if(tcgetattr(0, &old) < 0)
 			perror("tcsetattr()");

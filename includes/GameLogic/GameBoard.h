@@ -4,7 +4,14 @@
 #include <vector>
 #include <list>
 
-typedef std::vector<std::vector<int>> Board;
+enum BoardPart
+{
+	EMPTY = 0,
+	WALL = 1,
+	FOOD = 2,
+	
+	START_OF_SNAKE_INDEXES = 42
+};
 
 class GameBoard
 {
@@ -33,6 +40,8 @@ public:
 	Coordinate GenerateCoordinate() const;
 
 private:
+	typedef std::vector<std::vector<int>> Board;
+	
 	void AddLimitsToBoard();
 	
 	Board m_board;

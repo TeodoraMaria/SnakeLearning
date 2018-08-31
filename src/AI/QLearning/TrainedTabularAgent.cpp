@@ -16,16 +16,6 @@ TrainedTabularAgent::TrainedTabularAgent(
 ** Getters & setters.
 */
 
-size_t TrainedTabularAgent::GetSnakeNumber() const
-{
-	return m_snakeNb;
-}
-
-void TrainedTabularAgent::SetSnakeNumber(const size_t& snakeNumber)
-{
-	m_snakeNb = snakeNumber;
-}
-
 SnakeMove TrainedTabularAgent::GetNextAction(const GameState& gameState) const
 {
 	std::random_device randomDevice;

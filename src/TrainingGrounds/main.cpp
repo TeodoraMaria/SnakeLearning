@@ -13,16 +13,16 @@ int main()
 	auto trainer = AI::QLearning::TabularTrainer();
 	auto trainedAgent = trainer.Train();
 
-	std::vector<IPlayerPtr> players(
-	{
-		IPlayerPtr(trainedAgent),
-		IPlayerPtr(new AI::HardCoded::SingleBot()),
-	});
-	
-	const GameOptions gameOptions(GameBoardType::BOX, 10, 20, players.size());
-	Game game(gameOptions, players);
-	
-	game.InitGame();
-	game.Play();
+//	std::vector<IPlayerPtr> players(
+//	{
+//		IPlayerPtr(trainedAgent),
+//		IPlayerPtr(new AI::HardCoded::SingleBot()),
+//	});
+//
+//	const GameOptions gameOptions(GameBoardType::BOX, 10, 20, players.size());
+//	Game game(gameOptions, players);
+//
+//	game.InitGame();
+//	game.Play();
 	return 0;
 }

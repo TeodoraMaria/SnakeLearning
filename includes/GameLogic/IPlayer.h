@@ -7,9 +7,13 @@
 class IPlayer
 {
 public:
-	virtual size_t GetSnakeNumber() const = 0;
-	virtual void SetSnakeNumber(const size_t& snakeNumber) = 0;
+	int GetSnakeNumber() const;
+	void SetSnakeNumber(int snakeNumber);
+	
 	virtual SnakeMove GetNextAction(const GameState& gameState) const = 0;
+
+private:
+	int m_snakeNumber;
 };
 
 typedef std::shared_ptr<IPlayer> IPlayerPtr;

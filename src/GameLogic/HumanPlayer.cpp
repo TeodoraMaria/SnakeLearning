@@ -11,34 +11,22 @@ HumanPlayer::~HumanPlayer()
 {
 }
 
-size_t HumanPlayer::GetSnakeNumber() const
-{
-	return m_snakeNumber;
-}
-
-void HumanPlayer::SetSnakeNumber(const size_t & snakeNumber)
-{
-	m_snakeNumber = snakeNumber;
-}
-
-
-#define KEY_UP 'w'
-#define KEY_LEFT 'a'
-#define KEY_RIGHT 'd'
-#define KEY_DOWN 's'
+#define KEY_UP		'w'
+#define KEY_LEFT	'a'
+#define KEY_RIGHT	'd'
+#define KEY_DOWN	's'
 
 SnakeMove HumanPlayer::GetNextAction(const GameState& gameState) const
 {
 	SnakeMove move = GetUserInput();
 
 	TranslateMoveToSnakeView(move, gameState);
-	
-	return move!=SnakeMove::DOWN?move:SnakeMove::FORWARD;
+	return move != SnakeMove::DOWN ? move:SnakeMove::FORWARD;
 }
 
 SnakeMove HumanPlayer::GetUserInput() const
 {
-	std::cout << "Action for snake " << m_snakeNumber << std::endl;
+	std::cout << "Action for snake " << GetSnakeNumber() << std::endl;
 	int action = MultiPlatform::getch();
 	switch (action) {
 	case KEY_UP:

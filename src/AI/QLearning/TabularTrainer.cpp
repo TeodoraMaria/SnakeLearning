@@ -12,9 +12,12 @@
 
 using namespace AI::QLearning;
 
-static bool approx(const double a, const double b)
+static bool approx(
+	const double a,
+	const double b,
+	const double tolerance = 0.00001)
 {
-	return std::abs(a - b) < std::numeric_limits<double>::epsilon();
+	return std::abs(a - b) < tolerance;
 }
 
 static size_t countElementsWithValue(
@@ -54,14 +57,14 @@ int TabularTrainer::GetAction(
 
 	// - Get the index from the max elements.
 	auto maxActionIndex = 0;
-	if (maxElementsCount == 1)
-		maxActionIndex = 0;
-	else
-	{
-		auto maxActionDistrib = std::uniform_int_distribution<int>(
-			0, maxElementsCount - 1);
-		maxActionIndex = maxActionDistrib(merseneTwister);
-	}
+//	if (maxElementsCount == 1)
+//		maxActionIndex = 0;
+//	else
+//	{
+//		auto maxActionDistrib = std::uniform_int_distribution<int>(
+//			0, maxElementsCount - 1);
+//		maxActionIndex = maxActionDistrib(merseneTwister);
+//	}
 
 	// - Get the maxActionIndex'th max element.
 	for (auto i = 0u; i < qActions.size(); i++)
@@ -90,8 +93,8 @@ static void printTable(std::vector<std::vector<double>>& table)
 		for (auto j = 0u; j < table[i].size(); j++)
 		{
 			std::cout
-				<< std::setw(18) << std::fixed
-				<< std::setprecision(5) << table[i][j];
+				<< std::setw(22) << std::fixed
+				<< std::setprecision(16) << table[i][j];
 		}
 		std::cout << std::endl;
 	}
@@ -101,9 +104,9 @@ IPlayer* TabularTrainer::Train()
 {
 	auto env = GymEnv::SingleSnakeRelativeView();
 	
-	auto qTable = std::vector<std::vector<double>>();
-	for (auto i = 0u; i < env.GetNumbOfObservations(); i++)
-		qTable.push_back(std::vector<double>(env.actions.size()));
+	auto qTable = std::vector<std::vector<double>>(env.GetNumbOfObservations());
+	for (auto i = 0u; i < qTable.size(); i++)
+		qTable[i] = std::vector<double>(env.actions.size());
 	assert(qTable.size() == env.GetNumbOfObservations());
 	
 	for (auto& line : qTable)
@@ -115,14 +118,14 @@ IPlayer* TabularTrainer::Train()
 	}
 	
 	// Set hyperparameters.
-	const auto learningRate = 0.5;
+	const auto learningRate = 0.1;
 	const auto qDiscountFactor = 0.99;
 	const auto numEpisodes = 1000;
-	auto maxNumSteps = 30000;
+	auto maxNumSteps = 10000;
 	
 	const auto maxRandActionChance = 0.9;
 	const auto minRandActionChance = 0.00;
-	const auto randActionDecayFactor = 1.0 / 1000;
+	const auto randActionDecayFactor = 1.0 / 8000;
 	auto randomActionChance = maxRandActionChance;
 	
 	std::random_device randomDevice;
@@ -131,7 +134,6 @@ IPlayer* TabularTrainer::Train()
 	auto dieStates = std::map<int, int>();
 	
 	// Start training.
-	auto totalNbOfSteps = 0;
 	for (auto episode = 0; episode < numEpisodes; episode++)
 	{
 		env.Reset();
@@ -152,19 +154,27 @@ IPlayer* TabularTrainer::Train()
 			const auto stepResult = env.Step(action);
 			const auto newState = env.GetState();
 			
-			const auto currentActionQ = qTable[state][actionIndex];
-			const auto bestNextQ = *std::max(
-				qTable[newState].begin(),
-				qTable[newState].end());
-			
 			double reward = 0;
 			if (stepResult.reward > 0)
 				reward += 1;
 			else if (stepResult.reward < 0)
 				reward -= 1;
 			else
-				reward -= 0.1;
+				reward -= 0.005;
 			
+			double bestNextQ;
+			if (stepResult.isDone)
+			{
+				bestNextQ = 0;
+			}
+			else
+			{
+				bestNextQ = *std::max_element(
+					qTable[newState].begin(),
+					qTable[newState].end());
+			}
+
+			const auto currentActionQ = qTable[state][actionIndex];
 			qTable[state][actionIndex] +=
 				learningRate *
 				(reward + qDiscountFactor * bestNextQ - currentActionQ);
@@ -192,7 +202,6 @@ IPlayer* TabularTrainer::Train()
 				randomActionChance,
 				minRandActionChance,
 				randActionDecayFactor);
-			totalNbOfSteps++;
 		}
 		
 		printf(

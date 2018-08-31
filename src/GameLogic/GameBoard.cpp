@@ -78,9 +78,9 @@ bool GameBoard::CheckCoord(const Coordinate& coord) const
 
 bool GameBoard::CoordIsBounded(const Coordinate& coord) const
 {
-	if (coord.GetX() >= m_width)
+	if (coord.GetX() < 0 || coord.GetX() >= static_cast<int>(m_width))
 		return false;
-	if (coord.GetY() >= m_length)
+	if (coord.GetY() < 0 || coord.GetY() >= static_cast<int>(m_length))
 		return false;
 	return true;
 }
