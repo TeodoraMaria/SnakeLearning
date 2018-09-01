@@ -1,5 +1,6 @@
 #include "TrainedTabularAgent.hpp"
 #include "TabularTrainer.hpp"
+#include "ActionPickingUtils.h"
 
 using namespace AI::QLearning::TrainedAgent;
 
@@ -25,7 +26,7 @@ SnakeMove TrainedTabularAgent::GetNextAction(const GameState& gameState) const
 		gameState,
 		GetSnakeNumber());
 	
-	const auto actionIndex = TabularTrainer::GetAction(
+	const auto actionIndex = QLearning::Utils::PickAction(
 		m_qBrains[state],
 		0,
 		merseneTwister);

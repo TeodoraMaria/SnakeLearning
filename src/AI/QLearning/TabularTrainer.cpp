@@ -1,7 +1,10 @@
 #include "TabularTrainer.hpp"
 #include "TrainedTabularAgent.hpp"
+#include "ActionPickingUtils.h"
 #include "GymEnv/SingleSnakeRelativeView.hpp"
 #include "GameLogic/GameUtils.h"
+#include "Utils/MathUtils.h"
+#include "Utils/PrintUtils.h"
 #include <vector>
 #include <random>
 #include <cmath>
@@ -12,92 +15,8 @@
 
 using namespace AI::QLearning;
 
-static bool approx(
-	const double a,
-	const double b,
-	const double tolerance = 0.00001)
+TabularTrainer::TabularTrainer() : m_merseneTwister(std::random_device()())
 {
-	return std::abs(a - b) < tolerance;
-}
-
-static size_t countElementsWithValue(
-	const std::vector<double>& tab,
-	const double targetValue)
-{
-	return std::count_if(
-		tab.begin(),
-		tab.end(),
-		[&](const auto& value)
-		{
-			return approx(value, targetValue);
-		});
-}
-
-int TabularTrainer::GetAction(
-	const std::vector<double>& qActions,
-	const double noise,
-	std::mt19937& merseneTwister)
-{
-	auto chanceDistrib = std::uniform_real_distribution<double>(0, 1.0);
-	
-	// Random action.
-	if (chanceDistrib(merseneTwister) < noise)
-	{
-		auto actionDistrib = std::uniform_int_distribution<int>(
-			0,
-			qActions.size() - 1);
-		
-		return actionDistrib(merseneTwister);
-	}
-	
-	// If multiple actions have the same max quality, choose a random one from
-	// those.
-	const auto maxActionQ = *std::max_element(qActions.begin(), qActions.end());
-	const auto maxElementsCount = countElementsWithValue(qActions, maxActionQ);
-
-	// - Get the index from the max elements.
-	auto maxActionIndex = 0;
-//	if (maxElementsCount == 1)
-//		maxActionIndex = 0;
-//	else
-//	{
-//		auto maxActionDistrib = std::uniform_int_distribution<int>(
-//			0, maxElementsCount - 1);
-//		maxActionIndex = maxActionDistrib(merseneTwister);
-//	}
-
-	// - Get the maxActionIndex'th max element.
-	for (auto i = 0u; i < qActions.size(); i++)
-	{
-		if (approx(qActions[i], maxActionQ))
-		{
-			if (maxActionIndex == 0)
-				return i;
-			
-			maxActionIndex--;
-		}
-	}
-	throw;
-}
-
-static double lerp(const double a, const double b, const double scalar)
-{
-	return a + (b - a) * scalar;
-}
-
-static void printTable(std::vector<std::vector<double>>& table)
-{
-	for (auto i = 0u; i < table.size(); i++)
-	{
-		std::cout << std::setw(5) << i << ") ";
-		for (auto j = 0u; j < table[i].size(); j++)
-		{
-			std::cout
-				<< std::setw(22) << std::fixed
-				<< std::setprecision(16) << table[i][j];
-		}
-		std::cout << std::endl;
-	}
 }
 
 IPlayer* TabularTrainer::Train()
@@ -117,20 +36,7 @@ IPlayer* TabularTrainer::Train()
 		}
 	}
 	
-	// Set hyperparameters.
-	const auto learningRate = 0.1;
-	const auto qDiscountFactor = 0.99;
-	const auto numEpisodes = 1000;
-	auto maxNumSteps = 10000;
-	
-	const auto maxRandActionChance = 0.9;
-	const auto minRandActionChance = 0.00;
-	const auto randActionDecayFactor = 1.0 / 8000;
 	auto randomActionChance = maxRandActionChance;
-	
-	std::random_device randomDevice;
-	std::mt19937 merseneTwister(randomDevice());
-
 	auto dieStates = std::map<int, int>();
 	
 	// Start training.
@@ -138,17 +44,16 @@ IPlayer* TabularTrainer::Train()
 	{
 		env.Reset();
 		auto state = env.GetState();
-//		env.Render();
 		
 		auto episodeReward = 0.0;
 		auto prevState = 0;
 		for (auto step = 0; step < maxNumSteps; step++)
 		{
 			// Get action with a random noise.
-			const auto actionIndex = GetAction(
+			const auto actionIndex = QLearning::Utils::PickAction(
 				qTable[state],
 				randomActionChance,
-				merseneTwister);
+				m_merseneTwister);
 			
 			const auto action = env.actions[actionIndex];
 			const auto stepResult = env.Step(action);
@@ -192,13 +97,8 @@ IPlayer* TabularTrainer::Train()
 					dieStates[prevState]++;
 				break;
 			}
-//			if (episodeReward < 0.1 && episodeReward > -0.1 && step > 30)
-//			{
-//				std::cout << "Forced kill!" << std::endl;
-//				break;
-//			}
 			
-			randomActionChance = lerp(
+			randomActionChance = ::Utils::Math::Lerp(
 				randomActionChance,
 				minRandActionChance,
 				randActionDecayFactor);
@@ -210,13 +110,8 @@ IPlayer* TabularTrainer::Train()
 			episode,
 			episodeReward,
 			randomActionChance);
-		
-//		if (episode % 100 == 0)
-//		{
-//			printTable(qTable);
-//		}
 	}
-	printTable(qTable);
+	::Utils::Print::PrintTable(qTable);
 	
 	std::cout << "Die states: " << std::endl;
 	for (const auto& pair : dieStates)
