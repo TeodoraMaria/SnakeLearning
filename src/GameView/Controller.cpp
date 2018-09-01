@@ -13,12 +13,10 @@ namespace GameView
 
 Controller::Controller()
 {
-   
-  // m_players.resize(1);
-
-  // m_players.push_back(std::make_shared<HumanPlayer2>());
-
-   m_players = std::vector<IPlayerPtr>({std::make_shared<HumanPlayer2>()});
+   m_players = std::vector<IPlayerPtr>(
+   {
+      std::make_shared<HumanPlayer2>()
+   });
 
    std::vector<IPlayerPtr> players(
    {
@@ -28,10 +26,9 @@ Controller::Controller()
    });
    
    const GameOptions gameOptions(GameBoardType::BOX, 20, 20, m_players.size(), 3);
-   m_game=new Game(gameOptions, m_players);
+  // m_game=new Game(gameOptions, m_players);
+   m_game = std::make_shared<Game>(Game(gameOptions, m_players));
    m_game->InitGame();
-
-     // m_playersDirection = std::vector<Utils::InputDirection>(m_players.size());
 }
 
 Controller::~Controller()
@@ -88,34 +85,21 @@ void Controller::updateBoard(Board* board)
    for (int i = 0; i < gameBoard.GetBoardLength(); i++) {
       for (int j = 0; j < gameBoard.GetBoardWidth(); j++) {
          board->setCellAt(i, j, gameBoard[Coordinate(i, j)]);
-         }
       }
+   }
 }
 
 void Controller::sendActions()
 {
-   
    m_currentTime = SDL_GetTicks();
    if (m_currentTime > m_lastTime + 250) {
       GameState state = m_game->GetGameState();
       const auto chosenMove = m_players[0]->GetNextAction(state);
+      
 
       const auto snakeNumber = m_players[0]->GetSnakeNumber();
       m_game->MoveSnake(snakeNumber, chosenMove);
       m_lastTime = m_currentTime;
    }
 }
-
-void Controller::setPlayerDirection()
-{
-   m_currentTime = SDL_GetTicks();
-   if (m_currentTime > m_lastTime + 1000) {
-      m_lastTime = m_currentTime;
-
-      
-
-   }
-
-}
-
 }

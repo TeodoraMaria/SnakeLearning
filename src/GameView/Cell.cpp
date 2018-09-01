@@ -13,18 +13,18 @@ namespace GameView
 
    }
 
-   Cell::Cell(double x, double y, double width, double height, int value) :m_x(x), m_y(y), m_width(width), m_height(height), m_value(value)
+   Cell::Cell(double x, double y, double width, double height, int value) 
+      :m_x(x), m_y(y), m_width(width), m_height(height), m_value(value)
    {
 
    }
 
-
    Cell::~Cell()
    {}
 
-   void Cell::draw()
+   void Cell::draw() const
    {
-      setGlColor2();
+      setGlColor();
 
       glBegin(GL_TRIANGLES);
 
@@ -38,25 +38,25 @@ namespace GameView
       glEnd();
    }
 
-   void Cell::drawUpperLeftCorner()
+   void Cell::drawUpperLeftCorner() const
    {}
 
-   void Cell::drawUpperRightCorner()
+   void Cell::drawUpperRightCorner() const
    {}
 
-   void Cell::drawLowerRightCorner()
+   void Cell::drawLowerRightCorner() const
    {}
 
-   void Cell::drawlowerLeftCorner()
+   void Cell::drawlowerLeftCorner() const
    {}
 
-   void Cell::drawSnakeHead()
+   void Cell::drawSnakeHead() const
    {}
 
-   void Cell::drawSnakeBody()
+   void Cell::drawSnakeBody() const
    {}
 
-   void Cell::drawFood()
+   void Cell::drawFood() const
    {}
 
    void Cell::setValue(int value)
@@ -64,41 +64,19 @@ namespace GameView
       m_value = value;
    }
 
-   void Cell::printConsole()
+   void Cell::printConsole() const
    {
       std::cout << m_x << " " << m_y << " " << m_height << " " << m_width << std::endl;
    }
 
-   void Cell::setGLColor(Utils::Color color)
-   {
-      switch (color) {
-         case Utils::Color::RED: {
-            glColor3f(1.0, 0.0, 0.0);
-            break;
-         }
-         case Utils::Color::BLUE: {
-            glColor3f(0.0, 0.0, 1.0);
-            break;
-         }
-         case Utils::Color::GREEN: {
-            glColor3f(0.0, 1.0, 0.0);
-            break;
-         }
-         default: {
-            glColor3f(0.0, 0.0, 0.0);
-            break;
-         }
-      }
-   }
-
-   void Cell::setGlColor2()
+   void Cell::setGlColor() const
    {
       switch (m_value) {
          case -1: {
             glColor3f(1.0, 0.0, 0.0);
             break;
          }
-         case 11: {
+         case 1: {
             glColor3f(0.0, 0.0, 1.0);
             break;
          }

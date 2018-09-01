@@ -23,7 +23,6 @@ private:
    void RotateLeft(SnakeMove& move) const;
 
    Utils::InputDirection m_direction;
-
 };
 
 }
