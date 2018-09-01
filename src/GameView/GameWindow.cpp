@@ -88,7 +88,9 @@ namespace GameView
    void GameWindow::processInput()
    {
       m_eventHandler->processInput();
+      m_controller->sendActions();
       m_controller->updateBoard(m_board);
+
    }
 
    void GameWindow::gameLoop()
