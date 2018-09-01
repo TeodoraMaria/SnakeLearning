@@ -28,6 +28,7 @@ namespace GameView
 
       glBegin(GL_TRIANGLES);
 
+
       glVertex2d(m_x, m_y);
       glVertex2d(m_x + m_width, m_y);
       glVertex2d(m_x, m_y + m_height);
@@ -35,6 +36,7 @@ namespace GameView
       glVertex2d(m_x + m_width, m_y);
       glVertex2d(m_x, m_y + m_height);
       glVertex2d(m_x + m_width, m_y + m_height);
+
       glEnd();
    }
 

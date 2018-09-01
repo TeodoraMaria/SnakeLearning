@@ -23,8 +23,9 @@ public:
    ~Controller();
 
    void processInput(const SDL_Event& keyPressed);
-   void updateBoard(Board* board);
-   void setBoard(Board* board);
+   void updateBoard();
+   void addBoard(Board* board);
+
    bool sendActions();
 
 private:
@@ -33,7 +34,7 @@ private:
    std::vector<IPlayerPtr> m_players;
 
    std::shared_ptr<Game> m_game;
-   std::shared_ptr<EventHandler> m_eventHandler;
+   std::shared_ptr<Board> m_board;
 
    size_t m_lastTime = 0;
    size_t m_currentTime;

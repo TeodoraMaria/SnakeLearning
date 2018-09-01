@@ -25,6 +25,9 @@ namespace GameView
 
       m_controller = std::make_shared<Controller>(Controller());
       m_eventHandler->addGameController(m_controller.get());
+
+      m_board = std::make_shared<Board>(Board(m_screenWidth, m_screenWidth));
+      m_controller->addBoard(m_board.get());
    }
 
    GameWindow::~GameWindow()
@@ -73,15 +76,14 @@ namespace GameView
       glOrtho(0.0f, m_screenWidth, m_screenHeight, 0.0f, 0.0f, 1.0f);
       glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-      m_board = std::make_shared<Board>(Board(m_screenWidth, m_screenWidth));
-      m_controller->setBoard(m_board.get());
+
    }
 
    void GameWindow::processInput()
    {
       m_eventHandler->processInput();
       if (m_controller->sendActions()) {
-      m_controller->updateBoard(m_board.get());
+      m_controller->updateBoard();
       }
    }
 
