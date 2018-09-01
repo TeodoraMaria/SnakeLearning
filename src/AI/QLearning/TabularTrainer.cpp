@@ -20,10 +20,52 @@ TabularTrainer::TabularTrainer() : m_merseneTwister(std::random_device()())
 {
 }
 
+void RunEpisode()
+{
+	// Get action with a random noise.
+//	const auto actionIndex = QLearning::Utils::PickAction(
+//		m_qtable[state],
+//		randomActionChance,
+//		m_merseneTwister);
+//
+//	const auto stepResult = env.Step(env.actions[actionIndex]);
+//	const auto newState = env.GetState();
+//	const auto reward = ComputeStepReward(stepResult);
+//
+//	UpdateActionQuality(
+//		state,
+//		newState,
+//		actionIndex,
+//		reward,
+//		stepResult.isDone);
+//
+//	episodeReward += reward;
+//	prevState = state;
+//	state = newState;
+//
+//	// Render the env on the last episode.
+//	if (episode == numEpisodes - 1)
+//		env.Render();
+//
+//	// Track die states.
+//	if (stepResult.isDone)
+//	{
+//		if (episode > numEpisodes * 0.95)
+//			dieStates[prevState]++;
+//		break;
+//	}
+//
+//	// Update random action chance.
+//	randomActionChance = ::Utils::Math::Lerp(
+//		randomActionChance,
+//		minRandActionChance,
+//		randActionDecayFactor);
+}
+
 IPlayer* TabularTrainer::Train()
 {
 	auto env = GymEnv::SingleSnakeRelativeView();
-	auto qTable = ::Utils::Matrix::MakeMatrix(
+	m_qtable = ::Utils::Matrix::MakeMatrix(
 		env.GetNumbOfObservations(),
 		env.actions.size(),
 		0 // InitValue
@@ -44,46 +86,30 @@ IPlayer* TabularTrainer::Train()
 		{
 			// Get action with a random noise.
 			const auto actionIndex = QLearning::Utils::PickAction(
-				qTable[state],
+				m_qtable[state],
 				randomActionChance,
 				m_merseneTwister);
 			
-			const auto action = env.actions[actionIndex];
-			const auto stepResult = env.Step(action);
+			const auto stepResult = env.Step(env.actions[actionIndex]);
 			const auto newState = env.GetState();
+			const auto reward = ComputeStepReward(stepResult);
 			
-			double reward = 0;
-			if (stepResult.reward > 0)
-				reward += 1;
-			else if (stepResult.reward < 0)
-				reward -= 1;
-			else
-				reward -= 0.005;
-			
-			double bestNextQ;
-			if (stepResult.isDone)
-			{
-				bestNextQ = 0;
-			}
-			else
-			{
-				bestNextQ = *std::max_element(
-					qTable[newState].begin(),
-					qTable[newState].end());
-			}
-
-			const auto currentActionQ = qTable[state][actionIndex];
-			qTable[state][actionIndex] +=
-				learningRate *
-				(reward + qDiscountFactor * bestNextQ - currentActionQ);
+			UpdateActionQuality(
+				state,
+				newState,
+				actionIndex,
+				reward,
+				stepResult.isDone);
 			
 			episodeReward += reward;
 			prevState = state;
 			state = newState;
 			
+			// Render the env on the last episode.
 			if (episode == numEpisodes - 1)
 				env.Render();
 			
+			// Track die states.
 			if (stepResult.isDone)
 			{
 				if (episode > numEpisodes * 0.95)
@@ -91,6 +117,7 @@ IPlayer* TabularTrainer::Train()
 				break;
 			}
 			
+			// Update random action chance.
 			randomActionChance = ::Utils::Math::Lerp(
 				randomActionChance,
 				minRandActionChance,
@@ -104,15 +131,56 @@ IPlayer* TabularTrainer::Train()
 			episodeReward,
 			randomActionChance);
 	}
-	::Utils::Print::PrintTable(qTable);
-	
+	::Utils::Print::PrintTable(m_qtable);
+
 	std::cout << "Die states: " << std::endl;
 	for (const auto& pair : dieStates)
-	{
 		std::cout << pair.first << ") " << pair.second << std::endl;
-	}
 	
 	return new AI::QLearning::TrainedAgent::TrainedTabularAgent(
 		env.actions,
-		qTable);
+		m_qtable);
+}
+
+/*
+** Private methods.
+*/
+
+double TabularTrainer::ComputeStepReward(
+	const GymEnv::StepResult& stepResult) const
+{
+	auto reward = stepReward;
+	
+	if (stepResult.reward > 0)
+		reward += foodReward;
+	else if (stepResult.reward < 0)
+		reward += dieReward;
+	
+	return reward;
+}
+
+double TabularTrainer::UpdateActionQuality(
+	const int currentState,
+	const int newState,
+	const int actionIndex,
+	const double actionReward,
+	const bool isDone)
+{
+	double bestNextQ;
+	
+	if (isDone)
+		bestNextQ = 0;
+	else
+	{
+		bestNextQ = *std::max_element(
+			m_qtable[newState].begin(),
+			m_qtable[newState].end());
+	}
+
+	const auto currentActionQ = m_qtable[currentState][actionIndex];
+	m_qtable[currentState][actionIndex] +=
+		learningRate *
+		(actionReward + qDiscountFactor * bestNextQ - currentActionQ);
+	
+	return m_qtable[currentState][actionIndex];
 }
