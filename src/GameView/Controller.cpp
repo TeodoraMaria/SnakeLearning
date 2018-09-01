@@ -69,13 +69,16 @@ void Controller::updateBoard()
 
    for (int i = 0; i < gameBoard.GetBoardLength(); i++) {
       for (int j = 0; j < gameBoard.GetBoardWidth(); j++) {
-         m_board->setCellAt(i, j, gameBoard[Coordinate(i, j)]);
+
+         int boardValue = gameBoard[Coordinate(i, j)];
+
+         m_board->setCellValueAt(i, j, boardValue);
       }
    }
 
    for (Snake snake : snakes) {
       for (Coordinate coord : snake.GetSnakeBody()) {
-         m_board->setCellAt(coord.GetX(), coord.GetY(), snake.GetSnakeNumber());
+         m_board->setCellValueAt(coord.GetX(), coord.GetY(), snake.GetSnakeNumber());
       }
    }
 }

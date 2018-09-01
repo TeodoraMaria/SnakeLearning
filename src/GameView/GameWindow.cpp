@@ -74,7 +74,7 @@ namespace GameView
       glMatrixMode(GL_PROJECTION);
       glLoadIdentity();
       glOrtho(0.0f, m_screenWidth, m_screenHeight, 0.0f, 0.0f, 1.0f);
-      glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+      glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
 
 
    }

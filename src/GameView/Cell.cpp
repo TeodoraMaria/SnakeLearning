@@ -18,6 +18,11 @@ namespace GameView
    {
 
    }
+   Cell::Cell(double x, double y, double width, double height, int value,Utils::CellType celltype)
+      : m_x(x), m_y(y), m_width(width), m_height(height), m_value(value), m_cellType(celltype)
+   {
+
+   }
 
    Cell::~Cell()
    {}
@@ -28,7 +33,45 @@ namespace GameView
 
       glBegin(GL_TRIANGLES);
 
+      switch (m_cellType) {
+         case GameView::Utils::CellType::WALL:
+            break;
+         case GameView::Utils::CellType::FIELD:
+            break;
+         case GameView::Utils::CellType::FOOD1:
+            break;
+         case GameView::Utils::CellType::FOOD2:
+            break;
+         case GameView::Utils::CellType::FOOD3:
+            break;
+         case GameView::Utils::CellType::SNAKE_HEAD_N:
+            break;
+         case GameView::Utils::CellType::SNAKE_TAIL_N:
+            break;
+         case GameView::Utils::CellType::SNAKE_BODY_HORIZONTAL:
+            break;
+         case GameView::Utils::CellType::SNAKE_BODY_VERTICAL:
+            break;
+         case GameView::Utils::CellType::SNAKE_BODY_BENT_NE:
+            break;
+         case GameView::Utils::CellType::SNAKE_BODY_BENT_SE:
+            break;
+         case GameView::Utils::CellType::SNAKE_BODY_BENT_SW:
+            break;
+         case GameView::Utils::CellType::SNAKE_BODY_BENT_NW:
+            break;
+         default:
+            drawWall();
+            break;
+      }
 
+
+
+      glEnd();
+   }
+
+   void Cell::drawBlock()const
+   {
       glVertex2d(m_x, m_y);
       glVertex2d(m_x + m_width, m_y);
       glVertex2d(m_x, m_y + m_height);
@@ -36,20 +79,46 @@ namespace GameView
       glVertex2d(m_x + m_width, m_y);
       glVertex2d(m_x, m_y + m_height);
       glVertex2d(m_x + m_width, m_y + m_height);
-
-      glEnd();
    }
 
-   void Cell::drawUpperLeftCorner() const
+   void Cell::drawWall() const
+   {
+      double xA = 20;
+      double yA = 20;
+
+      double xB = 80;
+      double yB = 20;
+
+      double xC = 20;
+      double yC = 80;
+
+      double xD = 80;
+      double yD = 80;
+
+      xA = Utils::ruleOfThree(xA, m_width, 100);
+      xB = Utils::ruleOfThree(xB, m_width, 100);
+      xC = Utils::ruleOfThree(xC, m_width, 100);
+      xD = Utils::ruleOfThree(xD, m_width, 100);
+
+      yA = Utils::ruleOfThree(yA, m_height, 100);
+      yB = Utils::ruleOfThree(yB, m_height, 100);
+      yC = Utils::ruleOfThree(yC, m_height, 100);
+      yD = Utils::ruleOfThree(yD, m_height, 100);
+
+      glVertex2d(m_x + xA, m_y + yA);
+      glVertex2d(m_x + xB, m_y + yB);
+      glVertex2d(m_x + xC, m_y + yC);
+
+      glVertex2d(m_x + xB, m_y + yB);
+      glVertex2d(m_x + xC, m_y + yC);
+      glVertex2d(m_x + xD, m_y + yD);
+   
+   }
+
+   void Cell::drawField() const
    {}
 
-   void Cell::drawUpperRightCorner() const
-   {}
-
-   void Cell::drawLowerRightCorner() const
-   {}
-
-   void Cell::drawlowerLeftCorner() const
+   void Cell::drawSnakeTail() const
    {}
 
    void Cell::drawSnakeHead() const
@@ -64,6 +133,11 @@ namespace GameView
    void Cell::setValue(int value)
    {
       m_value = value;
+   }
+
+   void Cell::setCellType(Utils::CellType cellType)
+   {
+      m_cellType = cellType;
    }
 
    void Cell::printConsole() const

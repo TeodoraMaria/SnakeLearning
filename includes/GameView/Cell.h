@@ -4,28 +4,29 @@
 
 namespace GameView
 {
-
-
    class Cell
    {
    public:
       Cell();
       Cell(double x, double y, double width, double height, int value);
+      Cell(double x, double y, double width, double height, int value, Utils::CellType celltype);
       ~Cell();
 
       void draw() const;
 
-      void drawUpperLeftCorner() const;
-      void drawUpperRightCorner() const;
-      void drawLowerRightCorner() const;
-      void drawlowerLeftCorner() const;
+      void drawBlock() const;
 
+      void drawWall() const;
+      void drawField() const;
+      void drawFood() const;
+
+      void drawSnakeTail() const;
       void drawSnakeHead() const;
       void drawSnakeBody() const;
 
-      void drawFood() const;
       
       void setValue(int value);
+      void setCellType(Utils::CellType cellType);
 
       void printConsole() const;
 
@@ -38,5 +39,7 @@ namespace GameView
       double m_height = 0;
 
       int m_value = 0;
+
+      Utils::CellType m_cellType;
    };
 }
