@@ -1,18 +1,14 @@
 #include "TabularTrainer.hpp"
 #include "TrainedTabularAgent.hpp"
 #include "ActionPickingUtils.h"
+
 #include "GymEnv/SingleSnakeRelativeView.hpp"
-#include "GameLogic/GameUtils.h"
 #include "Utils/MathUtils.h"
 #include "Utils/PrintUtils.h"
 #include "Utils/MatrixUtils.h"
-#include <vector>
-#include <random>
-#include <cmath>
+
 #include <assert.h>
 #include <iostream>
-#include <iomanip>
-#include <map>
 
 using namespace AI::QLearning;
 
@@ -31,55 +27,19 @@ IPlayer* TabularTrainer::Train()
 		0 // InitValue
 	);
 	
-	auto randomActionChance = maxRandActionChance;
-	auto dieStates = std::map<int, int>();
+	auto trainSession = TrainSession();
 	
-	// Start training.
+	trainSession.randomActionChance = maxRandActionChance;
+	trainSession.dieStates = std::map<State, int>();
+	
+	// Train.
 	for (auto episode = 0; episode < numEpisodes; episode++)
-	{
-		m_env.Reset();
-		auto state = m_env.GetState();
-		
-		auto episodeReward = 0.0;
-		auto prevState = 0;
-		for (auto step = 0; step < maxNumSteps; step++)
-		{
-			const auto trainStepResult = RunStep(state, randomActionChance);
-			
-			episodeReward += trainStepResult.reward;
-			prevState = state;
-			state = trainStepResult.newState;
-			
-			// Render the env on the last episode.
-			if (episode == numEpisodes - 1)
-				m_env.Render();
-			
-			// Track die states.
-			if (trainStepResult.isDone)
-			{
-				if (episode > numEpisodes * 0.95)
-					dieStates[prevState]++;
-				break;
-			}
-			
-			// Update random action chance.
-			randomActionChance = ::Utils::Math::Lerp(
-				randomActionChance,
-				minRandActionChance,
-				randActionDecayFactor);
-		}
-		
-		printf(
-			"End of episode: %d with a reward of %.2f."
-			"Random action chance: %.2f\n",
-			episode,
-			episodeReward,
-			randomActionChance);
-	}
+		RunEpisode(trainSession);
+	
 	::Utils::Print::PrintTable(m_qtable);
-
+	
 	std::cout << "Die states: " << std::endl;
-	for (const auto& pair : dieStates)
+	for (const auto& pair : trainSession.dieStates)
 		std::cout << pair.first << ") " << pair.second << std::endl;
 	
 	return new AI::QLearning::TrainedAgent::TrainedTabularAgent(
@@ -90,6 +50,50 @@ IPlayer* TabularTrainer::Train()
 /*
 ** Private methods.
 */
+
+void TabularTrainer::RunEpisode(TrainSession& trainSession)
+{
+	m_env.Reset();
+	auto state = m_env.GetState();
+
+	auto episodeReward = 0.0;
+	auto prevState = 0;
+	for (auto step = 0; step < maxNumSteps; step++)
+	{
+		const auto trainStepResult = RunStep(
+			state,
+			trainSession.randomActionChance);
+		
+		episodeReward += trainStepResult.reward;
+		prevState = state;
+		state = trainStepResult.newState;
+		
+		// Render the env on the last episode.
+		if (trainSession.episodeIndex == numEpisodes - 1)
+			m_env.Render();
+		
+		// Track die states.
+		if (trainStepResult.isDone)
+		{
+			if (trainSession.episodeIndex > numEpisodes * 0.95)
+				trainSession.dieStates[prevState]++;
+			break;
+		}
+		
+		// Update random action chance.
+		trainSession.randomActionChance = ::Utils::Math::Lerp(
+			trainSession.randomActionChance,
+			minRandActionChance,
+			randActionDecayFactor);
+	}
+
+	printf(
+		"End of episode: %d with a reward of %.2f."
+		"Random action chance: %.2f\n",
+		trainSession.episodeIndex,
+		episodeReward,
+		trainSession.randomActionChance);
+}
 
 TabularTrainer::TrainStepResult TabularTrainer::RunStep(
 	const State currentState,

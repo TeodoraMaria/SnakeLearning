@@ -5,6 +5,7 @@
 #include "QTable.h"
 #include <cstddef>
 #include <random>
+#include <map>
 
 namespace AI{ namespace QLearning
 {
@@ -16,6 +17,8 @@ namespace AI{ namespace QLearning
 	
 	private:
 		typedef int State;
+		
+		struct TrainSession;
 		struct TrainStepResult;
 	
 		const double learningRate = 0.1;
@@ -32,6 +35,7 @@ namespace AI{ namespace QLearning
 		const double dieReward = -1;
 		const double stepReward = -0.005;
 		
+		void RunEpisode(TrainSession& trainSession);
 		TrainStepResult RunStep(
 			State currentState,
 			double randomActionChance);
@@ -47,6 +51,13 @@ namespace AI{ namespace QLearning
 		std::mt19937 m_merseneTwister;
 		QTable m_qtable;
 		GymEnv::SingleSnakeRelativeView m_env;
+	};
+	
+	struct TabularTrainer::TrainSession
+	{
+		int episodeIndex;
+		double randomActionChance;
+		std::map<State, int> dieStates;
 	};
 	
 	struct TabularTrainer::TrainStepResult
