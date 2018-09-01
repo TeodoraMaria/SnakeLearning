@@ -1,11 +1,12 @@
 #pragma once
+#include <time.h>
 
 #include "GameWindow.h"
    int main(int argc, char** argv)
    {
-      SDL_Init(SDL_INIT_EVERYTHING);
+      srand(time(NULL));
 
-      // mainGame.run();
+      SDL_Init(SDL_INIT_EVERYTHING);
 
       GameView::GameWindow gamewindow(500, 500);
 

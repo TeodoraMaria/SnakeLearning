@@ -59,6 +59,11 @@ namespace GameView
    void Cell::drawFood()
    {}
 
+   void Cell::setValue(int value)
+   {
+      m_value = value;
+   }
+
    void Cell::printConsole()
    {
       std::cout << m_x << " " << m_y << " " << m_height << " " << m_width << std::endl;

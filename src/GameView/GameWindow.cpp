@@ -1,10 +1,16 @@
-#include "GameWindow.h"
 #include <iostream>
 #include <string>
-#include "EventHandler.h"
+#include <vector>
 
 #include <SDL.h>
 #include <GL/glew.h>
+
+#include "GameLogic/Game.h"
+#include "GameLogic/HumanPlayer.h"
+
+#include "GameWindow.h"
+#include "EventHandler.h"
+
 
 
 
@@ -16,6 +22,10 @@ namespace GameView
    {
       m_eventHandler = new EventHandler();
       m_eventHandler->addGameWindow(this);
+
+      m_controller = new Controller();
+      m_eventHandler->addGameController(m_controller);
+
    }
 
    GameWindow::~GameWindow()
@@ -68,43 +78,17 @@ namespace GameView
       glOrtho(0.0f, m_screenWidth, m_screenHeight, 0.0f, 0.0f, 1.0f);
       glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-      //remove this
-      std::vector<std::vector<int>> m_gameBoard;
 
-      m_gameBoard.resize(10);
-      for (size_t index = 0; index < 10; ++index) {
-         m_gameBoard[index].resize(10);
-      }
+      m_board = new Board(m_screenWidth, m_screenWidth);
 
-      size_t dimension = m_gameBoard.size() - 1;
-
-      for (size_t index = 0; index <= dimension; ++index) {
-         m_gameBoard[index][0] = -1;
-         m_gameBoard[index][dimension] = -1;
-         m_gameBoard[0][index] = -1;
-         m_gameBoard[dimension][index] = -1;
-      }
-
-      m_board = new Board(m_gameBoard, m_screenWidth, m_screenHeight);
+      m_controller->setBoard(m_board);
+      //m_board = new Board(m_gameBoard, m_screenWidth, m_screenHeight);
    }
 
    void GameWindow::processInput()
    {
-
       m_eventHandler->processInput();
-     // m_controller.pro
-      /*
-      SDL_Event currentEvent;
-
-      while (SDL_PollEvent(&currentEvent)) {
-         switch (currentEvent.type) {
-            case SDL_QUIT: {
-               m_gameSate = EGameState::EXIT;
-               break;
-            }
-         }
-      }
-      */
+      m_controller->updateBoard(m_board);
    }
 
    void GameWindow::gameLoop()

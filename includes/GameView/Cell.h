@@ -25,7 +25,7 @@ namespace GameView
 
       void drawFood();
       
-
+      void setValue(int value);
 
       void printConsole();
 

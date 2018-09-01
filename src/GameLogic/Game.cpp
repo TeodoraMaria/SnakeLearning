@@ -208,8 +208,7 @@ void Game::RunRound()
 	{
 		if (player == nullptr)
 			return;
-		const auto chosenMove =
-			player->GetNextAction(GetGameState());
+		const auto chosenMove = player->GetNextAction(GetGameState());
 		
 		const auto snakeNumber = player->GetSnakeNumber();
 		MoveSnake(snakeNumber, chosenMove);
