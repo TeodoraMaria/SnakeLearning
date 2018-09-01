@@ -25,9 +25,11 @@ public:
    void processInput(const SDL_Event& keyPressed);
    void updateBoard(Board* board);
    void setBoard(Board* board);
-   void sendActions();
+   bool sendActions();
 
 private:
+   void processInputPlayer1(const SDL_Event& keyPressed);
+   void processInputPlayer2(const SDL_Event& keyPressed);
    std::vector<IPlayerPtr> m_players;
 
    std::shared_ptr<Game> m_game;

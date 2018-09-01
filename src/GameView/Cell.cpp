@@ -84,6 +84,14 @@ namespace GameView
             glColor3f(0.0, 1.0, 0.0);
             break;
          }
+         case 11:{
+            glColor3f(1.0, 1.0, 0.0);
+            break;
+         }
+         case 12: {
+            glColor3f(0.0, 1.0, 1.0);
+            break;
+         }
          default: {
             glColor3f(0.0, 0.0, 0.0);
             break;
