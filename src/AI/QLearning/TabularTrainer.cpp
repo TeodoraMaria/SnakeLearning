@@ -5,6 +5,7 @@
 #include "GameLogic/GameUtils.h"
 #include "Utils/MathUtils.h"
 #include "Utils/PrintUtils.h"
+#include "Utils/MatrixUtils.h"
 #include <vector>
 #include <random>
 #include <cmath>
@@ -22,19 +23,11 @@ TabularTrainer::TabularTrainer() : m_merseneTwister(std::random_device()())
 IPlayer* TabularTrainer::Train()
 {
 	auto env = GymEnv::SingleSnakeRelativeView();
-	
-	auto qTable = std::vector<std::vector<double>>(env.GetNumbOfObservations());
-	for (auto i = 0u; i < qTable.size(); i++)
-		qTable[i] = std::vector<double>(env.actions.size());
-	assert(qTable.size() == env.GetNumbOfObservations());
-	
-	for (auto& line : qTable)
-	{
-		for (auto& value : line)
-		{
-			value = 0;
-		}
-	}
+	auto qTable = ::Utils::Matrix::MakeMatrix(
+		env.GetNumbOfObservations(),
+		env.actions.size(),
+		0 // InitValue
+	);
 	
 	auto randomActionChance = maxRandActionChance;
 	auto dieStates = std::map<int, int>();
