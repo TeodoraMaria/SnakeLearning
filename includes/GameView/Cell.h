@@ -13,23 +13,24 @@ namespace GameView
       Cell(double x, double y, double width, double height, int value);
       ~Cell();
 
-      void draw();
+      void draw() const;
 
-      void drawUpperLeftCorner();
-      void drawUpperRightCorner();
-      void drawLowerRightCorner();
-      void drawlowerLeftCorner();
+      void drawUpperLeftCorner() const;
+      void drawUpperRightCorner() const;
+      void drawLowerRightCorner() const;
+      void drawlowerLeftCorner() const;
 
-      void drawSnakeHead();
-      void drawSnakeBody();
+      void drawSnakeHead() const;
+      void drawSnakeBody() const;
 
-      void drawFood();
+      void drawFood() const;
       
       void setValue(int value);
 
-      void printConsole();
+      void printConsole() const;
 
    private:
+      void setGlColor() const;
 
       double m_x = 0;
       double m_y = 0;
@@ -37,9 +38,5 @@ namespace GameView
       double m_height = 0;
 
       int m_value = 0;
-
-      void setGLColor(Utils::Color color);
-      void setGlColor2();
-
    };
 }

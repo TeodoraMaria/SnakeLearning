@@ -20,25 +20,22 @@ namespace GameView
    GameWindow::GameWindow(size_t screenWidth, size_t screenHeight) 
       :m_screenWidth(screenWidth), m_screenHeight(screenHeight)
    {
-      m_eventHandler = new EventHandler();
+      m_eventHandler = std::make_shared<EventHandler>(EventHandler());
       m_eventHandler->addGameWindow(this);
 
-      m_controller = new Controller();
-      m_eventHandler->addGameController(m_controller);
-
+      m_controller = std::make_shared<Controller>(Controller());
+      m_eventHandler->addGameController(m_controller.get());
    }
 
    GameWindow::~GameWindow()
    {}
 
-
-   static void fatalError(std::string error)
+   void fatalError(std::string error)
    {
       std::cout << error << std::endl;
       SDL_Quit();
       exit(1);
    }
-
 
    void GameWindow::run()
    {
@@ -57,9 +54,7 @@ namespace GameView
       if (m_window == nullptr) {
          fatalError("could not create window");
       }
-
       SDL_GLContext glContext = SDL_GL_CreateContext(m_window);
-
 
       if (glContext == nullptr) {
          fatalError("could not create context");
@@ -78,22 +73,20 @@ namespace GameView
       glOrtho(0.0f, m_screenWidth, m_screenHeight, 0.0f, 0.0f, 1.0f);
       glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-
-      m_board = new Board(m_screenWidth, m_screenWidth);
-
-      m_controller->setBoard(m_board);
-      //m_board = new Board(m_gameBoard, m_screenWidth, m_screenHeight);
+      m_board = std::make_shared<Board>(Board(m_screenWidth, m_screenWidth));
+      m_controller->setBoard(m_board.get());
    }
 
    void GameWindow::processInput()
    {
       m_eventHandler->processInput();
-      m_controller->updateBoard(m_board);
+      m_controller->sendActions();
+      m_controller->updateBoard(m_board.get());
    }
 
    void GameWindow::gameLoop()
    {
-      while (m_gameSate != EGameState::EXIT) {
+      while (m_gameSate != GameState::EXIT) {
          processInput();
          drawGame();
       }
@@ -111,6 +104,6 @@ namespace GameView
    }
    void GameWindow::exitGame()
    {
-      m_gameSate = EGameState::EXIT;
+      m_gameSate = GameState::EXIT;
    }
 }

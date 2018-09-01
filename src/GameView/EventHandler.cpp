@@ -27,19 +27,17 @@ void EventHandler::processInput()
       if (currentEvent.type == SDL_QUIT) {
          m_gameWindow->exitGame();
       }
-
    }
-
 }
 
-void EventHandler::addGameWindow(GameWindow*  gameWindow)
+void EventHandler::addGameWindow(GameWindow* gameWindow)
 {
-   m_gameWindow = gameWindow;
+   m_gameWindow = std::shared_ptr<GameWindow>(gameWindow);
 }
 
-void EventHandler::addGameController(Controller*  controller)
+void EventHandler::addGameController(Controller* controller)
 {
-   m_controller = controller;
+   m_controller = std::shared_ptr<Controller>(controller);
 }
 
 }

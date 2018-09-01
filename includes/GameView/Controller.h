@@ -1,10 +1,14 @@
 #pragma once
 #include <vector>
 #include <SDL.h>
+#include <memory>
 
 
 #include "GameLogic/Game.h"
 #include "GameLogic/HumanPlayer.h"
+
+#include "HumanPlayer2.h"
+#include "GameLogic/IPlayer.h"
 
 namespace GameView
 {
@@ -12,43 +16,25 @@ namespace GameView
 class Board;
 class EventHandler;
 
-enum class InputDirection
-{
-   UP,
-   DOWN,
-   LEFT,
-   RIGHT
-};
-
-
 class Controller
 {
 public:
    Controller();
-   Controller(EventHandler* eventHandler);
    ~Controller();
 
    void processInput(const SDL_Event& keyPressed);
-
    void updateBoard(Board* board);
+   void setBoard(Board* board);
    void sendActions();
 
-   void setPlayerDirection();
-   void setBoard(Board* board);
-
 private:
+   std::vector<IPlayerPtr> m_players;
 
-   size_t lastTime = 0;
-   size_t currentTime;
+   std::shared_ptr<Game> m_game;
+   std::shared_ptr<EventHandler> m_eventHandler;
 
-
-   std::vector<InputDirection> m_playersDirection;
-
-   Game* m_game;
-   EventHandler* m_eventHandler;
-
-   
-
+   size_t m_lastTime = 0;
+   size_t m_currentTime;
 };
 
 }
