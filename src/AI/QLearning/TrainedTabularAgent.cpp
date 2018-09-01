@@ -31,6 +31,6 @@ SnakeMove TrainedTabularAgent::GetNextAction(const GameState& gameState) const
 		0,
 		merseneTwister);
 	
-	assert(actionIndex < m_actions.size());
+	assert(static_cast<size_t>(actionIndex) < m_actions.size());
 	return m_actions[actionIndex];
 }
