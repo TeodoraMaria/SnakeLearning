@@ -16,58 +16,18 @@
 
 using namespace AI::QLearning;
 
-TabularTrainer::TabularTrainer() : m_merseneTwister(std::random_device()())
+TabularTrainer::TabularTrainer() :
+	m_merseneTwister(std::random_device()()),
+	m_qtable(),
+	m_env()
 {
-}
-
-void RunEpisode()
-{
-	// Get action with a random noise.
-//	const auto actionIndex = QLearning::Utils::PickAction(
-//		m_qtable[state],
-//		randomActionChance,
-//		m_merseneTwister);
-//
-//	const auto stepResult = env.Step(env.actions[actionIndex]);
-//	const auto newState = env.GetState();
-//	const auto reward = ComputeStepReward(stepResult);
-//
-//	UpdateActionQuality(
-//		state,
-//		newState,
-//		actionIndex,
-//		reward,
-//		stepResult.isDone);
-//
-//	episodeReward += reward;
-//	prevState = state;
-//	state = newState;
-//
-//	// Render the env on the last episode.
-//	if (episode == numEpisodes - 1)
-//		env.Render();
-//
-//	// Track die states.
-//	if (stepResult.isDone)
-//	{
-//		if (episode > numEpisodes * 0.95)
-//			dieStates[prevState]++;
-//		break;
-//	}
-//
-//	// Update random action chance.
-//	randomActionChance = ::Utils::Math::Lerp(
-//		randomActionChance,
-//		minRandActionChance,
-//		randActionDecayFactor);
 }
 
 IPlayer* TabularTrainer::Train()
 {
-	auto env = GymEnv::SingleSnakeRelativeView();
 	m_qtable = ::Utils::Matrix::MakeMatrix(
-		env.GetNumbOfObservations(),
-		env.actions.size(),
+		m_env.GetNumbOfObservations(),
+		m_env.actions.size(),
 		0 // InitValue
 	);
 	
@@ -77,40 +37,25 @@ IPlayer* TabularTrainer::Train()
 	// Start training.
 	for (auto episode = 0; episode < numEpisodes; episode++)
 	{
-		env.Reset();
-		auto state = env.GetState();
+		m_env.Reset();
+		auto state = m_env.GetState();
 		
 		auto episodeReward = 0.0;
 		auto prevState = 0;
 		for (auto step = 0; step < maxNumSteps; step++)
 		{
-			// Get action with a random noise.
-			const auto actionIndex = QLearning::Utils::PickAction(
-				m_qtable[state],
-				randomActionChance,
-				m_merseneTwister);
+			const auto trainStepResult = RunStep(state, randomActionChance);
 			
-			const auto stepResult = env.Step(env.actions[actionIndex]);
-			const auto newState = env.GetState();
-			const auto reward = ComputeStepReward(stepResult);
-			
-			UpdateActionQuality(
-				state,
-				newState,
-				actionIndex,
-				reward,
-				stepResult.isDone);
-			
-			episodeReward += reward;
+			episodeReward += trainStepResult.reward;
 			prevState = state;
-			state = newState;
+			state = trainStepResult.newState;
 			
 			// Render the env on the last episode.
 			if (episode == numEpisodes - 1)
-				env.Render();
+				m_env.Render();
 			
 			// Track die states.
-			if (stepResult.isDone)
+			if (trainStepResult.isDone)
 			{
 				if (episode > numEpisodes * 0.95)
 					dieStates[prevState]++;
@@ -138,13 +83,42 @@ IPlayer* TabularTrainer::Train()
 		std::cout << pair.first << ") " << pair.second << std::endl;
 	
 	return new AI::QLearning::TrainedAgent::TrainedTabularAgent(
-		env.actions,
+		m_env.actions,
 		m_qtable);
 }
 
 /*
 ** Private methods.
 */
+
+TabularTrainer::TrainStepResult TabularTrainer::RunStep(
+	const State currentState,
+	const double randomActionChance)
+{
+	// Get action with a random noise.
+	const auto actionIndex = QLearning::Utils::PickAction(
+		m_qtable[currentState],
+		randomActionChance,
+		m_merseneTwister);
+
+	const auto stepResult = m_env.Step(m_env.actions[actionIndex]);
+	const auto newState = m_env.GetState();
+	const auto reward = ComputeStepReward(stepResult);
+
+	UpdateActionQuality(
+		currentState,
+		newState,
+		actionIndex,
+		reward,
+		stepResult.isDone);
+
+	auto trainStepResult = TrainStepResult();
+	trainStepResult.newState = newState;
+	trainStepResult.reward = reward;
+	trainStepResult.isDone = stepResult.isDone;
+	
+	return trainStepResult;
+}
 
 double TabularTrainer::ComputeStepReward(
 	const GymEnv::StepResult& stepResult) const
