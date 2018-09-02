@@ -3,7 +3,7 @@
 #include "utils.h"
 
 #include <iostream>
-
+#include <math.h>
 
 namespace GameView
 {
@@ -80,14 +80,13 @@ namespace GameView
       glVertex2d(m_x, m_y + m_height);
       glVertex2d(m_x + m_width, m_y + m_height);
    }
-
    void Cell::drawWall() const
    {
       double xA = 20;
       double yA = 20;
 
       double xB = 80;
-      double yB = 20;
+      double yB = 50;
 
       double xC = 20;
       double yC = 80;
@@ -105,13 +104,19 @@ namespace GameView
       yC = Utils::ruleOfThree(yC, m_height, 100);
       yD = Utils::ruleOfThree(yD, m_height, 100);
 
+      rotate(xA, yA, 90.0);
+      rotate(xB, yB, 90.0);
+      rotate(xC, yC, 90.0);
+
       glVertex2d(m_x + xA, m_y + yA);
       glVertex2d(m_x + xB, m_y + yB);
       glVertex2d(m_x + xC, m_y + yC);
 
-      glVertex2d(m_x + xB, m_y + yB);
-      glVertex2d(m_x + xC, m_y + yC);
-      glVertex2d(m_x + xD, m_y + yD);
+
+
+     // glVertex2d(m_x + xB, m_y + yB);
+     // glVertex2d(m_x + xC, m_y + yC);
+     // glVertex2d(m_x + xD, m_y + yD);
    
    }
 
@@ -173,6 +178,20 @@ namespace GameView
             break;
          }
       }
+   }
+   void Cell::rotate(double& x,double& y,double degrees ) const
+   {
+      double centerX=m_width/2;
+      double centerY=m_height/2;
+
+      double pi = 3.1415926535897;
+
+      double newX = centerX + (x - centerX)*cos(degrees*pi / 180.0) - (y - centerY)*sin(degrees*pi / 180.0);
+
+      double newY = centerY + (x - centerX)*sin(degrees*pi / 180.0) + (y - centerY)*cos(degrees*pi / 180.0);
+
+      x = newX;
+      y = newY;
    }
 }
 

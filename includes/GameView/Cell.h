@@ -32,6 +32,7 @@ namespace GameView
 
    private:
       void setGlColor() const;
+      void rotate(double& x, double& y, double degrees) const;
 
       double m_x = 0;
       double m_y = 0;

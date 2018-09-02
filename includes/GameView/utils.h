@@ -41,9 +41,9 @@ namespace GameView
          SNAKE_BODY_BENT_NW
       };
 
-      static double ruleOfThree(double value, double valueRange, double maxRange)
+      static double ruleOfThree(double value, double envMaxRange, double valueMaxRange)
       {
-         return value*valueRange / maxRange;
+         return value*envMaxRange / valueMaxRange;
       }
 
    }
