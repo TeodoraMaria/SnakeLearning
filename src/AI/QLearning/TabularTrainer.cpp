@@ -3,6 +3,7 @@
 #include "ActionPickingUtils.h"
 
 #include "GymEnv/SingleSnakeRelativeView.hpp"
+#include "GameLogic/TermRenderer.hpp"
 #include "Utils/MathUtils.h"
 #include "Utils/PrintUtils.h"
 #include "Utils/MatrixUtils.h"
@@ -15,7 +16,7 @@ using namespace AI::QLearning;
 TabularTrainer::TabularTrainer() :
 	m_merseneTwister(std::random_device()()),
 	m_qtable(),
-	m_env()
+	m_env(new GameView::TermRenderer())
 {
 }
 
@@ -34,7 +35,10 @@ IPlayer* TabularTrainer::Train()
 	
 	// Train.
 	for (auto episode = 0; episode < numEpisodes; episode++)
+	{
+		trainSession.episodeIndex = episode;
 		RunEpisode(trainSession);
+	}
 	
 	::Utils::Print::PrintTable(m_qtable);
 	

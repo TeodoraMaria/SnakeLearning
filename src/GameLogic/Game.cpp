@@ -116,7 +116,6 @@ void Game::CheckIfGameOver()
 		}
 		std::cout << std::endl;
 	}
-	
 #else
 	void Game::PrintBoard()
 	{

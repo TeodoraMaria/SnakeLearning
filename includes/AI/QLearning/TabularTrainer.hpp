@@ -23,8 +23,8 @@ namespace AI{ namespace QLearning
 	
 		const double learningRate = 0.1;
 		const double qDiscountFactor = 0.99;
-		const double numEpisodes = 1000;
-		const double maxNumSteps = 10000;
+		const double numEpisodes = 3000;
+		const double maxNumSteps = 100;
 		
 		const double maxRandActionChance = 0.9;
 		const double minRandActionChance = 0.00;
