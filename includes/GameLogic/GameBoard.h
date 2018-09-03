@@ -30,7 +30,7 @@ public:
 	int& operator [](const Coordinate& coord);
 	int operator [](const Coordinate& coord) const;
 
-	bool IsFood(const Coordinate& location);
+	bool IsFood(const Coordinate& location) const;
 	bool CheckCoord(const Coordinate& coord) const;
 	bool CoordIsBounded(const Coordinate& coord) const;
 	bool IsWallOrBeyond(const Coordinate& coord) const;
