@@ -11,25 +11,30 @@ public:
 	~Snake();
 
 	size_t GetSnakeNumber() const;
+	size_t GetSnakeSize() const;
+	size_t GetScore() const;
+	
 	Coordinate GetSnakeHead() const;
 	Coordinate GetSnakeTail() const;
-	std::list<Coordinate> GetSnakeBody() const;
-	size_t GetSnakeSize() const;
 	Coordinate GetOrientation() const;
-	size_t GetScore() const;
+	std::list<Coordinate> GetSnakeBody() const;
+	
 	bool IsAlive() const;
 
 	bool operator ==(const Snake& snake);
 
 	//Initializes snake and return true if initialization was succesfull, false otherwise
-	bool InitSnake(GameBoard& gameBoard);
+	bool InitSnake(GameBoard& gameBoard, size_t size = 3);
 	void Move(const Coordinate& newPosition);
 	void Eat(const Coordinate& foodPosition);
 	void Die();
 
 private:
 	void GenerateHead(GameBoard& gameBoard);
-	void GenerateBody(GameBoard& gameBoard, const Coordinate& head);
+	void GenerateBody(
+		GameBoard& gameBoard,
+		const Coordinate& head,
+		size_t size);
 
 	size_t m_snakeNumber;
 	std::list<Coordinate> m_snakeBody;

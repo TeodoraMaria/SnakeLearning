@@ -1,7 +1,19 @@
 #include "Snake.h"
 #include "GameUtils.h"
+#include <assert.h>
 
-Snake::Snake(const size_t& snakeNumber):m_snakeNumber(snakeNumber), m_score(0), m_isAlive(true)
+static const auto directions =
+{
+	Coordinate::UP,
+	Coordinate::DOWN,
+	Coordinate::LEFT,
+	Coordinate::RIGHT
+};
+
+Snake::Snake(const size_t& snakeNumber) :
+	m_snakeNumber(snakeNumber),
+	m_score(0),
+	m_isAlive(true)
 {
 }
 
@@ -29,12 +41,14 @@ std::list<Coordinate> Snake::GetSnakeBody() const
 	return m_snakeBody;
 }
 
-bool Snake::InitSnake(GameBoard& gameBoard)
+bool Snake::InitSnake(GameBoard& gameBoard, const size_t size)
 {
+	assert(size > 0);
+
 	GenerateHead(gameBoard);
-	GenerateBody(gameBoard, GetSnakeHead());
+	GenerateBody(gameBoard, GetSnakeHead(), size);
 	
-	if (m_snakeBody.size() == 3)
+	if (m_snakeBody.size() == size)
 		return true;
 	return false;
 }
@@ -74,13 +88,15 @@ void Snake::GenerateHead(GameBoard & gameBoard)
 	gameBoard[coord] = m_snakeNumber;
 }
 
-void Snake::GenerateBody(GameBoard & gameBoard, const Coordinate & head)
+void Snake::GenerateBody(
+	GameBoard & gameBoard,
+	const Coordinate & head,
+	size_t size)
 {
 	Coordinate coord, auxCoord;
 	coord = head;
-	std::vector<Coordinate> directions{ Coordinate::UP, Coordinate::DOWN, Coordinate::LEFT, Coordinate::RIGHT };
 
-	for (size_t snakeDim = 1; snakeDim < 3; snakeDim++)
+	for (size_t snakeDim = 1; snakeDim < size; snakeDim++)
 	{
 		for (auto& direction : directions)
 		{

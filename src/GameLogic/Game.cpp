@@ -82,7 +82,8 @@ void Game::InitSnakes()
 void Game::AddSnakeToGame(const int snakeNumber)
 {
 	Snake snake(snakeNumber);
-	snake.InitSnake(m_gameBoard);
+	
+	snake.InitSnake(m_gameBoard, m_gameOptions.initialSnakeSize);
 	m_snakes.push_back(snake);
 }
 

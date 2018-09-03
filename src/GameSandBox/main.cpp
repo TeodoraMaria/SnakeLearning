@@ -12,7 +12,7 @@ int main()
 	std::vector<IPlayerPtr> players(
 	{
 		IPlayerPtr(new HumanPlayer()),
-		IPlayerPtr(new AI::HardCoded::SingleBot()),
+//		IPlayerPtr(new AI::HardCoded::SingleBot()),
 		//IPlayerPtr(new AI::HardCoded::SingleBot()),
 		//IPlayerPtr(new AI::HardCoded::SingleBot()),
 	});
@@ -22,15 +22,13 @@ int main()
 		gameOptions.boardLength = 10;
 		gameOptions.boardWidth = 10;
 		gameOptions.numberOfPlayers = players.size();
-		gameOptions.numFoods = 3;
+		gameOptions.numFoods = 1;
+		gameOptions.initialSnakeSize = 2;
 	}
 	Game game(gameOptions, players);
 	
 	std::cout << "W for foward, A for left, D for right\n\n";
 	
-	game.InitGame();
-	game.Play();
-
 	game.InitGame();
 	game.Play();
 	return 0;
