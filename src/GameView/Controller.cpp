@@ -6,7 +6,8 @@
 #include "EventHandler.h"
 #include "Board.h"
 #include "HumanPlayer2.h"
-#include "GameLogic\GameState.h"
+#include "GameLogic/GameState.h"
+#include "AI\HardCoded\SingleBot.hpp"
 
 namespace GameView
 {
@@ -16,18 +17,16 @@ Controller::Controller()
 {
    m_players = std::vector<IPlayerPtr>(
    {
-      std::make_shared<HumanPlayer2>(),
-     // std::make_shared<HumanPlayer2>()
+      //std::make_shared<HumanPlayer2>(),
+      
+      //std::make_shared<HumanPlayer2>(),
+      std::make_shared<AI::HardCoded::SingleBot>()
+      //IPlayerPtr(new AI::HardCoded::SingleBot()),
    });
 
-   std::vector<IPlayerPtr> players(
-   {
-      std::make_shared<HumanPlayer>()
-      //		IPlayerPtr(new AI::HardCoded::SingleBot()),
-      //		IPlayerPtr(new AI::HardCoded::SingleBot()),
-   });
+  
    
-   const GameOptions gameOptions(GameBoardType::BOX, 20, 20, m_players.size(), 3);
+   const GameOptions gameOptions(GameBoardType::BOX, 20, 20, m_players.size(), 1);
 
    m_game = std::make_shared<Game>(Game(gameOptions, m_players));
    m_game->InitGame();
@@ -66,7 +65,6 @@ void Controller::updateBoard()
 
    for (int i = 0; i < gameBoard.GetBoardLength(); i++) {
       for (int j = 0; j < gameBoard.GetBoardWidth(); j++) {
-
          int boardValue = gameBoard[Coordinate(i, j)];
 
          m_board->setCellValueAt(i, j, boardValue);
@@ -78,30 +76,26 @@ void Controller::updateBoard()
       for (const Coordinate& coord : snake.GetSnakeBody()) {
          m_board->setCellValueAt(coord.GetX(), coord.GetY(), snake.GetSnakeNumber());
       }
-
-      auto snakeBody = snake.GetSnakeBody();
-/*
-      if (snakeBody) {
-
-      }
-      */
-      for (size_t i = 1; i < snakeBody.size()-1;i++) {
-         
-      }
-
    }
 }
 
 bool Controller::sendActions()
 {
    m_currentTime = SDL_GetTicks();
-   if (m_currentTime > m_lastTime + 1000) {
+   size_t timeRange = 2;
+   if (m_currentTime > m_lastTime + timeRange) {
       GameState state = m_game->GetGameState();
 
       for (auto& player : m_players) {
          const auto chosenMove = player->GetNextAction(state);
          const auto snakeNumber = player->GetSnakeNumber();
          m_game->MoveSnake(snakeNumber, chosenMove);
+
+         auto humanPlayer = std::dynamic_pointer_cast<HumanPlayer2>(player);
+
+         if (humanPlayer != nullptr) {
+            humanPlayer->setDirection(Utils::InputDirection::DEFAULT);   
+         }
       }
       m_lastTime = m_currentTime;
       return true;

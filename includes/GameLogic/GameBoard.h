@@ -4,13 +4,15 @@
 #include <vector>
 #include <list>
 
+//static const int 
+
 enum BoardPart
 {
 	EMPTY = 0,
 	WALL = 1,
 	FOOD = 2,
 	
-	START_OF_SNAKE_INDEXES = 42
+	START_OF_SNAKE_INDEXES = 10
 };
 
 class GameBoard

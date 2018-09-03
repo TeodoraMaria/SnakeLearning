@@ -6,6 +6,7 @@ namespace GameView
    {
       enum class InputDirection
       {
+         DEFAULT,
          UP,
          DOWN,
          LEFT,

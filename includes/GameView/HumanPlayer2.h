@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameLogic\IPlayer.h"
+#include "GameLogic/IPlayer.h"
 
 #include "utils.h"
 
@@ -22,7 +22,9 @@ private:
    void TranslateMoveToSnakeView(SnakeMove& move, const GameState& gameState) const;
    void RotateLeft(SnakeMove& move) const;
 
-   Utils::InputDirection m_direction;
+   //SnakeMove getSnakeMoveRelativeToInput(const GameState& gameState)const;
+
+   Utils::InputDirection m_direction=Utils::InputDirection::DEFAULT;
 };
 
 }
