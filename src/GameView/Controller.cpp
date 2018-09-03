@@ -7,7 +7,7 @@
 #include "Board.h"
 #include "HumanPlayer2.h"
 #include "GameLogic/GameState.h"
-#include "AI\HardCoded\SingleBot.hpp"
+#include "AI/HardCoded/SingleBot.hpp"
 
 namespace GameView
 {
