@@ -47,6 +47,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 target_link_libraries(${PROJECT_NAME}
 	GameLogic
+	HardCoded
 	${SDL2_LIBRARIES}
 	${GLEW_LIBRARIES}
 	${OPENGL_LIBRARIES}

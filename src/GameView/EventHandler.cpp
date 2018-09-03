@@ -45,6 +45,7 @@ void EventHandler::checkIfGameOver()
    if (m_controller->getAliveSnakes() == 0) {
       m_gameWindow->exitGame();
    }
+
 }
 
 }
