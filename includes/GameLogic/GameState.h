@@ -10,9 +10,11 @@ public:
 
 	const GameBoard& GetGameBoard() const;
 	const std::vector<Snake>& GetSnakes() const;
-	const Snake& GetSnake(const int& snakeNumber) const;
+	const Snake& GetSnake(const int snakeNumber) const;
+	const std::vector<std::vector<int>> GetFieldOfView(const Snake& snake, const int width = 5, const int length = 5) const;
 
-private:	
+private:
+	
 	const GameBoard& m_gameBoard;
 	const std::vector<Snake>& m_snakes;
 };

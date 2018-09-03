@@ -1,6 +1,7 @@
 #include "HumanPlayer.h"
 #include "MultiPlatformTerm.hpp"
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 
 HumanPlayer::HumanPlayer()
@@ -18,6 +19,16 @@ HumanPlayer::~HumanPlayer()
 
 SnakeMove HumanPlayer::GetNextAction(const GameState& gameState) const
 {
+	std::vector<std::vector<int>> field = gameState.GetFieldOfView(gameState.GetSnake(GetSnakeNumber()),5,5);
+	for (const auto& line : field)
+	{
+		for (const auto& elem : line)
+		{
+			std::cout << std::setw(4) << elem;
+		}
+		std::cout << std::endl;
+	}
+
 	SnakeMove move = GetUserInput();
 
 	TranslateMoveToSnakeView(move, gameState);
