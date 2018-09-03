@@ -28,6 +28,8 @@ public:
 
    bool sendActions();
 
+   size_t getAliveSnakes() const;
+
 private:
    void processInputPlayer1(const SDL_Event& keyPressed);
    void processInputPlayer2(const SDL_Event& keyPressed);

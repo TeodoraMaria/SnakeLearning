@@ -1,8 +1,6 @@
 #pragma once
 #include <memory>
 
-
-
 namespace GameView
 {
    class GameWindow;
@@ -18,6 +16,8 @@ public:
 
    void addGameWindow(GameWindow* gameWindow);
    void addGameController(Controller* controller);
+
+   void checkIfGameOver();
 
 private:
    std::shared_ptr<GameWindow> m_gameWindow;

@@ -53,19 +53,16 @@ void Controller::processInput(const SDL_Event& currentEvent)
 void Controller::addBoard(Board * board)
 {
    m_board = std::shared_ptr<Board>(board);
-   GameState state = m_game->GetGameState();
+   const GameState state = m_game->GetGameState();
 
-   GameBoard gameBoard = state.GetGameBoard();
+   const GameBoard gameBoard = state.GetGameBoard();
    m_board->setUpBoard(gameBoard.GetBoardLength(), gameBoard.GetBoardWidth());
 }
 
 void Controller::updateBoard()
 {
-   GameState state=m_game->GetGameState();
-
-   GameBoard gameBoard = state.GetGameBoard();
-
-   std::vector<Snake> snakes=state.GetSnakes();
+   const GameState state=m_game->GetGameState();
+   const GameBoard gameBoard = state.GetGameBoard();
 
    for (int i = 0; i < gameBoard.GetBoardLength(); i++) {
       for (int j = 0; j < gameBoard.GetBoardWidth(); j++) {
@@ -76,10 +73,22 @@ void Controller::updateBoard()
       }
    }
 
-   for (Snake snake : snakes) {
-      for (Coordinate coord : snake.GetSnakeBody()) {
+   std::vector<Snake> snakes=state.GetSnakes();
+   for (const Snake& snake : snakes) {
+      for (const Coordinate& coord : snake.GetSnakeBody()) {
          m_board->setCellValueAt(coord.GetX(), coord.GetY(), snake.GetSnakeNumber());
       }
+
+      auto snakeBody = snake.GetSnakeBody();
+/*
+      if (snakeBody) {
+
+      }
+      */
+      for (size_t i = 1; i < snakeBody.size()-1;i++) {
+         
+      }
+
    }
 }
 
@@ -98,6 +107,10 @@ bool Controller::sendActions()
       return true;
    }
    return false;
+}
+size_t Controller::getAliveSnakes() const
+{  
+   return m_game->GetLivingSnakes().size();
 }
 void Controller::processInputPlayer1(const SDL_Event & keyPressed)
 {

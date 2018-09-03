@@ -83,7 +83,7 @@ namespace GameView
    {
       m_eventHandler->processInput();
       if (m_controller->sendActions()) {
-      m_controller->updateBoard();
+         m_controller->updateBoard();
       }
    }
 
@@ -92,6 +92,7 @@ namespace GameView
       while (m_gameSate != GameState::EXIT) {
          processInput();
          drawGame();
+         m_eventHandler->checkIfGameOver();
       }
    }
 
