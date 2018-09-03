@@ -1,230 +1,168 @@
 #include "TabularTrainer.hpp"
 #include "TrainedTabularAgent.hpp"
+#include "ActionPickingUtils.h"
+
 #include "GymEnv/SingleSnakeRelativeView.hpp"
-#include "GameLogic/GameUtils.h"
-#include <vector>
-#include <random>
-#include <cmath>
+#include "GameLogic/TermRenderer.hpp"
+#include "Utils/MathUtils.h"
+#include "Utils/PrintUtils.h"
+#include "Utils/MatrixUtils.h"
+
 #include <assert.h>
 #include <iostream>
-#include <iomanip>
-#include <map>
 
 using namespace AI::QLearning;
 
-static bool approx(
-	const double a,
-	const double b,
-	const double tolerance = 0.00001)
+TabularTrainer::TabularTrainer() :
+	m_merseneTwister(std::random_device()()),
+	m_qtable(),
+	m_env(new GameView::TermRenderer())
 {
-	return std::abs(a - b) < tolerance;
-}
-
-static size_t countElementsWithValue(
-	const std::vector<double>& tab,
-	const double targetValue)
-{
-	return std::count_if(
-		tab.begin(),
-		tab.end(),
-		[&](const auto& value)
-		{
-			return approx(value, targetValue);
-		});
-}
-
-int TabularTrainer::GetAction(
-	const std::vector<double>& qActions,
-	const double noise,
-	std::mt19937& merseneTwister)
-{
-	auto chanceDistrib = std::uniform_real_distribution<double>(0, 1.0);
-	
-	// Random action.
-	if (chanceDistrib(merseneTwister) < noise)
-	{
-		auto actionDistrib = std::uniform_int_distribution<int>(
-			0,
-			qActions.size() - 1);
-		
-		return actionDistrib(merseneTwister);
-	}
-	
-	// If multiple actions have the same max quality, choose a random one from
-	// those.
-	const auto maxActionQ = *std::max_element(qActions.begin(), qActions.end());
-	const auto maxElementsCount = countElementsWithValue(qActions, maxActionQ);
-
-	// - Get the index from the max elements.
-	auto maxActionIndex = 0;
-//	if (maxElementsCount == 1)
-//		maxActionIndex = 0;
-//	else
-//	{
-//		auto maxActionDistrib = std::uniform_int_distribution<int>(
-//			0, maxElementsCount - 1);
-//		maxActionIndex = maxActionDistrib(merseneTwister);
-//	}
-
-	// - Get the maxActionIndex'th max element.
-	for (auto i = 0u; i < qActions.size(); i++)
-	{
-		if (approx(qActions[i], maxActionQ))
-		{
-			if (maxActionIndex == 0)
-				return i;
-			
-			maxActionIndex--;
-		}
-	}
-	throw;
-}
-
-static double lerp(const double a, const double b, const double scalar)
-{
-	return a + (b - a) * scalar;
-}
-
-static void printTable(std::vector<std::vector<double>>& table)
-{
-	for (auto i = 0u; i < table.size(); i++)
-	{
-		std::cout << std::setw(5) << i << ") ";
-		for (auto j = 0u; j < table[i].size(); j++)
-		{
-			std::cout
-				<< std::setw(22) << std::fixed
-				<< std::setprecision(16) << table[i][j];
-		}
-		std::cout << std::endl;
-	}
 }
 
 IPlayer* TabularTrainer::Train()
 {
-	auto env = GymEnv::SingleSnakeRelativeView();
+	m_qtable = ::Utils::Matrix::MakeMatrix(
+		m_env.GetNumbOfObservations(),
+		m_env.actions.size(),
+		0 // InitValue
+	);
 	
-	auto qTable = std::vector<std::vector<double>>(env.GetNumbOfObservations());
-	for (auto i = 0u; i < qTable.size(); i++)
-		qTable[i] = std::vector<double>(env.actions.size());
-	assert(qTable.size() == env.GetNumbOfObservations());
+	auto trainSession = TrainSession();
 	
-	for (auto& line : qTable)
-	{
-		for (auto& value : line)
-		{
-			value = 0;
-		}
-	}
+	trainSession.randomActionChance = maxRandActionChance;
+	trainSession.dieStates = std::map<State, int>();
 	
-	// Set hyperparameters.
-	const auto learningRate = 0.1;
-	const auto qDiscountFactor = 0.99;
-	const auto numEpisodes = 1000;
-	auto maxNumSteps = 10000;
-	
-	const auto maxRandActionChance = 0.9;
-	const auto minRandActionChance = 0.00;
-	const auto randActionDecayFactor = 1.0 / 8000;
-	auto randomActionChance = maxRandActionChance;
-	
-	std::random_device randomDevice;
-	std::mt19937 merseneTwister(randomDevice());
-
-	auto dieStates = std::map<int, int>();
-	
-	// Start training.
+	// Train.
 	for (auto episode = 0; episode < numEpisodes; episode++)
 	{
-		env.Reset();
-		auto state = env.GetState();
-//		env.Render();
-		
-		auto episodeReward = 0.0;
-		auto prevState = 0;
-		for (auto step = 0; step < maxNumSteps; step++)
-		{
-			// Get action with a random noise.
-			const auto actionIndex = GetAction(
-				qTable[state],
-				randomActionChance,
-				merseneTwister);
-			
-			const auto action = env.actions[actionIndex];
-			const auto stepResult = env.Step(action);
-			const auto newState = env.GetState();
-			
-			double reward = 0;
-			if (stepResult.reward > 0)
-				reward += 1;
-			else if (stepResult.reward < 0)
-				reward -= 1;
-			else
-				reward -= 0.005;
-			
-			double bestNextQ;
-			if (stepResult.isDone)
-			{
-				bestNextQ = 0;
-			}
-			else
-			{
-				bestNextQ = *std::max_element(
-					qTable[newState].begin(),
-					qTable[newState].end());
-			}
-
-			const auto currentActionQ = qTable[state][actionIndex];
-			qTable[state][actionIndex] +=
-				learningRate *
-				(reward + qDiscountFactor * bestNextQ - currentActionQ);
-			
-			episodeReward += reward;
-			prevState = state;
-			state = newState;
-			
-			if (episode == numEpisodes - 1)
-				env.Render();
-			
-			if (stepResult.isDone)
-			{
-				if (episode > numEpisodes * 0.95)
-					dieStates[prevState]++;
-				break;
-			}
-//			if (episodeReward < 0.1 && episodeReward > -0.1 && step > 30)
-//			{
-//				std::cout << "Forced kill!" << std::endl;
-//				break;
-//			}
-			
-			randomActionChance = lerp(
-				randomActionChance,
-				minRandActionChance,
-				randActionDecayFactor);
-		}
-		
-		printf(
-			"End of episode: %d with a reward of %.2f."
-			"Random action chance: %.2f\n",
-			episode,
-			episodeReward,
-			randomActionChance);
-		
-//		if (episode % 100 == 0)
-//		{
-//			printTable(qTable);
-//		}
+		trainSession.episodeIndex = episode;
+		RunEpisode(trainSession);
 	}
-	printTable(qTable);
+	
+	::Utils::Print::PrintTable(m_qtable);
 	
 	std::cout << "Die states: " << std::endl;
-	for (const auto& pair : dieStates)
-	{
+	for (const auto& pair : trainSession.dieStates)
 		std::cout << pair.first << ") " << pair.second << std::endl;
-	}
 	
 	return new AI::QLearning::TrainedAgent::TrainedTabularAgent(
-		env.actions,
-		qTable);
+		m_env.actions,
+		m_qtable);
+}
+
+/*
+** Private methods.
+*/
+
+void TabularTrainer::RunEpisode(TrainSession& trainSession)
+{
+	m_env.Reset();
+	auto state = m_env.GetState();
+
+	auto episodeReward = 0.0;
+	auto prevState = 0;
+	for (auto step = 0; step < maxNumSteps; step++)
+	{
+		const auto trainStepResult = RunStep(
+			state,
+			trainSession.randomActionChance);
+		
+		episodeReward += trainStepResult.reward;
+		prevState = state;
+		state = trainStepResult.newState;
+		
+		// Render the env on the last episode.
+		if (trainSession.episodeIndex == numEpisodes - 1)
+			m_env.Render();
+		
+		// Track die states.
+		if (trainStepResult.isDone)
+		{
+			if (trainSession.episodeIndex > numEpisodes * 0.95)
+				trainSession.dieStates[prevState]++;
+			break;
+		}
+		
+		// Update random action chance.
+		trainSession.randomActionChance = ::Utils::Math::Lerp(
+			trainSession.randomActionChance,
+			minRandActionChance,
+			randActionDecayFactor);
+	}
+
+	printf(
+		"End of episode: %d with a reward of %.2f."
+		"Random action chance: %.2f\n",
+		trainSession.episodeIndex,
+		episodeReward,
+		trainSession.randomActionChance);
+}
+
+TabularTrainer::TrainStepResult TabularTrainer::RunStep(
+	const State currentState,
+	const double randomActionChance)
+{
+	// Get action with a random noise.
+	const auto actionIndex = QLearning::Utils::PickAction(
+		m_qtable[currentState],
+		randomActionChance,
+		m_merseneTwister);
+
+	const auto stepResult = m_env.Step(m_env.actions[actionIndex]);
+	const auto newState = m_env.GetState();
+	const auto reward = ComputeStepReward(stepResult);
+
+	UpdateActionQuality(
+		currentState,
+		newState,
+		actionIndex,
+		reward,
+		stepResult.isDone);
+
+	auto trainStepResult = TrainStepResult();
+	trainStepResult.newState = newState;
+	trainStepResult.reward = reward;
+	trainStepResult.isDone = stepResult.isDone;
+	
+	return trainStepResult;
+}
+
+double TabularTrainer::ComputeStepReward(
+	const GymEnv::StepResult& stepResult) const
+{
+	auto reward = stepReward;
+	
+	if (stepResult.reward > 0)
+		reward += foodReward;
+	else if (stepResult.reward < 0)
+		reward += dieReward;
+	
+	return reward;
+}
+
+double TabularTrainer::UpdateActionQuality(
+	const int currentState,
+	const int newState,
+	const int actionIndex,
+	const double actionReward,
+	const bool isDone)
+{
+	double bestNextQ;
+	
+	if (isDone)
+		bestNextQ = 0;
+	else
+	{
+		bestNextQ = *std::max_element(
+			m_qtable[newState].begin(),
+			m_qtable[newState].end());
+	}
+
+	const auto currentActionQ = m_qtable[currentState][actionIndex];
+	m_qtable[currentState][actionIndex] +=
+		learningRate *
+		(actionReward + qDiscountFactor * bestNextQ - currentActionQ);
+	
+	return m_qtable[currentState][actionIndex];
 }

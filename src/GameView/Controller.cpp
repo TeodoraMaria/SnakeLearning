@@ -1,10 +1,13 @@
-#include "Controller.h"
 #include <SDL.h>
 #include <memory>
+#include <iostream>
 
+#include "Controller.h"
 #include "EventHandler.h"
 #include "Board.h"
-#include "GameLogic\GameState.h"
+#include "HumanPlayer2.h"
+#include "GameLogic/GameState.h"
+#include "AI\HardCoded\SingleBot.hpp"
 
 namespace GameView
 {
@@ -12,129 +15,150 @@ namespace GameView
 
 Controller::Controller()
 {
-   std::vector<IPlayerPtr> players(
+   m_players = std::vector<IPlayerPtr>(
    {
-      std::make_shared<HumanPlayer>()
-      //		IPlayerPtr(new AI::HardCoded::SingleBot()),
-      //		IPlayerPtr(new AI::HardCoded::SingleBot()),
+      //std::make_shared<HumanPlayer2>(),
+      
+      //std::make_shared<HumanPlayer2>(),
+      std::make_shared<AI::HardCoded::SingleBot>()
+      //IPlayerPtr(new AI::HardCoded::SingleBot()),
    });
 
-   const GameOptions gameOptions(GameBoardType::BOX, 20, 20, players.size(), 3);
-   m_game=new Game(gameOptions, players);
+  
+   
+   const GameOptions gameOptions(GameBoardType::BOX, 20, 20, m_players.size(), 1);
+
+   m_game = std::make_shared<Game>(Game(gameOptions, m_players));
    m_game->InitGame();
-
-   m_playersDirection = std::vector<InputDirection>(players.size());
 }
-
-Controller::Controller(EventHandler * eventHandler)
-{
-   m_eventHandler = eventHandler;
-
-   std::vector<IPlayerPtr> players(
-   {
-      std::make_shared<HumanPlayer>()
-      //		IPlayerPtr(new AI::HardCoded::SingleBot()),
-      //		IPlayerPtr(new AI::HardCoded::SingleBot()),
-   });
-
-   const GameOptions gameOptions(GameBoardType::BOX, 20, 20, players.size(), 3);
-   m_game = new Game(gameOptions, players);
-   m_game->InitGame();
-
-   m_playersDirection = std::vector<InputDirection>(players.size());
-}
-
 
 Controller::~Controller()
 {}
 
 void Controller::processInput(const SDL_Event& currentEvent)
 {
-      if (currentEvent.type == SDL_KEYDOWN) {
-         switch (currentEvent.key.keysym.sym) {
-            case SDLK_w: {
-              // translate(0, 0.2);
-               m_game->MoveSnake(11, SnakeMove::FORWARD);
-               
-               //m_game->PrintBoard();
-
-               m_playersDirection[0] = InputDirection::UP;
-
-
-               break;
-            }
-            case SDLK_s: {
-              // translate(0, -0.2);
-               m_game->MoveSnake(11, SnakeMove::DOWN);
-               m_playersDirection[0] = InputDirection::DOWN;
-               break;
-            }
-            case SDLK_d: {
-              // translate(0.2, 0);
-               m_game->MoveSnake(11, SnakeMove::LEFT);
-               m_playersDirection[0] = InputDirection::RIGHT;
-
-               break;
-            }
-            case SDLK_a: {
-               //translate(-0.2, 0);
-               m_game->MoveSnake(11, SnakeMove::RIGHT);
-
-               m_playersDirection[0] = InputDirection::LEFT;
-
-               break;
-            }
-         }
-      }
+   //process for the first player
+   if (m_players.size() > 0) {
+      processInputPlayer1(currentEvent);
+   }
+   //process for the second player
+   if (m_players.size() > 1) {
+      processInputPlayer2(currentEvent);
+   }
 }
  
 
-void Controller::setBoard(Board* board)
+
+void Controller::addBoard(Board * board)
 {
-   GameState state = m_game->GetGameState();
+   m_board = std::shared_ptr<Board>(board);
+   const GameState state = m_game->GetGameState();
 
-   GameBoard gameBoard = state.GetGameBoard();
+   const GameBoard gameBoard = state.GetGameBoard();
+   m_board->setUpBoard(gameBoard.GetBoardLength(), gameBoard.GetBoardWidth());
+}
 
-   board->setUpBoard(gameBoard.GetBoardLength(), gameBoard.GetBoardWidth());
+void Controller::updateBoard()
+{
+   const GameState state=m_game->GetGameState();
+   const GameBoard gameBoard = state.GetGameBoard();
 
    for (int i = 0; i < gameBoard.GetBoardLength(); i++) {
       for (int j = 0; j < gameBoard.GetBoardWidth(); j++) {
-         board->setCellAt(i, j, gameBoard[Coordinate(i, j)]);
+         int boardValue = gameBoard[Coordinate(i, j)];
+
+         m_board->setCellValueAt(i, j, boardValue);
+      }
+   }
+
+   std::vector<Snake> snakes=state.GetSnakes();
+   for (const Snake& snake : snakes) {
+      for (const Coordinate& coord : snake.GetSnakeBody()) {
+         m_board->setCellValueAt(coord.GetX(), coord.GetY(), snake.GetSnakeNumber());
       }
    }
 }
 
-void Controller::updateBoard(Board* board)
+bool Controller::sendActions()
 {
-   GameState state=m_game->GetGameState();
+   m_currentTime = SDL_GetTicks();
+   size_t timeRange = 2;
+   if (m_currentTime > m_lastTime + timeRange) {
+      GameState state = m_game->GetGameState();
 
-   GameBoard gameBoard = state.GetGameBoard();
+      for (auto& player : m_players) {
+         const auto chosenMove = player->GetNextAction(state);
+         const auto snakeNumber = player->GetSnakeNumber();
+         m_game->MoveSnake(snakeNumber, chosenMove);
 
-   for (int i = 0; i < gameBoard.GetBoardLength(); i++) {
-      for (int j = 0; j < gameBoard.GetBoardWidth(); j++) {
-         board->setCellAt(i, j, gameBoard[Coordinate(i, j)]);
+         auto humanPlayer = std::dynamic_pointer_cast<HumanPlayer2>(player);
+
+         if (humanPlayer != nullptr) {
+            humanPlayer->setDirection(Utils::InputDirection::DEFAULT);   
          }
       }
+      m_lastTime = m_currentTime;
+      return true;
+   }
+   return false;
 }
-
-void Controller::sendActions()
+size_t Controller::getAliveSnakes() const
+{  
+   return m_game->GetLivingSnakes().size();
+}
+void Controller::processInputPlayer1(const SDL_Event & keyPressed)
 {
-   switch (m_playersDirection[0]) {
-      default:
-         break;
+   auto player1 = dynamic_cast<HumanPlayer2*>(m_players[0].get());
+   if (keyPressed.type == SDL_KEYDOWN) {
+      switch (keyPressed.key.keysym.sym) {
+
+         // wasd for player1
+         case SDLK_w: {
+            player1->setDirection(Utils::InputDirection::UP);
+            break;
+         }
+         case SDLK_s: {
+            player1->setDirection(Utils::InputDirection::DOWN);
+            break;
+         }
+         case SDLK_d: {
+            player1->setDirection(Utils::InputDirection::RIGHT);
+            break;
+         }
+         case SDLK_a: {
+            player1->setDirection(Utils::InputDirection::LEFT);
+            break;
+         }
+
+      }
    }
 }
-
-void Controller::setPlayerDirection()
+void Controller::processInputPlayer2(const SDL_Event & keyPressed)
 {
-   currentTime = SDL_GetTicks();
-   if (currentTime > lastTime + 1000) {
-      lastTime = currentTime;
+   auto player2 = dynamic_cast<HumanPlayer2*>(m_players[1].get());
 
-      
+   if (keyPressed.type == SDL_KEYDOWN) {
+      switch (keyPressed.key.keysym.sym) {
+         // arrow keys for player2
 
+         case SDLK_UP: {
+            player2->setDirection(Utils::InputDirection::UP);
+            break;
+         }
+         case SDLK_DOWN: {
+            player2->setDirection(Utils::InputDirection::DOWN);
+            break;
+         }
+         case SDLK_RIGHT: {
+            player2->setDirection(Utils::InputDirection::RIGHT);
+            break;
+         }
+         case SDLK_LEFT: {
+            player2->setDirection(Utils::InputDirection::LEFT);
+            break;
+         }
+      }
    }
-
 }
-
+   
 }

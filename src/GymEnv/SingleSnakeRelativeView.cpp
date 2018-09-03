@@ -12,7 +12,12 @@ const std::vector<SnakeMove> SingleSnakeRelativeView::actions =
 	SnakeMove::RIGHT,
 }};
 
-SingleSnakeRelativeView::SingleSnakeRelativeView()
+SingleSnakeRelativeView::SingleSnakeRelativeView(
+	GameView::IGameRenderer* gameRenderer) :
+	m_game(),
+	m_student(),
+	m_stateExtractor(),
+	m_gameRenderer(std::unique_ptr<GameView::IGameRenderer>(gameRenderer))
 {
 	m_student = std::make_shared<SnakeStudent>();
 }
@@ -37,7 +42,7 @@ void SingleSnakeRelativeView::Reset()
 	const auto gameOptions = GameOptions(
 		GameBoardType::BOX,
 		10,
-		20,
+		10,
 		players.size());
 	
 	m_game = std::make_unique<Game>(Game(gameOptions, players));
@@ -66,5 +71,5 @@ StepResult SingleSnakeRelativeView::Step(const SnakeMove moveDirection)
 
 void SingleSnakeRelativeView::Render()
 {
-	m_game->PrintBoard();
+	m_gameRenderer->Render(m_game->GetGameState());
 }

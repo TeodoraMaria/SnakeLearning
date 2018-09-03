@@ -4,6 +4,7 @@
 #include "SnakeStudent.hpp"
 #include "StateExtractor.hpp"
 #include "GameLogic/Game.h"
+#include "GameLogic/TermRenderer.hpp"
 #include <cstddef>
 #include <vector>
 
@@ -18,7 +19,7 @@ namespace GymEnv
 	public:
 		static const std::vector<SnakeMove> actions;
 
-		SingleSnakeRelativeView();
+		SingleSnakeRelativeView(GameView::IGameRenderer* gameRenderer);
 		
 		size_t GetNumbOfObservations() const;
 		int GetState() const;
@@ -31,5 +32,6 @@ namespace GymEnv
 		std::unique_ptr<Game> m_game;
 		std::shared_ptr<SnakeStudent> m_student;
 		const GymEnv::Utils::StateExtractor m_stateExtractor;
+		std::unique_ptr<GameView::IGameRenderer> m_gameRenderer;
 	};
 }

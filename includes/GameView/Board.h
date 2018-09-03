@@ -9,14 +9,12 @@ namespace GameView
    {
    public:
       Board();
-      Board(std::vector<std::vector<int>> board, size_t windowWidth, size_t windowheigth);
-      Board(int rows, int cols, size_t windowWidth, size_t windowHeigtht);
       Board(size_t windowWidth, size_t windowHeigth);
       ~Board();
 
       void consolePrint();
       void draw();
-      void setCellAt(int i, int j, int value);
+      void setCellValueAt(int i, int j, int value);
 
       void setUpBoard(int rows, int cols);
 

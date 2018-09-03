@@ -29,6 +29,8 @@ Game::~Game()
 
 void Game::InitGame()
 {
+	m_isGameOver = false;
+	m_snakes.clear();
 	m_gameBoard.Init();
 	InitSnakes();
 	InitFood();
@@ -116,7 +118,6 @@ void Game::CheckIfGameOver()
 		}
 		std::cout << std::endl;
 	}
-	
 #else
 	void Game::PrintBoard()
 	{
@@ -246,7 +247,7 @@ void Game::RestockFood()
 
 bool Game::IsSnakeHead(const Coordinate& coord) const
 {
-	if (m_gameBoard[coord] <= 10)
+	if (m_gameBoard[coord] <= START_OF_SNAKE_INDEXES)
 		return false;
 	
 	auto snakeNumber = m_gameBoard[coord];

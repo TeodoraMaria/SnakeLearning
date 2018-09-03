@@ -4,32 +4,35 @@
 
 namespace GameView
 {
-
-
    class Cell
    {
    public:
       Cell();
       Cell(double x, double y, double width, double height, int value);
+      Cell(double x, double y, double width, double height, int value, Utils::CellType celltype);
       ~Cell();
 
-      void draw();
+      void draw() const;
 
-      void drawUpperLeftCorner();
-      void drawUpperRightCorner();
-      void drawLowerRightCorner();
-      void drawlowerLeftCorner();
+      void drawBlock() const;
 
-      void drawSnakeHead();
-      void drawSnakeBody();
+      void drawWall() const;
+      void drawField() const;
+      void drawFood() const;
 
-      void drawFood();
+      void drawSnakeTail() const;
+      void drawSnakeHead() const;
+      void drawSnakeBody() const;
+
       
       void setValue(int value);
+      void setCellType(Utils::CellType cellType);
 
-      void printConsole();
+      void printConsole() const;
 
    private:
+      void setGlColor() const;
+      void rotate(double& x, double& y, double degrees) const;
 
       double m_x = 0;
       double m_y = 0;
@@ -38,8 +41,6 @@ namespace GameView
 
       int m_value = 0;
 
-      void setGLColor(Utils::Color color);
-      void setGlColor2();
-
+      Utils::CellType m_cellType;
    };
 }

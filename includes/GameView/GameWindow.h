@@ -4,12 +4,13 @@
 #include "Controller.h"
 
 #include <SDL.h>
+#include <memory>
 
 namespace GameView
 {
    class EventHandler;
 
-   enum class EGameState
+   enum class GameState
    {
       PLAY,
       EXIT
@@ -36,14 +37,11 @@ namespace GameView
       size_t m_screenWidth;
       size_t m_screenHeight;
 
-      EGameState m_gameSate = EGameState::PLAY;
+      GameState m_gameSate = GameState::PLAY;
 
-      Board* m_board;
-
-      Controller* m_controller;
-
-     EventHandler* m_eventHandler;
-
+      std::shared_ptr<Board> m_board;
+      std::shared_ptr<Controller> m_controller;
+      std::shared_ptr<EventHandler> m_eventHandler;
    };
 }
 
