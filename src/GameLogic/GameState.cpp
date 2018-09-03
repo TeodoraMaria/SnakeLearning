@@ -58,3 +58,22 @@ const std::vector<std::vector<int>> GameState::GetFieldOfView(const Snake& snake
 	return fieldOfView;
 }
 
+bool GameState::IsSnakeHead(const Coordinate& coord) const
+{
+	if (m_gameBoard[coord] <= START_OF_SNAKE_INDEXES)
+		return false;
+
+	auto snakeNumber = m_gameBoard[coord];
+	auto snake = *std::find_if(
+		m_snakes.begin(),
+		m_snakes.end(),
+		[snakeNumber](const auto& snake)
+	{
+		return snake.GetSnakeNumber() == snakeNumber;
+	});
+
+	auto head = snake.GetSnakeHead();
+
+	return (head == coord);
+}
+
