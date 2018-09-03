@@ -1,4 +1,5 @@
 #include "HumanPlayer2.h"
+#include <iostream>
 
 namespace GameView
 {
@@ -13,8 +14,9 @@ HumanPlayer2::~HumanPlayer2()
 SnakeMove HumanPlayer2::GetNextAction(const GameState & gameState) const
 {
    SnakeMove move = GetUserInput();
+   
 
-   TranslateMoveToSnakeView(move, gameState);
+   //TranslateMoveToSnakeView(move, gameState);
    return move != SnakeMove::DOWN ? move : SnakeMove::FORWARD;
 }
 
@@ -26,21 +28,31 @@ void HumanPlayer2::setDirection(Utils::InputDirection direction)
 SnakeMove HumanPlayer2::GetUserInput() const
 {
    switch (m_direction) {
-      case Utils::InputDirection::UP:
+      case Utils::InputDirection::UP: {
+         std::cout << "up"<<std::endl;
          return SnakeMove::FORWARD;
          break;
-      case Utils::InputDirection::DOWN:
+      }
+      case Utils::InputDirection::DOWN: {
+         std::cout << "down" << std::endl;
          return SnakeMove::DOWN;
          break;
-      case Utils::InputDirection::LEFT:
-         return SnakeMove::LEFT;
-         break;
-      case Utils::InputDirection::RIGHT:
+      }
+      case Utils::InputDirection::LEFT: {
+         std::cout << "left" << std::endl;
          return SnakeMove::RIGHT;
          break;
-      default:
+      }
+      case Utils::InputDirection::RIGHT: {
+         std::cout << "right" << std::endl;
+         return SnakeMove::LEFT;
+         break;
+      }
+      default: {
+         std::cout << "default forward" << std::endl;
          return SnakeMove::FORWARD;
          break;
+      }
    }
 }
 

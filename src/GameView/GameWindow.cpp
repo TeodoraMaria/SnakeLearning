@@ -25,6 +25,9 @@ namespace GameView
 
       m_controller = std::make_shared<Controller>(Controller());
       m_eventHandler->addGameController(m_controller.get());
+
+      m_board = std::make_shared<Board>(Board(m_screenWidth, m_screenWidth));
+      m_controller->addBoard(m_board.get());
    }
 
    GameWindow::~GameWindow()
@@ -71,17 +74,17 @@ namespace GameView
       glMatrixMode(GL_PROJECTION);
       glLoadIdentity();
       glOrtho(0.0f, m_screenWidth, m_screenHeight, 0.0f, 0.0f, 1.0f);
-      glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+      glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
 
-      m_board = std::make_shared<Board>(Board(m_screenWidth, m_screenWidth));
-      m_controller->setBoard(m_board.get());
+
    }
 
    void GameWindow::processInput()
    {
       m_eventHandler->processInput();
-      m_controller->sendActions();
-      m_controller->updateBoard(m_board.get());
+      if (m_controller->sendActions()) {
+         m_controller->updateBoard();
+      }
    }
 
    void GameWindow::gameLoop()
@@ -89,6 +92,7 @@ namespace GameView
       while (m_gameSate != GameState::EXIT) {
          processInput();
          drawGame();
+         m_eventHandler->checkIfGameOver();
       }
    }
 

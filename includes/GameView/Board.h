@@ -14,7 +14,7 @@ namespace GameView
 
       void consolePrint();
       void draw();
-      void setCellAt(int i, int j, int value);
+      void setCellValueAt(int i, int j, int value);
 
       void setUpBoard(int rows, int cols);
 
