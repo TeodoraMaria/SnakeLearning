@@ -94,6 +94,7 @@ namespace GameView
          drawGame();
          m_eventHandler->checkIfGameOver();
       }
+
    }
 
    void GameWindow::drawGame()

@@ -16,7 +16,7 @@ SnakeMove HumanPlayer2::GetNextAction(const GameState & gameState) const
    SnakeMove move = GetUserInput();
    
 
-   //TranslateMoveToSnakeView(move, gameState);
+  // TranslateMoveToSnakeView(move, gameState);
    return move != SnakeMove::DOWN ? move : SnakeMove::FORWARD;
 }
 
