@@ -43,8 +43,8 @@ std::list<Coordinate> Snake::GetSnakeBody() const
 
 bool Snake::InitSnake(GameBoard& gameBoard, const size_t size)
 {
-	assert(size > 0);
-
+	assert((size > 1) && "Invalid snake size. Minimum: 2");
+	
 	GenerateHead(gameBoard);
 	GenerateBody(gameBoard, GetSnakeHead(), size);
 	

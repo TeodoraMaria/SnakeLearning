@@ -69,7 +69,7 @@ bool GameState::IsSnakeHead(const Coordinate& coord) const
 		m_snakes.end(),
 		[snakeNumber](const auto& snake)
 	{
-		return snake.GetSnakeNumber() == snakeNumber;
+		return snake.GetSnakeNumber() == static_cast<size_t>(snakeNumber);
 	});
 
 	auto head = snake.GetSnakeHead();

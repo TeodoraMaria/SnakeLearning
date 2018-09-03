@@ -144,8 +144,9 @@ void Game::DisplayScoreBoard()
 	std::sort(m_snakes.begin(), m_snakes.end(),
 		[](const auto& snakeOne, const auto& snakeTwo)
 		{
-		return snakeOne.GetScore() > snakeTwo.GetScore();
+			return snakeOne.GetScore() > snakeTwo.GetScore();
 		});
+
 	std::cout << "\nSCORE BOARD:\n";
 	for (const auto& snake : m_snakes) 
 	{
@@ -158,41 +159,39 @@ int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 	auto& snakeToMove = *std::find_if(m_snakes.begin(), m_snakes.end(), 
 		[snakeNumber](const auto& snake) 
 		{
-		return snake.GetSnakeNumber() == snakeNumber; 
+			return snake.GetSnakeNumber() == snakeNumber;
 		});
-		Coordinate snakeOrientation = snakeToMove.GetOrientation();
-		if (move == SnakeMove::LEFT)
-		{
-			snakeOrientation = snakeOrientation.Rotate90Left();
-		}
-		else if (move == SnakeMove::RIGHT)
-		{
-			snakeOrientation = snakeOrientation.Rotate90Right();
-		}
+	
+	Coordinate snakeOrientation = snakeToMove.GetOrientation();
+	
+	if (move == SnakeMove::LEFT)
+		snakeOrientation = snakeOrientation.Rotate90Left();
+	else if (move == SnakeMove::RIGHT)
+		snakeOrientation = snakeOrientation.Rotate90Right();
 
-		const auto newSnakeHeadPosition =
-			snakeToMove.GetSnakeHead() + snakeOrientation;
+	const auto newSnakeHeadPosition =
+		snakeToMove.GetSnakeHead() + snakeOrientation;
 
-		if (m_gameBoard.IsFood(newSnakeHeadPosition))
-		{
-			snakeToMove.Eat(newSnakeHeadPosition);
-			m_gameBoard[newSnakeHeadPosition] = snakeNumber;
-			return 1;
-		}
-		else if (m_gameBoard.CoordIsEmpty(newSnakeHeadPosition))
-		{
-			Coordinate freedPosition = snakeToMove.GetSnakeTail();
-			snakeToMove.Move(newSnakeHeadPosition);
-			m_gameBoard.MoveSnake(freedPosition, newSnakeHeadPosition);
-			return 0;
-		}
-		else 
-		{
-			m_gameBoard.KillSnake(snakeToMove.GetSnakeBody());
-			snakeToMove.Die();
-			DisablePlayer(snakeNumber);
-			return -1;
-		}
+	if (m_gameBoard.IsFood(newSnakeHeadPosition))
+	{
+		snakeToMove.Eat(newSnakeHeadPosition);
+		m_gameBoard[newSnakeHeadPosition] = snakeNumber;
+		return 1;
+	}
+	else if (m_gameBoard.CoordIsEmpty(newSnakeHeadPosition))
+	{
+		Coordinate freedPosition = snakeToMove.GetSnakeTail();
+		snakeToMove.Move(newSnakeHeadPosition);
+		m_gameBoard.MoveSnake(freedPosition, newSnakeHeadPosition);
+		return 0;
+	}
+	else
+	{
+		m_gameBoard.KillSnake(snakeToMove.GetSnakeBody());
+		snakeToMove.Die();
+		DisablePlayer(snakeNumber);
+		return -1;
+	}
 }
 
 void Game::RunRound()
