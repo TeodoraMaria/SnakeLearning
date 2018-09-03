@@ -13,9 +13,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/
 	${CMAKE_SOURCE_DIR}/includes/)
 	
-	
 target_link_libraries(${PROJECT_NAME} PUBLIC
-	GameLogic
+	GameLogic ${GameLogic_DEPENDENCIES}
 	HardCoded
 )
 
