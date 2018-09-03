@@ -21,15 +21,12 @@ namespace GameView
       :m_screenWidth(screenWidth), m_screenHeight(screenHeight)
    {
       m_eventHandler.reset(new EventHandler());
-     // m_eventHandler = new EventHandler();
       m_eventHandler->addGameWindow(this);
 
       m_controller.reset(new Controller());
-      //m_controller = new Controller();
       m_eventHandler->addGameController(m_controller.get());
 
       m_board.reset(new Board(m_screenWidth, m_screenWidth));
-      //m_board = new Board(m_screenWidth, m_screenWidth);
       m_controller->addBoard(m_board.get());
    }
 
@@ -78,16 +75,6 @@ namespace GameView
       glLoadIdentity();
       glOrtho(0.0f, m_screenWidth, m_screenHeight, 0.0f, 0.0f, 1.0f);
       glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
-
-
-      glColor3f(1, 0, 0);
-      glBegin(GL_TRIANGLES);
-      glVertex2f(25, 25);
-      glVertex2f(225, 225);
-      glVertex2f(105, 125);
-      glEnd();
-
-
    }
 
    void GameWindow::processInput()

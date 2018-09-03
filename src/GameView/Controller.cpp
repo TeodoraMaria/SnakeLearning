@@ -85,15 +85,25 @@ bool Controller::sendActions()
    if (m_currentTime > m_lastTime + timeRange) {
       GameState state = m_game->GetGameState();
 
+      if (m_game->GetLivingSnakes().size() == 1) {
+         std::cout << "1";
+      }
+
       for (auto player : m_players) {
-         const auto chosenMove = player->GetNextAction(state);
+         
          const auto snakeNumber = player->GetSnakeNumber();
-         m_game->MoveSnake(snakeNumber, chosenMove);
 
-         auto humanPlayer = std::dynamic_pointer_cast<HumanPlayer2>(player);
+         const Snake& snake = state.GetSnake(snakeNumber);
+         if (snake.GetSnakeSize() != 0) {
+            const auto chosenMove = player->GetNextAction(state);
+            m_game->MoveSnake(snakeNumber, chosenMove);
 
-         if (humanPlayer != nullptr) {
-            humanPlayer->setDirection(Utils::InputDirection::DEFAULT);   
+            //std::cout << player->GetSnakeNumber()<<" ";
+            auto humanPlayer = std::dynamic_pointer_cast<HumanPlayer2>(player);
+
+            if (humanPlayer != nullptr) {
+               humanPlayer->setDirection(Utils::InputDirection::DEFAULT);
+            }
          }
       }
       m_lastTime = m_currentTime;

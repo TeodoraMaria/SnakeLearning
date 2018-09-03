@@ -84,6 +84,15 @@ bool GameBoard::IsWallOrBeyond(const Coordinate& coord) const
 	return !CoordIsBounded(coord) || (*this)[coord] == BoardPart::WALL;
 }
 
+bool GameBoard::HasFreeSpace() const
+{
+	for (const auto& line : m_board)
+		for (const auto& elem : line)
+			if (elem == 0)
+				return true;
+	return false;
+}
+
 bool GameBoard::CoordIsBounded(const Coordinate& coord) const
 {
 	if (coord.GetX() < 0 || coord.GetX() >= static_cast<int>(m_width))

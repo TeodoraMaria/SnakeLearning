@@ -177,7 +177,6 @@ int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 		{
 			snakeToMove.Eat(newSnakeHeadPosition);
 			m_gameBoard[newSnakeHeadPosition] = snakeNumber;
-			m_gameBoard.PlaceFood();
 			return 1;
 		}
 		else if (m_gameBoard.CoordIsEmpty(newSnakeHeadPosition))
@@ -233,7 +232,7 @@ void Game::InitFood()
 
 void Game::RestockFood()
 {
-	while (m_gameBoard.GetFoodPortions() < m_gameOptions.GetFoodPortions())
+	while (m_gameBoard.GetFoodPortions() < m_gameOptions.GetFoodPortions() && m_gameBoard.HasFreeSpace())
 	{
 		m_gameBoard.PlaceFood();
 	}
