@@ -4,6 +4,7 @@ add_subdirectory(GameLogic)
 add_subdirectory(GymEnv)
 add_subdirectory(AI)
 add_subdirectory(Utils)
+add_subdirectory(MultiplatformUtils)
 add_subdirectory(GameView)
 
 add_subdirectory(GameSandBox)

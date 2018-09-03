@@ -39,11 +39,9 @@ int StateExtractor::ComputeVieGridValue(
 		auto cellValue = StateExtractor::emptySpaceValue;
 		
 		// Non food.
-		if (gmBoard[viewGrid[i]] != 1)
+		if (gmBoard[viewGrid[i]] != BoardPart::FOOD)
 			cellValue = StateExtractor::wallValue;
-		
-		// Food
-		if (gmBoard[viewGrid[i]] == 1)
+		else
 			cellValue = StateExtractor::foodValue;
 		
 		state += cellValue * std::pow(base, i);

@@ -1,5 +1,6 @@
 #include "Board.h"
 #include "utils.h"
+#include "GameLogic/GameBoard.h"
 #include <iostream>
 
 namespace GameView
@@ -11,20 +12,10 @@ namespace GameView
    {
       
    }
-
-   void Board::consolePrint()
-   {
-      for (auto cellVec : m_gameCells) {
-         for (auto cell : cellVec) {
-            cell.printConsole();
-         }
-      }
-   }
-
    void Board::draw()
    {
-      for (auto cellVec : m_gameCells) {
-         for (auto cell : cellVec) {
+      for (const auto& cellVec : m_gameCells) {
+         for (const auto& cell : cellVec) {
             cell.draw();
          }
       }
@@ -46,7 +37,7 @@ namespace GameView
          m_gameCells[i].resize(rows);
 
          for (size_t j = 0; j < rows; j++) {
-            m_gameCells[i][j] = Cell(i*widthOffset, j*heightOffset, widthOffset, heightOffset, 0);
+            m_gameCells[i][j] = Cell(i*widthOffset, j*heightOffset, widthOffset, heightOffset, BoardPart::EMPTY);
          }
       }
    }

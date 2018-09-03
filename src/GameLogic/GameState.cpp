@@ -47,7 +47,7 @@ const std::vector<std::vector<int>> GameState::GetFieldOfView(const Snake& snake
 			auto pos = origin + right * x + snake.GetOrientation()*y;
 			if (m_gameBoard.IsWallOrBeyond(pos))
 			{
-				fieldOfView[y][x] = -1;
+				fieldOfView[y][x] = BoardPart::WALL;
 			}
 			else 
 			{
@@ -60,7 +60,7 @@ const std::vector<std::vector<int>> GameState::GetFieldOfView(const Snake& snake
 
 bool GameState::IsSnakeHead(const Coordinate& coord) const
 {
-	if (m_gameBoard[coord] <= START_OF_SNAKE_INDEXES)
+	if (m_gameBoard[coord] <= startOfSnakeIndexes)
 		return false;
 
 	auto snakeNumber = m_gameBoard[coord];

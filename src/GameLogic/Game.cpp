@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "MultiPlatformTerm.hpp"
+#include "MultiplatformUtils/Getch.h"
 #include <algorithm>
 #include <stdlib.h>
 #include <tuple>
@@ -68,7 +68,7 @@ std::vector<Snake> Game::GetAllSnakes() const
 
 void Game::InitSnakes()
 {
-	size_t snakeIndex = 10;
+	size_t snakeIndex = startOfSnakeIndexes;
 	for (auto player : m_players)
 	{
 		++snakeIndex;
@@ -127,12 +127,7 @@ void Game::CheckIfGameOver()
 			{
 				const auto targetPrint = m_gameBoard[Coordinate(i, j)];
 				if (IsSnakeHead(Coordinate(i, j)))
-				{
-					std::cout << "  ";
-					MultiPlatform::PrintColoredStr(
-						MultiPlatform::Color::RED,
-						std::to_string(targetPrint));
-				}
+					std::cout << "  \033[31m" << targetPrint << "\033[0m";
 				else
 					std::cout << std::setw(4) << targetPrint;
 				
@@ -184,7 +179,7 @@ int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 			m_gameBoard[newSnakeHeadPosition] = snakeNumber;
 			return 1;
 		}
-		else if (m_gameBoard.CheckCoord(newSnakeHeadPosition))
+		else if (m_gameBoard.CoordIsEmpty(newSnakeHeadPosition))
 		{
 			Coordinate freedPosition = snakeToMove.GetSnakeTail();
 			snakeToMove.Move(newSnakeHeadPosition);
@@ -208,13 +203,12 @@ void Game::RunRound()
 	{
 		if (player == nullptr)
 			return;
-		const auto chosenMove = player->GetNextAction(GetGameState());
 		
+		const auto chosenMove = player->GetNextAction(GetGameState());
 		const auto snakeNumber = player->GetSnakeNumber();
 		MoveSnake(snakeNumber, chosenMove);
 	}
 	RestockFood();
-	//Sleep(200);
 }
 
 void Game::Play()
@@ -246,7 +240,7 @@ void Game::RestockFood()
 
 bool Game::IsSnakeHead(const Coordinate& coord) const
 {
-	if (m_gameBoard[coord] <= START_OF_SNAKE_INDEXES)
+	if (m_gameBoard[coord] <= startOfSnakeIndexes)
 		return false;
 	
 	auto snakeNumber = m_gameBoard[coord];

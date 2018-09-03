@@ -24,8 +24,5 @@ int main()
 	
 	game.InitGame();
 	game.Play();
-
-	game.InitGame();
-	game.Play();
 	return 0;
 }

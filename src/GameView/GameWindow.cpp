@@ -80,6 +80,14 @@ namespace GameView
       glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
 
 
+      glColor3f(1, 0, 0);
+      glBegin(GL_TRIANGLES);
+      glVertex2f(25, 25);
+      glVertex2f(225, 225);
+      glVertex2f(105, 125);
+      glEnd();
+
+
    }
 
    void GameWindow::processInput()

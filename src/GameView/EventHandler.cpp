@@ -36,7 +36,7 @@ void EventHandler::addGameWindow(GameWindow* gameWindow)
 
 void EventHandler::addGameController(Controller* controller)
 {
-   m_controller = controller;
+   m_controller =controller;
 }
 
 void EventHandler::checkIfGameOver()
