@@ -30,9 +30,5 @@ target_link_libraries(${PROJECT_NAME}
 	${OPENGL_LIBRARIES}
 )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES
-	ARCHIVE_OUTPUT_DIRECTORY	"${CMAKE_SOURCE_DIR}/bin"
-	LIBRARY_OUTPUT_DIRECTORY	"${CMAKE_SOURCE_DIR}/bin"
-	RUNTIME_OUTPUT_DIRECTORY	"${CMAKE_SOURCE_DIR}/bin"
-	EXECUTABLE_OUTPUT_PATH		"${CMAKE_SOURCE_DIR}/bin"
-)
+SetDefaultTargetProperties()
+SetCompileFlags_IfParentRequiresIt()

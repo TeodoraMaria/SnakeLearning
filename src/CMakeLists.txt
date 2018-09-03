@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.0.0)
 
 include(OpenGlLoader.cmake)
+include(CmakeUtils.cmake)
+
+set(CompileWithFlags FALSE)
 
 add_subdirectory(GameLogic)
 add_subdirectory(GymEnv)
