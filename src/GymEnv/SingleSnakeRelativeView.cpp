@@ -39,11 +39,11 @@ void SingleSnakeRelativeView::Reset()
 		IPlayerPtr(m_student)
 	});
 	
-	const auto gameOptions = GameOptions(
+	const auto gameOptions = GameOptions({
 		GameBoardType::BOX,
 		10,
 		10,
-		players.size());
+		players.size()});
 	
 	m_game = std::make_unique<Game>(Game(gameOptions, players));
 	m_game->InitGame();
