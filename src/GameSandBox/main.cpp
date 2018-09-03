@@ -22,7 +22,7 @@ int main()
 		gameOptions.boardLength = 10;
 		gameOptions.boardWidth = 10;
 		gameOptions.numberOfPlayers = players.size();
-		gameOptions.foodPortions = 3;
+		gameOptions.numFoods = 3;
 	}
 	Game game(gameOptions, players);
 	

@@ -8,5 +8,5 @@ struct GameOptions
 	size_t boardLength = 10;
 	size_t boardWidth = 10;
 	size_t numberOfPlayers = 1;
-	size_t foodPortions = 1;
+	size_t numFoods = 1;
 };
