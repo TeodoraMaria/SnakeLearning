@@ -14,7 +14,7 @@ namespace GameView
    }
 
    Cell::Cell(double x, double y, double width, double height, int value) 
-      :m_x(x), m_y(y), m_width(width), m_height(height), m_value(value)
+      :m_x(x), m_y(y), m_width(width), m_height(height), m_value(value), m_cellType(Utils::CellType::WALL)
    {
 
    }
