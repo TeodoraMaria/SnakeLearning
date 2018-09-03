@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "MultiPlatformTerm.hpp"
+#include "MultiplatformUtils/Getch.h"
 #include <algorithm>
 #include <stdlib.h>
 #include <tuple>
@@ -127,12 +127,7 @@ void Game::CheckIfGameOver()
 			{
 				const auto targetPrint = m_gameBoard[Coordinate(i, j)];
 				if (IsSnakeHead(Coordinate(i, j)))
-				{
-					std::cout << "  ";
-					MultiPlatform::PrintColoredStr(
-						MultiPlatform::Color::RED,
-						std::to_string(targetPrint));
-				}
+					std::cout << "  \033[31m" << targetPrint << "\033[0m";
 				else
 					std::cout << std::setw(4) << targetPrint;
 				

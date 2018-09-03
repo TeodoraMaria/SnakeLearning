@@ -1,5 +1,5 @@
 #include "HumanPlayer.h"
-#include "MultiPlatformTerm.hpp"
+#include "MultiplatformUtils/Getch.h"
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
@@ -38,8 +38,10 @@ SnakeMove HumanPlayer::GetNextAction(const GameState& gameState) const
 SnakeMove HumanPlayer::GetUserInput() const
 {
 	std::cout << "Action for snake " << GetSnakeNumber() << std::endl;
-	int action = MultiPlatform::getch();
-	switch (action) {
+	const int action = MultiplatformUtils::Getch();
+	
+	switch (action)
+	{
 	case KEY_UP:
 		return SnakeMove::FORWARD;
 	case KEY_LEFT:
