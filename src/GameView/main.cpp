@@ -1,4 +1,3 @@
-#pragma once
 #include <time.h>
 
 #include "GameWindow.h"

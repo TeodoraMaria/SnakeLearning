@@ -1,5 +1,5 @@
 #include "Cell.h"
-#include <GL\glew.h>
+#include <GL/glew.h>
 #include "utils.h"
 
 #include <iostream>

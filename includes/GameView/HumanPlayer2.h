@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameLogic\IPlayer.h"
+#include "GameLogic/IPlayer.h"
 
 #include "utils.h"
 

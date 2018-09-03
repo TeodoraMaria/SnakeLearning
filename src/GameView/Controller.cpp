@@ -6,7 +6,7 @@
 #include "EventHandler.h"
 #include "Board.h"
 #include "HumanPlayer2.h"
-#include "GameLogic\GameState.h"
+#include "GameLogic/GameState.h"
 
 namespace GameView
 {
@@ -80,9 +80,9 @@ void Controller::updateBoard()
 
       }
       */
-      for (size_t i = 1; i < snakeBody.size()-1;i++) {
-         
-      }
+//      for (size_t i = 1; i < snakeBody.size()-1;i++) {
+//         
+//      }
 
    }
 }
