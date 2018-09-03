@@ -31,12 +31,12 @@ void EventHandler::processInput()
 
 void EventHandler::addGameWindow(GameWindow* gameWindow)
 {
-   m_gameWindow = std::shared_ptr<GameWindow>(gameWindow);
+   m_gameWindow = gameWindow;
 }
 
 void EventHandler::addGameController(Controller* controller)
 {
-   m_controller = std::shared_ptr<Controller>(controller);
+   m_controller = controller;
 }
 
 void EventHandler::checkIfGameOver()

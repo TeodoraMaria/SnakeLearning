@@ -20,13 +20,16 @@ namespace GameView
    GameWindow::GameWindow(size_t screenWidth, size_t screenHeight) 
       :m_screenWidth(screenWidth), m_screenHeight(screenHeight)
    {
-      m_eventHandler = std::make_shared<EventHandler>(EventHandler());
+      m_eventHandler.reset(new EventHandler());
+     // m_eventHandler = new EventHandler();
       m_eventHandler->addGameWindow(this);
 
-      m_controller = std::make_shared<Controller>(Controller());
+      m_controller.reset(new Controller());
+      //m_controller = new Controller();
       m_eventHandler->addGameController(m_controller.get());
 
-      m_board = std::make_shared<Board>(Board(m_screenWidth, m_screenWidth));
+      m_board.reset(new Board(m_screenWidth, m_screenWidth));
+      //m_board = new Board(m_screenWidth, m_screenWidth);
       m_controller->addBoard(m_board.get());
    }
 
