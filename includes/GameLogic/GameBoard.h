@@ -34,6 +34,7 @@ public:
 	bool CheckCoord(const Coordinate& coord) const;
 	bool CoordIsBounded(const Coordinate& coord) const;
 	bool IsWallOrBeyond(const Coordinate& coord) const;
+	bool HasFreeSpace() const;
 
 	void Init();
 	void PlaceFood();
