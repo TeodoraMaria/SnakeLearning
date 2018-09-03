@@ -28,8 +28,8 @@ private:
 	void CheckIfGameOver();
 	void InitFood();
 	void RestockFood();
-	void AddSnakeToGame(const size_t& snakeNumber);
-	void RemovePlayer(const size_t& snakeNumber);
+	void AddSnakeToGame(const int snakeNumber);
+	void DisablePlayer(const int snakeNumber);
 	bool IsSnakeHead(const Coordinate& coord) const;
 
 	

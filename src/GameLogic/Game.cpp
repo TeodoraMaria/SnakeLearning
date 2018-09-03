@@ -31,6 +31,8 @@ void Game::InitGame()
 {
 	m_isGameOver = false;
 	m_snakes.clear();
+	for (auto& player : m_players)
+		player->SetIsActive(true);
 	m_gameBoard.Init();
 	InitSnakes();
 	InitFood();
@@ -77,21 +79,18 @@ void Game::InitSnakes()
 	}
 }
 
-void Game::AddSnakeToGame(const size_t& snakeNumber)
+void Game::AddSnakeToGame(const int snakeNumber)
 {
 	Snake snake(snakeNumber);
 	snake.InitSnake(m_gameBoard);
 	m_snakes.push_back(snake);
 }
 
-void Game::RemovePlayer(const size_t & snakeNumber)
+void Game::DisablePlayer(const int snakeNumber)
 {
-	if (m_players.size()>1)
-	{
-		auto deleteFrom = std::remove_if(m_players.begin(), m_players.end(), 
-			[snakeNumber](auto player) {return player->GetSnakeNumber() == snakeNumber; });
-		m_players.erase(deleteFrom);
-	}
+	auto it = std::find_if(m_players.begin(), m_players.end(), 
+		[snakeNumber](const auto& player) {return player->GetSnakeNumber() == snakeNumber; });
+	(*it)->SetIsActive(false);
 }
 
 void Game::CheckIfGameOver()
@@ -190,7 +189,7 @@ int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 		{
 			m_gameBoard.KillSnake(snakeToMove.GetSnakeBody());
 			snakeToMove.Die();
-			RemovePlayer(snakeNumber);
+			DisablePlayer(snakeNumber);
 			return -1;
 		}
 }
@@ -201,8 +200,8 @@ void Game::RunRound()
 	std::random_shuffle(m_players.begin(), m_players.end());
 	for (auto player : m_players)
 	{
-		if (player == nullptr)
-			return;
+		if (player->GetIsActive()==false)
+			break;
 		
 		const auto chosenMove = player->GetNextAction(GetGameState());
 		const auto snakeNumber = player->GetSnakeNumber();
