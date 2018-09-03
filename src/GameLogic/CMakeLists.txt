@@ -13,9 +13,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/
 	${CMAKE_SOURCE_DIR}/includes/)
 
-# Dependecies
-set(LIB_DEPENDENCIES "${PROJECT_NAME}_DEPENDENCIES")
-set(${LIB_DEPENDENCIES} MultiplatformUtils PARENT_SCOPE)
+target_link_libraries(${PROJECT_NAME}
+	MultiplatformUtils
+)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
 	ARCHIVE_OUTPUT_DIRECTORY	"${CMAKE_SOURCE_DIR}/bin"

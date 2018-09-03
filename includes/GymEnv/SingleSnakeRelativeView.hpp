@@ -4,7 +4,7 @@
 #include "SnakeStudent.hpp"
 #include "StateExtractor.hpp"
 #include "GameLogic/Game.h"
-#include "GameLogic/TermRenderer.hpp"
+#include "GameView/TermRenderer.hpp"
 #include <cstddef>
 #include <vector>
 

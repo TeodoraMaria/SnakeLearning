@@ -3,7 +3,7 @@
 #include "ActionPickingUtils.h"
 
 #include "GymEnv/SingleSnakeRelativeView.hpp"
-#include "GameLogic/TermRenderer.hpp"
+#include "GameView/TermRenderer.hpp"
 #include "Utils/MathUtils.h"
 #include "Utils/PrintUtils.h"
 #include "Utils/MatrixUtils.h"
