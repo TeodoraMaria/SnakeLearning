@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0)
 
+include(OpenGlLoader.cmake)
+
 add_subdirectory(GameLogic)
 add_subdirectory(GymEnv)
 add_subdirectory(AI)
@@ -8,4 +10,5 @@ add_subdirectory(MultiplatformUtils)
 add_subdirectory(GameView)
 
 add_subdirectory(GameSandBox)
+add_subdirectory(OpenGlSandBox)
 add_subdirectory(TrainingGrounds)
