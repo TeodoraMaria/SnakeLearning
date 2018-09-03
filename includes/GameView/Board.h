@@ -12,7 +12,6 @@ namespace GameView
       Board(size_t windowWidth, size_t windowHeigth);
       ~Board();
 
-      void consolePrint();
       void draw();
       void setCellValueAt(int i, int j, int value);
 

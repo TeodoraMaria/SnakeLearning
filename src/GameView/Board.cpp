@@ -12,20 +12,10 @@ namespace GameView
    {
       
    }
-
-   void Board::consolePrint()
-   {
-      for (auto cellVec : m_gameCells) {
-         for (auto cell : cellVec) {
-            cell.printConsole();
-         }
-      }
-   }
-
    void Board::draw()
    {
-      for (auto cellVec : m_gameCells) {
-         for (auto cell : cellVec) {
+      for (const auto& cellVec : m_gameCells) {
+         for (const auto& cell : cellVec) {
             cell.draw();
          }
       }

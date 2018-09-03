@@ -42,11 +42,6 @@ namespace GameView
       std::unique_ptr<Board> m_board;
       std::unique_ptr<Controller> m_controller;
       std::unique_ptr<EventHandler> m_eventHandler;
-
-     // Board* m_board;
-      //Controller* m_controller;
-      //EventHandler* m_eventHandler;
-
    };
 }
 
