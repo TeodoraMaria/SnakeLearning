@@ -22,10 +22,16 @@ Controller::Controller()
       //std::make_shared<HumanPlayer2>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
+      std::make_shared<AI::HardCoded::SingleBot>(),
+      std::make_shared<AI::HardCoded::SingleBot>(),
+      std::make_shared<AI::HardCoded::SingleBot>(),
+      std::make_shared<AI::HardCoded::SingleBot>(),
+      std::make_shared<AI::HardCoded::SingleBot>(),
+      std::make_shared<AI::HardCoded::SingleBot>(),
       //IPlayerPtr(new AI::HardCoded::SingleBot()),
    });
 
-   const GameOptions gameOptions(GameBoardType::BOX, 20, 20, m_players.size(), 1);
+   const GameOptions gameOptions(GameBoardType::BOX, 20, 20, m_players.size(), 10);
 
    m_game = new Game(gameOptions, m_players);
    m_game->InitGame();
@@ -83,6 +89,10 @@ bool Controller::sendActions()
    m_currentTime = SDL_GetTicks();
    size_t timeRange = 2;
    if (m_currentTime > m_lastTime + timeRange) {
+
+      m_game->RunRound();
+
+      /*
       GameState state = m_game->GetGameState();
 
       if (m_game->GetLivingSnakes().size() == 1) {
@@ -107,6 +117,7 @@ bool Controller::sendActions()
          }
       }
       m_lastTime = m_currentTime;
+      */
       return true;
    }
    return false;
