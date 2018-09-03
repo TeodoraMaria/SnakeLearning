@@ -11,17 +11,20 @@ int main()
 
 	std::vector<IPlayerPtr> players(
 	{
-		std::make_shared<AI::HardCoded::SingleBot>(),
-		std::make_shared<HumanPlayer>()
-//		IPlayerPtr(new AI::HardCoded::SingleBot()),
-//		IPlayerPtr(new AI::HardCoded::SingleBot()),
+		IPlayerPtr(new AI::HardCoded::SingleBot()),
+		IPlayerPtr(new AI::HardCoded::SingleBot()),
+		//IPlayerPtr(new AI::HardCoded::SingleBot()),
+		//IPlayerPtr(new AI::HardCoded::SingleBot()),
 	});
 	
-	const GameOptions gameOptions(GameBoardType::BOX, 10, 20, players.size(),3);
+	const GameOptions gameOptions(GameBoardType::BOX, 10, 5, players.size(),3);
 	Game game(gameOptions, players);
 	
 	std::cout << "W for foward, A for left, D for right\n\n";
 	
+	game.InitGame();
+	game.Play();
+
 	game.InitGame();
 	game.Play();
 	return 0;

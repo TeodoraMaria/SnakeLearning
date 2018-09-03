@@ -29,6 +29,8 @@ Game::~Game()
 
 void Game::InitGame()
 {
+	m_isGameOver = false;
+	m_snakes.clear();
 	m_gameBoard.Init();
 	InitSnakes();
 	InitFood();
