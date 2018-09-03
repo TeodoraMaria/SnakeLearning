@@ -25,8 +25,13 @@ Controller::Controller()
       //IPlayerPtr(new AI::HardCoded::SingleBot()),
    });
 
-   const GameOptions gameOptions(GameBoardType::BOX, 20, 20, m_players.size(), 1);
-
+	GameOptions gameOptions;
+	{
+		gameOptions.boardLength = 20;
+		gameOptions.boardWidth = 20;
+		gameOptions.numberOfPlayers = m_players.size();
+		gameOptions.foodPortions = 1;
+	}
    m_game = new Game(gameOptions, m_players);
    m_game->InitGame();
 }

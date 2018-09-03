@@ -17,7 +17,13 @@ int main()
 		//IPlayerPtr(new AI::HardCoded::SingleBot()),
 	});
 	
-	const GameOptions gameOptions(GameBoardType::BOX, 10, 10, players.size(),3);
+	GameOptions gameOptions;
+	{
+		gameOptions.boardLength = 10;
+		gameOptions.boardWidth = 10;
+		gameOptions.numberOfPlayers = players.size();
+		gameOptions.foodPortions = 3;
+	}
 	Game game(gameOptions, players);
 	
 	std::cout << "W for foward, A for left, D for right\n\n";

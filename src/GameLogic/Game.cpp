@@ -16,11 +16,11 @@ Game::Game(
 	m_gameOptions(gameOptions),
 	m_players(players)
 {
-	m_players.resize(gameOptions.GetNumberOfPlayers());
+	m_players.resize(gameOptions.numberOfPlayers);
 	m_gameBoard = GameBoard(
-		gameOptions.GetGameBoardType(),
-		gameOptions.GetBoardLength(),
-		gameOptions.GetBoardWidth());
+		gameOptions.gameBoardType,
+		gameOptions.boardLength,
+		gameOptions.boardWidth);
 }
 
 Game::~Game()
@@ -223,7 +223,7 @@ void Game::Play()
 
 void Game::InitFood() 
 {
-	for (auto i = 0u; i < m_gameOptions.GetFoodPortions(); ++i)
+	for (auto i = 0u; i < m_gameOptions.foodPortions; ++i)
 	{
 		m_gameBoard.PlaceFood();
 	}
@@ -231,7 +231,7 @@ void Game::InitFood()
 
 void Game::RestockFood()
 {
-	while (m_gameBoard.GetFoodPortions() < m_gameOptions.GetFoodPortions() && m_gameBoard.HasFreeSpace())
+	while (m_gameBoard.GetFoodPortions() < m_gameOptions.foodPortions && m_gameBoard.HasFreeSpace())
 	{
 		m_gameBoard.PlaceFood();
 	}
