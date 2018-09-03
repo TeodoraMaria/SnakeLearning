@@ -66,7 +66,7 @@ int GameBoard::operator[](const Coordinate & coord) const
 ** Bool states.
 */
 
-bool GameBoard::IsFood(const Coordinate & location)
+bool GameBoard::IsFood(const Coordinate & location) const
 {
 	return (*this)[location] == 1;
 }
