@@ -29,22 +29,24 @@ const Snake & GameState::GetSnake(const int snakeNumber) const
 		});
 }
 
-const std::vector<std::vector<int>> GameState::GetFieldOfView(const Snake& snake, int width, int length) const
+const FieldOfView GameState::GetFieldOfView(
+	const Snake& snake,
+	const int width,
+	const int length) const
 {
-	std::vector<std::vector<int>> fieldOfView;
-	fieldOfView.resize(width);
+	FieldOfView fieldOfView(width);
+	
 	for (auto& line : fieldOfView)
-	{
 		line.resize(length);
-	}
-	auto left = snake.GetOrientation().Rotate90Left();
-	auto right = snake.GetOrientation().Rotate90Right();
-	auto origin = snake.GetSnakeHead() + left*(length / 2);
+	
+	const auto left = snake.GetOrientation().Rotate90Left();
+	const auto right = snake.GetOrientation().Rotate90Right();
+	const auto origin = snake.GetSnakeHead() + left * (length / 2);
 
-	for(auto x = 0; x<length; ++x)
-		for (auto y = 0; y <width; ++y)
+	for (auto x = 0; x < length; ++x)
+		for (auto y = 0; y < width; ++y)
 		{
-			auto pos = origin + right * x + snake.GetOrientation()*y;
+			const auto pos = origin + right * x + snake.GetOrientation() * y;
 			if (m_gameBoard.IsWallOrBeyond(pos))
 			{
 				fieldOfView[y][x] = BoardPart::WALL;
@@ -54,6 +56,7 @@ const std::vector<std::vector<int>> GameState::GetFieldOfView(const Snake& snake
 				fieldOfView[y][x] = m_gameBoard[pos];
 			}
 		}
+	
 	fieldOfView.shrink_to_fit();
 	return fieldOfView;
 }
