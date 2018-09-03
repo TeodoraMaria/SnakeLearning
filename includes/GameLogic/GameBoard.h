@@ -13,6 +13,13 @@ enum BoardPart
 	FOOD = 2
 };
 
+enum class GameBoardType
+{
+	LIMITLESS,
+	BOX,
+	CUSTOM
+};
+
 class GameBoard
 {
 public:
