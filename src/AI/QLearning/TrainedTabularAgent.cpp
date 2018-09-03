@@ -1,12 +1,13 @@
 #include "TrainedTabularAgent.hpp"
 #include "TabularTrainer.hpp"
 #include "ActionPickingUtils.h"
+#include <assert.h>
 
 using namespace AI::QLearning::TrainedAgent;
 
 TrainedTabularAgent::TrainedTabularAgent(
 	const std::vector<SnakeMove>& actions,
-	const QTable& qBrains) :
+	const AI::QLearning::QTable& qBrains) :
 	m_stateExtractor(),
 	m_actions(actions),
 	m_qBrains(qBrains)
