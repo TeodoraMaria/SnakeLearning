@@ -14,12 +14,15 @@
 
 namespace GymEnv
 {
-	class SingleSnakeRelativeView
+	class SingleSnakeGridView
 	{
 	public:
 		static const std::vector<SnakeMove> actions;
 
-		SingleSnakeRelativeView(GameView::IGameRenderer* gameRenderer);
+		SingleSnakeGridView(
+			size_t gridWidth,
+			size_t gridHeight,
+			GameView::IGameRenderer* gameRenderer);
 		
 		size_t GetNumbOfObservations() const;
 		int GetState() const;

@@ -16,7 +16,6 @@ SingleSnakeRelativeView::SingleSnakeRelativeView(
 	GameView::IGameRenderer* gameRenderer) :
 	m_game(),
 	m_student(),
-	m_stateExtractor(),
 	m_gameRenderer(std::unique_ptr<GameView::IGameRenderer>(gameRenderer))
 {
 	m_student = std::make_shared<SnakeStudent>();
@@ -51,7 +50,7 @@ void SingleSnakeRelativeView::Reset()
 
 int SingleSnakeRelativeView::GetState() const
 {
-	return m_stateExtractor.GetRelativeViewStateBase3(
+	return GymEnv::Utils::StateExtractor::GetRelativeViewStateBase3(
 		m_game->GetGameState(),
 		m_student->GetSnakeNumber());
 }

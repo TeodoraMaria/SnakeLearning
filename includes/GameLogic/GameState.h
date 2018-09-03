@@ -13,7 +13,7 @@ public:
 	const GameBoard& GetGameBoard() const;
 	const std::vector<Snake>& GetSnakes() const;
 	const Snake& GetSnake(int snakeNumber) const;
-	const FieldOfView GetFieldOfView(const Snake& snake, int width, int length) const;
+	FieldOfView GetFieldOfView(const Snake& snake, int width, int length) const;
 
 	bool IsSnakeHead(const Coordinate& coord) const;
 	

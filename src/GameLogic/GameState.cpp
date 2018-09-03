@@ -29,7 +29,7 @@ const Snake & GameState::GetSnake(const int snakeNumber) const
 		});
 }
 
-const FieldOfView GameState::GetFieldOfView(
+FieldOfView GameState::GetFieldOfView(
 	const Snake& snake,
 	const int width,
 	const int length) const
