@@ -14,8 +14,9 @@ HumanPlayer2::~HumanPlayer2()
 SnakeMove HumanPlayer2::GetNextAction(const GameState & gameState) const
 {
    SnakeMove move = GetUserInput();
+   
 
-   TranslateMoveToSnakeView(move, gameState);
+   //TranslateMoveToSnakeView(move, gameState);
    return move != SnakeMove::DOWN ? move : SnakeMove::FORWARD;
 }
 
@@ -39,12 +40,12 @@ SnakeMove HumanPlayer2::GetUserInput() const
       }
       case Utils::InputDirection::LEFT: {
          std::cout << "left" << std::endl;
-         return SnakeMove::LEFT;
+         return SnakeMove::RIGHT;
          break;
       }
       case Utils::InputDirection::RIGHT: {
          std::cout << "right" << std::endl;
-         return SnakeMove::RIGHT;
+         return SnakeMove::LEFT;
          break;
       }
       default: {

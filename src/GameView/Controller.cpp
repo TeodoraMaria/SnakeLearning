@@ -20,12 +20,7 @@ Controller::Controller()
      // std::make_shared<HumanPlayer2>()
    });
 
-   std::vector<IPlayerPtr> players(
-   {
-      std::make_shared<HumanPlayer>()
-      //		IPlayerPtr(new AI::HardCoded::SingleBot()),
-      //		IPlayerPtr(new AI::HardCoded::SingleBot()),
-   });
+  
    
    const GameOptions gameOptions(GameBoardType::BOX, 20, 20, m_players.size(), 3);
 
@@ -95,13 +90,19 @@ void Controller::updateBoard()
 bool Controller::sendActions()
 {
    m_currentTime = SDL_GetTicks();
-   if (m_currentTime > m_lastTime + 1000) {
+   size_t timeRange = 500;
+   if (m_currentTime > m_lastTime + timeRange) {
       GameState state = m_game->GetGameState();
 
       for (auto& player : m_players) {
          const auto chosenMove = player->GetNextAction(state);
          const auto snakeNumber = player->GetSnakeNumber();
          m_game->MoveSnake(snakeNumber, chosenMove);
+
+         auto humanPlayer = std::dynamic_pointer_cast<HumanPlayer2>(player);
+         humanPlayer->setDirection(Utils::InputDirection::DEFAULT);
+
+         
       }
       m_lastTime = m_currentTime;
       return true;

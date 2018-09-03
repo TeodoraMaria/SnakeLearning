@@ -4,7 +4,8 @@
 #include "GameWindow.h"
    int main(int argc, char** argv)
    {
-      srand(time(NULL));
+      //srand(time(NULL));
+      srand(1234);
 
       SDL_Init(SDL_INIT_EVERYTHING);
 
