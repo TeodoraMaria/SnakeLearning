@@ -159,39 +159,39 @@ int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 		{
 		return snake.GetSnakeNumber() == snakeNumber; 
 		});
-		Coordinate snakeOrientation = snakeToMove.GetOrientation();
-		if (move == SnakeMove::LEFT)
-		{
-			snakeOrientation = snakeOrientation.Rotate90Left();
-		}
-		else if (move == SnakeMove::RIGHT)
-		{
-			snakeOrientation = snakeOrientation.Rotate90Right();
-		}
+	Coordinate snakeOrientation = snakeToMove.GetOrientation();
+	if (move == SnakeMove::LEFT)
+	{
+		snakeOrientation = snakeOrientation.Rotate90Left();
+	}
+	else if (move == SnakeMove::RIGHT)
+	{
+		snakeOrientation = snakeOrientation.Rotate90Right();
+	}
 
-		const auto newSnakeHeadPosition =
-			snakeToMove.GetSnakeHead() + snakeOrientation;
+	const auto newSnakeHeadPosition =
+		snakeToMove.GetSnakeHead() + snakeOrientation;
 
-		if (m_gameBoard.IsFood(newSnakeHeadPosition))
-		{
-			snakeToMove.Eat(newSnakeHeadPosition);
-			m_gameBoard[newSnakeHeadPosition] = snakeNumber;
-			return 1;
-		}
-		else if (m_gameBoard.CoordIsEmpty(newSnakeHeadPosition))
-		{
-			Coordinate freedPosition = snakeToMove.GetSnakeTail();
-			snakeToMove.Move(newSnakeHeadPosition);
-			m_gameBoard.MoveSnake(freedPosition, newSnakeHeadPosition);
-			return 0;
-		}
-		else 
-		{
-			m_gameBoard.KillSnake(snakeToMove.GetSnakeBody());
-			snakeToMove.Die();
-			DisablePlayer(snakeNumber);
-			return -1;
-		}
+	if (m_gameBoard.IsFood(newSnakeHeadPosition))
+	{
+		snakeToMove.Eat(newSnakeHeadPosition);
+		m_gameBoard[newSnakeHeadPosition] = snakeNumber;
+		return 1;
+	}
+	else if (m_gameBoard.CoordIsEmpty(newSnakeHeadPosition) || newSnakeHeadPosition== snakeToMove.GetSnakeTail())
+	{
+		Coordinate freedPosition = snakeToMove.GetSnakeTail();
+		snakeToMove.Move(newSnakeHeadPosition);
+		m_gameBoard.MoveSnake(freedPosition, newSnakeHeadPosition);
+		return 0;
+	}
+	else 
+	{
+		m_gameBoard.KillSnake(snakeToMove.GetSnakeBody());
+		snakeToMove.Die();
+		DisablePlayer(snakeNumber);
+		return -1;
+	}
 }
 
 void Game::RunRound()
