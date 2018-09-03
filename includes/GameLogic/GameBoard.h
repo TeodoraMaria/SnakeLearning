@@ -4,21 +4,20 @@
 #include <vector>
 #include <list>
 
-//static const int 
+static const int startOfSnakeIndexes = 10;
 
 enum BoardPart
 {
 	EMPTY = 0,
 	WALL = 1,
-	FOOD = 2,
-	
-	START_OF_SNAKE_INDEXES = 10
+	FOOD = 2
 };
 
 class GameBoard
 {
 public:
-	GameBoard(const GameBoardType& gameBoardType = GameBoardType::BOX,
+	GameBoard(
+		const GameBoardType& gameBoardType = GameBoardType::BOX,
 		const size_t& length = 10,
 		const size_t& width = 10);
 	~GameBoard();
@@ -31,7 +30,7 @@ public:
 	int operator [](const Coordinate& coord) const;
 
 	bool IsFood(const Coordinate& location) const;
-	bool CheckCoord(const Coordinate& coord) const;
+	bool CoordIsEmpty(const Coordinate& coord) const;
 	bool CoordIsBounded(const Coordinate& coord) const;
 	bool IsWallOrBeyond(const Coordinate& coord) const;
 

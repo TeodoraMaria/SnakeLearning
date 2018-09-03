@@ -43,7 +43,10 @@ size_t GameBoard::GetFoodPortions() const
 	size_t sum = 0;
 	for (const auto& line : m_board)
 	{
-		sum+= std::count_if(line.cbegin(), line.cend(), [](const auto& elem) {return elem == 1; });
+		sum += std::count_if(
+			line.cbegin(),
+			line.cend(),
+			[](const auto& elem) { return elem == BoardPart::FOOD; });
 	}
 	return sum;
 }
@@ -68,17 +71,17 @@ int GameBoard::operator[](const Coordinate & coord) const
 
 bool GameBoard::IsFood(const Coordinate & location) const
 {
-	return (*this)[location] == 1;
+	return (*this)[location] == BoardPart::FOOD;
 }
 
-bool GameBoard::CheckCoord(const Coordinate& coord) const
+bool GameBoard::CoordIsEmpty(const Coordinate& coord) const
 {
-	return  CoordIsBounded(coord) && (*this)[coord] == 0;
+	return  CoordIsBounded(coord) && (*this)[coord] == BoardPart::EMPTY;
 }
 
 bool GameBoard::IsWallOrBeyond(const Coordinate& coord) const
 {
-	return !CoordIsBounded(coord) || (*this)[coord] == -1;
+	return !CoordIsBounded(coord) || (*this)[coord] == BoardPart::WALL;
 }
 
 bool GameBoard::CoordIsBounded(const Coordinate& coord) const
@@ -98,7 +101,7 @@ void GameBoard::Init()
 {
 	for (auto& line : m_board)
 		for (auto& elem : line)
-			elem = 0;
+			elem = BoardPart::EMPTY;
 
 	if (!(m_gameBoardType == GameBoardType::LIMITLESS))
 	{
@@ -110,14 +113,14 @@ void GameBoard::AddLimitsToBoard()
 {
 	for (size_t index = 0; index < m_width; ++index)
 	{
-		m_board[index][0] = -1;
-		m_board[index][m_length-1] = -1;
+		m_board[index][0] = BoardPart::WALL;
+		m_board[index][m_length - 1] = BoardPart::WALL;
 	}
 
 	for (size_t index = 0; index < m_length; ++index)
 	{
-		m_board[0][index] = -1;
-		m_board[m_width-1][index] = -1;
+		m_board[0][index] = BoardPart::WALL;
+		m_board[m_width - 1][index] = BoardPart::WALL;
 	}
 }
 
@@ -126,8 +129,8 @@ void GameBoard::PlaceFood()
 	Coordinate coord;
 	do {
 		coord.GenerateCoordinate(m_width, m_length);
-	} while (!CheckCoord(coord));
-	(*this)[coord] = 1;
+	} while (!CoordIsEmpty(coord));
+	(*this)[coord] = BoardPart::FOOD;
 }
 
 void GameBoard::GrowSnake(const size_t & snakeNumber, const Coordinate & location)
@@ -138,14 +141,14 @@ void GameBoard::GrowSnake(const size_t & snakeNumber, const Coordinate & locatio
 void GameBoard::MoveSnake(const Coordinate & freedLocation, const Coordinate & newLocation)
 {
 	(*this)[newLocation] = (*this)[freedLocation];
-	(*this)[freedLocation] = 0;
+	(*this)[freedLocation] = BoardPart::EMPTY;
 }
 
 void GameBoard::KillSnake(const std::list<Coordinate>& snakeBody)
 {
 	for (const auto& part : snakeBody)
 	{
-		(*this)[part] = 0;
+		(*this)[part] = BoardPart::EMPTY;
 	}
 }
 
@@ -154,6 +157,6 @@ Coordinate GameBoard::GenerateCoordinate() const
 	Coordinate coord;
 	do {
 		coord.GenerateCoordinate(m_width, m_length);
-	} while (!CheckCoord(coord));
+	} while (!CoordIsEmpty(coord));
 	return coord;
 }

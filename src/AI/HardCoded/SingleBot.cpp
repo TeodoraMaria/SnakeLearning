@@ -39,7 +39,9 @@ SnakeMove SingleBot::GetNextAction(const GameState& gameState) const
 
 	const auto isValidPos = [&](const Coordinate& coord)
 	{
-		return board[coord] == 0 || board[coord] == 1;
+		return
+			(board[coord] == BoardPart::EMPTY) ||
+			(board[coord] == BoardPart::FOOD);
 	};
 	
 	auto possibleMoves = std::vector<SnakeMove>();
@@ -59,7 +61,7 @@ SnakeMove SingleBot::GetNextAction(const GameState& gameState) const
 	
 	for (auto i = 0u; i < possibleCoordMoves.size(); i++)
 	{
-		if (board[possibleCoordMoves[i]] == 1)
+		if (board[possibleCoordMoves[i]] == BoardPart::FOOD)
 			return possibleMoves[i];
 	}
 	

@@ -85,7 +85,7 @@ void Snake::GenerateBody(GameBoard & gameBoard, const Coordinate & head)
 		for (auto& direction : directions)
 		{
 			auxCoord = coord + direction;
-			if (gameBoard.CheckCoord(auxCoord))
+			if (gameBoard.CoordIsEmpty(auxCoord))
 			{
 				m_snakeBody.push_back(auxCoord);
 				coord = auxCoord;

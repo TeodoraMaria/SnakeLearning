@@ -28,7 +28,7 @@ SnakeMove TrainedTabularAgent::GetNextAction(const GameState& gameState) const
 	
 	const auto actionIndex = QLearning::Utils::PickAction(
 		m_qBrains[state],
-		0,
+		0, // Noise
 		merseneTwister);
 	
 	assert(static_cast<size_t>(actionIndex) < m_actions.size());

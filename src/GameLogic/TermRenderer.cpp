@@ -12,11 +12,11 @@ using namespace GameView;
 
 static void PrinCell(const int cellValue)
 {
-	if (cellValue == 0)
+	if (cellValue == BoardPart::EMPTY)
 		std::cout << " ";
-	else if (cellValue == -1)
+	else if (cellValue == BoardPart::WALL)
 		std::cout << "\033[0;40m ";
-	else if (cellValue == 1)
+	else if (cellValue == BoardPart::FOOD)
 		std::cout << "\033[5;31m♥";
 	else
 	{
@@ -40,7 +40,7 @@ static void PrinCell(const int cellValue)
 	void TermRenderer::Render(const GameState& gameState) const
 	{
 		std::cout
-			<< "PLease implement me."
+			<< "PLease implement me. "
 			<< "Can't access IsSnakeHead() btw." << std::endl;
 	}
 #else

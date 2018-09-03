@@ -65,7 +65,7 @@ StepResult SingleSnakeRelativeView::Step(const SnakeMove moveDirection)
 		m_student->GetSnakeNumber(),
 		moveDirection);
 	
-	stepResult.isDone = stepResult.reward == -1;
+	stepResult.isDone = (stepResult.reward == -1);
 	return stepResult;
 }
 
