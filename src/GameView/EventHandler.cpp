@@ -36,12 +36,12 @@ void EventHandler::addGameWindow(GameWindow* gameWindow)
 
 void EventHandler::addGameController(Controller* controller)
 {
-   m_controller = controller;
+   m_controller =controller;
 }
 
 void EventHandler::checkIfGameOver()
 {
-      //std::cout << m_controller->getAliveSnakes();
+      std::cout << m_controller->getAliveSnakes();
    if (m_controller->getAliveSnakes() == 0) {
       m_gameWindow->exitGame();
    }

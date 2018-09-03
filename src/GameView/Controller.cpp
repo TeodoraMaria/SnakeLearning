@@ -20,15 +20,13 @@ Controller::Controller()
       //std::make_shared<HumanPlayer2>(),
       
       //std::make_shared<HumanPlayer2>(),
-      std::make_shared<AI::HardCoded::SingleBot>()
+      std::make_shared<AI::HardCoded::SingleBot>(),
+      std::make_shared<AI::HardCoded::SingleBot>(),
       //IPlayerPtr(new AI::HardCoded::SingleBot()),
    });
 
-  
-   
    const GameOptions gameOptions(GameBoardType::BOX, 20, 20, m_players.size(), 1);
 
-   //m_game = std::make_shared<Game>(Game(gameOptions, m_players));
    m_game = new Game(gameOptions, m_players);
    m_game->InitGame();
 }
@@ -52,7 +50,6 @@ void Controller::processInput(const SDL_Event& currentEvent)
 
 void Controller::addBoard(Board * board)
 {
-   //m_board = std::shared_ptr<Board>(board);
    m_board = board;
    const GameState state = m_game->GetGameState();
 
@@ -88,7 +85,7 @@ bool Controller::sendActions()
    if (m_currentTime > m_lastTime + timeRange) {
       GameState state = m_game->GetGameState();
 
-      for (auto& player : m_players) {
+      for (auto player : m_players) {
          const auto chosenMove = player->GetNextAction(state);
          const auto snakeNumber = player->GetSnakeNumber();
          m_game->MoveSnake(snakeNumber, chosenMove);
