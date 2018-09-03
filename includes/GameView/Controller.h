@@ -35,8 +35,10 @@ private:
    void processInputPlayer2(const SDL_Event& keyPressed);
    std::vector<IPlayerPtr> m_players;
 
-   std::shared_ptr<Game> m_game;
-   std::shared_ptr<Board> m_board;
+   //std::shared_ptr<Game> m_game;
+   //std::shared_ptr<Board> m_board;
+   Game* m_game;
+   Board* m_board;
 
    size_t m_lastTime = 0;
    size_t m_currentTime;

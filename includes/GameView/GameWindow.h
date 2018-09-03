@@ -39,9 +39,14 @@ namespace GameView
 
       GameState m_gameSate = GameState::PLAY;
 
-      std::shared_ptr<Board> m_board;
-      std::shared_ptr<Controller> m_controller;
-      std::shared_ptr<EventHandler> m_eventHandler;
+      std::unique_ptr<Board> m_board;
+      std::unique_ptr<Controller> m_controller;
+      std::unique_ptr<EventHandler> m_eventHandler;
+
+     // Board* m_board;
+      //Controller* m_controller;
+      //EventHandler* m_eventHandler;
+
    };
 }
 

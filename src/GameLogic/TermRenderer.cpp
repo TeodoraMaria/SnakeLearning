@@ -1,5 +1,6 @@
 #include "TermRenderer.hpp"
 #include <iostream>
+#include <assert.h>
 
 #ifdef _WIN32
 	#include <windows.h>

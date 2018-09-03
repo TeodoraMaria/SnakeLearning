@@ -7,7 +7,7 @@
 #include "Board.h"
 #include "HumanPlayer2.h"
 #include "GameLogic/GameState.h"
-#include "AI\HardCoded\SingleBot.hpp"
+#include "AI/HardCoded/SingleBot.hpp"
 
 namespace GameView
 {
@@ -28,7 +28,8 @@ Controller::Controller()
    
    const GameOptions gameOptions(GameBoardType::BOX, 20, 20, m_players.size(), 1);
 
-   m_game = std::make_shared<Game>(Game(gameOptions, m_players));
+   //m_game = std::make_shared<Game>(Game(gameOptions, m_players));
+   m_game = new Game(gameOptions, m_players);
    m_game->InitGame();
 }
 
@@ -51,7 +52,8 @@ void Controller::processInput(const SDL_Event& currentEvent)
 
 void Controller::addBoard(Board * board)
 {
-   m_board = std::shared_ptr<Board>(board);
+   //m_board = std::shared_ptr<Board>(board);
+   m_board = board;
    const GameState state = m_game->GetGameState();
 
    const GameBoard gameBoard = state.GetGameBoard();

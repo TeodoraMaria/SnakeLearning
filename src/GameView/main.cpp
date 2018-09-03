@@ -2,18 +2,19 @@
 #include <iostream>
 
 #include "GameWindow.h"
-   int main(int argc, char** argv)
-   {
-      srand(time(NULL));
-      //srand(1234);
+int main(int argc, char** argv)
+{
+   srand(time(NULL));
+   //srand(1234);
 
-      SDL_Init(SDL_INIT_EVERYTHING);
+   SDL_Init(SDL_INIT_EVERYTHING);
 
-      GameView::GameWindow gamewindow(500, 500);
+   GameView::GameWindow gamewindow(500, 500);
 
-      gamewindow.run();
+   gamewindow.run();
 
-      std::cout<<"1"<<std::endl;
+     
+   std::cout<<"1"<<std::endl;
 
-      return 0;
-   }
+   return 0;
+}

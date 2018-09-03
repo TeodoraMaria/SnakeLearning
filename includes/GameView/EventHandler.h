@@ -20,8 +20,8 @@ public:
    void checkIfGameOver();
 
 private:
-   std::shared_ptr<GameWindow> m_gameWindow;
-   std::shared_ptr<Controller> m_controller;
+   GameWindow* m_gameWindow;
+   Controller* m_controller;
 };
 
 }
