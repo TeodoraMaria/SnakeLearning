@@ -33,6 +33,11 @@ Coordinate Coordinate::operator-(const Coordinate & coord) const
 	return Coordinate(m_x - coord.m_x, m_y - coord.m_y);
 }
 
+Coordinate Coordinate::operator*(const int scalar) const
+{
+	return Coordinate(m_x*scalar, m_y*scalar);
+}
+
 bool Coordinate::operator==(const Coordinate & coord) const
 {
 	if (m_x == coord.m_x)

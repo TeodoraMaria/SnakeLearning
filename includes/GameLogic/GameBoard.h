@@ -33,6 +33,7 @@ public:
 	bool IsFood(const Coordinate& location);
 	bool CheckCoord(const Coordinate& coord) const;
 	bool CoordIsBounded(const Coordinate& coord) const;
+	bool IsWallOrBeyond(const Coordinate& coord) const;
 
 	void Init();
 	void PlaceFood();

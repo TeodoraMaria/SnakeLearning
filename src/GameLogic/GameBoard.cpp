@@ -76,6 +76,11 @@ bool GameBoard::CheckCoord(const Coordinate& coord) const
 	return  CoordIsBounded(coord) && (*this)[coord] == 0;
 }
 
+bool GameBoard::IsWallOrBeyond(const Coordinate& coord) const
+{
+	return !CoordIsBounded(coord) || (*this)[coord] == -1;
+}
+
 bool GameBoard::CoordIsBounded(const Coordinate& coord) const
 {
 	if (coord.GetX() < 0 || coord.GetX() >= static_cast<int>(m_width))

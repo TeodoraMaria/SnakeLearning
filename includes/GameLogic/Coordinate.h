@@ -17,6 +17,7 @@ public:
 
 	Coordinate operator + (const Coordinate& coord) const;
 	Coordinate operator - (const Coordinate& coord) const;
+	Coordinate operator * (const int scalar) const;
 	bool operator == (const Coordinate& coord) const;
 
 	Coordinate Rotate90Left() const;

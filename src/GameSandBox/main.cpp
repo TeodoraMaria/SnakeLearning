@@ -11,8 +11,8 @@ int main()
 
 	std::vector<IPlayerPtr> players(
 	{
-		IPlayerPtr(new AI::HardCoded::SingleBot()),
-		IPlayerPtr(new AI::HardCoded::SingleBot()),
+		IPlayerPtr(new HumanPlayer()),
+		//IPlayerPtr(new AI::HardCoded::SingleBot()),
 		//IPlayerPtr(new AI::HardCoded::SingleBot()),
 		//IPlayerPtr(new AI::HardCoded::SingleBot()),
 	});
