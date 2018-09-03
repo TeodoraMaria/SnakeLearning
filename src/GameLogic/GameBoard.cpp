@@ -101,7 +101,6 @@ void GameBoard::Init()
 	}
 }
 
-
 void GameBoard::AddLimitsToBoard()
 {
 	for (size_t index = 0; index < m_width; ++index)

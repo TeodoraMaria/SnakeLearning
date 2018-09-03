@@ -30,7 +30,7 @@ namespace GameView
       }
    }
 
-   void Board::setCellAt(int i, int j, int value)
+   void Board::setCellValueAt(int i, int j, int value)
    {
       m_gameCells[i][j].setValue(value);
    }

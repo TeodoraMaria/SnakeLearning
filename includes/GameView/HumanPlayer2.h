@@ -22,7 +22,7 @@ private:
    void TranslateMoveToSnakeView(SnakeMove& move, const GameState& gameState) const;
    void RotateLeft(SnakeMove& move) const;
 
-   Utils::InputDirection m_direction;
+   Utils::InputDirection m_direction=Utils::InputDirection::DEFAULT;
 };
 
 }

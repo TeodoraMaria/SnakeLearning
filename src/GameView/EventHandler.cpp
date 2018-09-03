@@ -2,6 +2,7 @@
 #include "GameWindow.h"
 #include "Controller.h"
 
+#include <iostream>
 #include <SDL.h>
 
 namespace GameView
@@ -9,8 +10,6 @@ namespace GameView
 
 EventHandler::EventHandler()
 {}
-
-
 
 EventHandler::~EventHandler()
 {}
@@ -38,6 +37,14 @@ void EventHandler::addGameWindow(GameWindow* gameWindow)
 void EventHandler::addGameController(Controller* controller)
 {
    m_controller = std::shared_ptr<Controller>(controller);
+}
+
+void EventHandler::checkIfGameOver()
+{
+      //std::cout << m_controller->getAliveSnakes();
+   if (m_controller->getAliveSnakes() == 0) {
+      m_gameWindow->exitGame();
+   }
 }
 
 }
