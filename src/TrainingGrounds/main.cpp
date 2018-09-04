@@ -19,7 +19,7 @@ int main()
 	{
 		gmOptions.boardLength = 25;
 		gmOptions.boardWidth = 25;
-		gmOptions.numFoods = []() { return 10; };
+		gmOptions.numFoods = 10;
 	}
 	
 	auto gmRenderer = new GameView::TermRenderer();
