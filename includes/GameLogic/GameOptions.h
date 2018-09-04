@@ -11,4 +11,6 @@ struct GameOptions
 	size_t numFoods = 1;
 	
 	size_t initialSnakeSize = 3;
+
+	bool playWithoutRenedring = false;
 };
