@@ -7,6 +7,12 @@ GameState::GameState(const GameBoard & gameBoard, const std::vector<Snake>& snak
 {
 }
 
+GameState::GameState(const GameState& gamestate)
+	: m_gameBoard(gamestate.m_gameBoard), m_snakes(gamestate.m_snakes)
+{
+
+}
+
 GameState::~GameState()
 {
 }

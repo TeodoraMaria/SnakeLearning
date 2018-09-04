@@ -8,6 +8,7 @@ class GameState
 {
 public:
 	GameState(const GameBoard& gameBoard, const std::vector<Snake>& snakes);
+	GameState(const GameState& gamestate);
 	~GameState();
 
 	const GameBoard& GetGameBoard() const;

@@ -3,6 +3,8 @@
 #include "Snake.h"
 #include "GameOptions.h"
 #include "GameBoard.h"
+#include "FileHelper.h"
+#include <string>
 
 class Game
 {
@@ -16,6 +18,7 @@ public:
 	GameState GetGameState() const;
 
 	void InitGame();
+	void RunRoundAndSave(FileHelper& helper);
 	void RunRound();
 	void Play();
 	
@@ -30,7 +33,9 @@ private:
 	void InitFood();
 	void AddSnakeToGame(const int snakeNumber);
 	void DisablePlayer(const int snakeNumber);
+	void SaveMove(FileHelper& helper, const std::vector<std::vector<int>> view, SnakeMove move);
 	bool IsSnakeHead(const Coordinate& coord) const;
+	std::string GenerateFileName();
 
 	
 

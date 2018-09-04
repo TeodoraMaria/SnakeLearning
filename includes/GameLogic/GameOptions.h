@@ -13,4 +13,5 @@ struct GameOptions
 	size_t initialSnakeSize = 3;
 
 	bool playWithoutRenedring = false;
+	bool saveGameplay = false;
 };
