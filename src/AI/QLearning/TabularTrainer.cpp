@@ -3,6 +3,7 @@
 #include "ActionPickingUtils.h"
 
 #include "GymEnv/SingleSnakeRelativeView.hpp"
+#include "GymEnv/SingleSnakeGridView.hpp"
 #include "GameView/TermRenderer.hpp"
 #include "Utils/MathUtils.h"
 #include "Utils/PrintUtils.h"
@@ -22,10 +23,12 @@ TabularTrainer::TabularTrainer(GymEnv::SingleSnakeEnvBase* env) :
 
 IPlayer* TabularTrainer::Train()
 {
+	auto randomDistrib = std::uniform_real_distribution<double>(-1.0, 1.0);
 	m_qtable = ::Utils::Matrix::MakeMatrix(
 		m_env->GetNumbOfObservations(),
 		m_env->actions.size(),
-		0 // InitValue
+//		[&]() { return randomDistrib(m_merseneTwister); }
+		[&]() { return 0.5; }
 	);
 	
 	auto trainSession = TrainSession();
@@ -41,19 +44,19 @@ IPlayer* TabularTrainer::Train()
 	}
 	
 //	::Utils::Print::PrintTable(m_qtable);
-	for (auto i = 0u; i < m_qtable.size(); i++)
-	{
-		const auto& line = m_qtable[i];
-		if (::Utils::Math::Approx(*std::min_element(line.cbegin(), line.cend()), 0))
-			continue;
-		
-		std::cout << i << ") ";
-		for (const auto& val : line)
-		{
-			std::cout << val << " ";
-		}
-		std::cout << std::endl;
-	}
+//	for (auto i = 0u; i < m_qtable.size(); i++)
+//	{
+//		const auto& line = m_qtable[i];
+//		if (::Utils::Math::Approx(*std::min_element(line.cbegin(), line.cend()), 0))
+//			continue;
+//		
+//		std::cout << i << ") ";
+//		for (const auto& val : line)
+//		{
+//			std::cout << val << " ";
+//		}
+//		std::cout << std::endl;
+//	}
 	
 	std::cout << "Die states: " << std::endl;
 	for (const auto& pair : trainSession.dieStates)
@@ -86,8 +89,16 @@ void TabularTrainer::RunEpisode(TrainSession& trainSession)
 		state = trainStepResult.newState;
 		
 		// Render the env on the last episode.
-		if (trainSession.episodeIndex == numEpisodes - 1)
+		if (trainSession.episodeIndex >= numEpisodes - 10)
+		{
 			m_env->Render();
+			std::cout << "Prev State: " << prevState << std::endl;
+			std::cout << "State: " << state << std::endl;
+			
+			const auto gridViewEnv = dynamic_cast<GymEnv::SingleSnakeGridView*>(m_env);
+			if (gridViewEnv)
+				::Utils::Print::PrintTable(gridViewEnv->GetFieldOfView());
+		}
 		
 		// Track die states.
 		if (trainStepResult.isDone)

@@ -17,7 +17,12 @@ int StateExtractor::GetRelativeViewStateBase3(
 	const auto forward = head + snakeOrientation;
 	
 	const auto viewGrid = std::vector<Coordinate>({{ left, forward, right }});
-	return ComputeVieGridValue(gmState.GetGameBoard(), viewGrid);
+	const auto gmBoard = gmState.GetGameBoard();
+	const auto getValue = [&](const int i) -> int
+	{
+		return GetGameCellValue(gmBoard[viewGrid[i]]);
+	};
+	return ComputeVieGridValue(viewGrid.size(), getValue);
 }
 
 int StateExtractor::GetGridViewState(
@@ -25,16 +30,15 @@ int StateExtractor::GetGridViewState(
 	const FieldOfView& fieldOfVIew,
 	const size_t numCellStates)
 {
-	const auto totalNbOfCells = fieldOfVIew.size() * fieldOfVIew.front().size();
-	auto viewGrid = std::vector<Coordinate>();
-
-	for (const auto& line : fieldOfVIew)
-		for (const auto& coord : line)
-			viewGrid.push_back(coord);
-	
-	assert(viewGrid.size() == totalNbOfCells);
-	
-	return ComputeVieGridValue(gmBoard, viewGrid, numCellStates);
+	const auto height = fieldOfVIew.size();
+	const auto width = fieldOfVIew.front().size();
+	const auto getValue = [&](const int indx) -> int
+	{
+		const auto i = indx / width;
+		const auto j = indx % width;
+		return GetGameCellValue(fieldOfVIew[i][j]);
+	};
+	return ComputeVieGridValue(height * width, getValue);
 }
 
 /*
@@ -42,26 +46,28 @@ int StateExtractor::GetGridViewState(
 */
 
 int StateExtractor::ComputeVieGridValue(
-	const GameBoard& gmBoard,
-	const std::vector<Coordinate>& viewGrid,
+	size_t numCells,
+	std::function<int (int)> getValue,
 	const int base)
 {
 	int state = 0;
 	
-	for (auto i = 0u; i < viewGrid.size(); i++)
+	for (auto i = 0u; i < numCells; i++)
 	{
-		if (gmBoard[viewGrid[i]] == BoardPart::EMPTY)
-			continue;
-		
-		auto cellValue = StateExtractor::emptySpaceValue;
-		
-		if (gmBoard[viewGrid[i]] != BoardPart::FOOD)
-			cellValue = StateExtractor::wallValue;
-		else
-			cellValue = StateExtractor::foodValue;
-		
+		const auto cellValue = getValue(i);
 		state += cellValue * std::pow(base, i);
 	}
 	
 	return state;
+}
+
+int StateExtractor::GetGameCellValue(const int gameCellValue)
+{
+	if (gameCellValue == BoardPart::EMPTY)
+		return emptySpaceValue;
+	if (gameCellValue == BoardPart::WALL || gameCellValue >= startOfSnakeIndexes)
+		return wallValue;
+	if (gameCellValue == BoardPart::FOOD)
+		return foodValue;
+	throw;
 }

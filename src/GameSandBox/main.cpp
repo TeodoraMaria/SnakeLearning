@@ -22,7 +22,7 @@ int main()
 		gameOptions.boardLength = 5;
 		gameOptions.boardWidth = 5;
 		gameOptions.numberOfPlayers = players.size();
-		gameOptions.numFoods = 1;
+		gameOptions.numFoods = []() { return 1u; };
 		gameOptions.initialSnakeSize = 2;
 		//gameOptions.playWithoutRenedring = true;
 		gameOptions.saveGameplay = true;
