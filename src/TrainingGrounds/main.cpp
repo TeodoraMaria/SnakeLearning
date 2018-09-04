@@ -34,7 +34,15 @@ int main()
 		gmRenderer,
 		gmOptions);
 	
-	auto trainer = AI::QLearning::TabularTrainer(env);
+	auto qoptions = AI::QLearning::QOptions();
+	{
+		qoptions.maxNumSteps = [](int episode) { return episode + 50; };
+		qoptions.numEpisodes = 600000;
+		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes * 4);
+		qoptions.learningRate = 0.1;
+	}
+	
+	auto trainer = AI::QLearning::TabularTrainer(qoptions, env);
 	auto trainedAgent = trainer.Train();
 
 //	std::vector<IPlayerPtr> players(
