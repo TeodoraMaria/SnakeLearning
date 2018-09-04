@@ -3,6 +3,7 @@
 
 #include "GymEnv/SingleSnakeRelativeView.hpp"
 #include "GymEnv/SingleSnakeGridView.hpp"
+#include "GameView/OpenGLRenderer.h"
 
 #include "GameLogic/Game.h"
 #include "GameLogic/HumanPlayer.h"
@@ -16,15 +17,16 @@ int main()
 	
 	auto gmOptions = GameOptions();
 	{
-		gmOptions.boardLength = 5;
-		gmOptions.boardWidth = 5;
-		gmOptions.numFoods = 3;
+		gmOptions.boardLength = 25;
+		gmOptions.boardWidth = 25;
+		gmOptions.numFoods = 10;
 	}
 	
 	auto gmRenderer = new GameView::TermRenderer();
+//	auto gmRenderer = new GameView::OpenGLRenderer(200, 200, gmOptions.boardLength, gmOptions.boardWidth);
 //	auto env = new GymEnv::SingleSnakeRelativeView(gmRenderer, gmOptions);
 	
-	const auto gridViewWidth = 3;
+	const auto gridViewWidth = 5;
 	const auto gridViewHeight = 3;
 	auto env = new GymEnv::SingleSnakeGridView(
 		gridViewWidth,
@@ -38,11 +40,10 @@ int main()
 //	std::vector<IPlayerPtr> players(
 //	{
 //		IPlayerPtr(trainedAgent),
-//		IPlayerPtr(new AI::HardCoded::SingleBot()),
+////		IPlayerPtr(new AI::HardCoded::SingleBot()),
 //	});
 //
-//	const GameOptions gameOptions(GameBoardType::BOX, 10, 20, players.size());
-//	Game game(gameOptions, players);
+//	Game game(gmOptions, players);
 //
 //	game.InitGame();
 //	game.Play();

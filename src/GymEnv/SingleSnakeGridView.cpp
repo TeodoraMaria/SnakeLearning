@@ -1,4 +1,5 @@
 #include "SingleSnakeGridView.hpp"
+#include "Utils/PrintUtils.h"
 #include <cmath>
 
 using namespace GymEnv;
@@ -24,15 +25,18 @@ size_t SingleSnakeGridView::GetNumbOfObservations() const
 int SingleSnakeGridView::GetState() const
 {
 	const auto gameState = m_game->GetGameState();
-	const auto fieldOfView = gameState.GetFieldOfView(
-		gameState.GetSnake(m_student->GetSnakeNumber()),
-		m_gridWidth,
-		m_gridHeight);
-	
-	assert(fieldOfView.size() == m_gridHeight);
-	assert(fieldOfView.front().size() == m_gridWidth);
+	const auto fieldOfView = GetFieldOfView();
 	
 	return GymEnv::Utils::StateExtractor::GetGridViewState(
 		gameState.GetGameBoard(),
 		fieldOfView);
+}
+
+FieldOfView SingleSnakeGridView::GetFieldOfView() const
+{
+	const auto gameState = m_game->GetGameState();
+	return gameState.GetFieldOfView(
+		gameState.GetSnake(m_student->GetSnakeNumber()),
+		m_gridHeight,
+		m_gridWidth);
 }

@@ -13,6 +13,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/
 	${CMAKE_SOURCE_DIR}/includes/)
 
+LoadOpenGl()
+include_directories(${SDL2_INCLUDE_DIRS})
+
 target_link_libraries(${PROJECT_NAME} PUBLIC
 	HardCoded
 	GymEnv

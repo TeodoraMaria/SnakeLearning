@@ -10,21 +10,6 @@ SingleSnakeRelativeView::SingleSnakeRelativeView(
 	const GameOptions& gmOptions) :
 	SingleSnakeEnvBase(gameRenderer, gmOptions)
 {
-	auto players = std::vector<IPlayerPtr>(
-	{
-		IPlayerPtr(m_student)
-	});
-	
-	auto gameOptions = GameOptions();
-	{
-		gameOptions.gameBoardType = GameBoardType::BOX;
-		gameOptions.boardWidth = 10;
-		gameOptions.boardLength = 10;
-		gameOptions.numberOfPlayers = players.size();
-		gameOptions.numFoods = 1;
-	}
-	
-	m_game = std::make_unique<Game>(Game(gameOptions, players));
 }
 
 size_t SingleSnakeRelativeView::GetNumbOfObservations() const

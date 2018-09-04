@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameLogic/GameState.h"
+#include <functional>
 
 namespace GymEnv { namespace Utils
 {
@@ -22,8 +23,10 @@ namespace GymEnv { namespace Utils
 		static const int foodValue = 2;
 		
 		static int ComputeVieGridValue(
-			const GameBoard& gmBoard,
-			const std::vector<Coordinate>& viewGrid,
+			size_t numCells,
+			std::function<int (int)> getValue,
 			int base = 3);
+		
+		static int GetGameCellValue(int gameCellValue);
 	};
 }}

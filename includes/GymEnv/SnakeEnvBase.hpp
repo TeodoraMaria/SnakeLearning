@@ -12,6 +12,8 @@ namespace GymEnv
 	public:
 		static const std::vector<SnakeMove> actions;
 		
+		const Game& GetGame() const;
+		
 		SnakeEnvBase(GameView::IGameRenderer* gameRenderer = nullptr);
 		void Render() const;
 	

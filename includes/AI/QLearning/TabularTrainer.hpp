@@ -21,19 +21,19 @@ namespace AI{ namespace QLearning
 		struct TrainSession;
 		struct TrainStepResult;
 	
-		const double learningRate = 0.5;
+		const double learningRate = 0.1;
 		const double qDiscountFactor = 0.99;
-		const double numEpisodes = 50000;
-		const double maxNumSteps = 100;
+		const double numEpisodes = 600000;
+		const double maxNumSteps = 200;
 		
-		const double maxRandActionChance = 0.9;
+		const double maxRandActionChance = 1;
 		const double minRandActionChance = 0.00;
-		const double randActionDecayFactor = 1.0 / (5 * numEpisodes);
+		const double randActionDecayFactor = 1.0 / (numEpisodes * 7);
 		
 		// Reward stuff.
-		const double foodReward = 100;
-		const double dieReward = 0;
-		const double stepReward = 0;
+		const double foodReward = 1;
+		const double dieReward = -1;
+		const double stepReward = -0.001;
 		
 		void RunEpisode(TrainSession& trainSession);
 		TrainStepResult RunStep(
