@@ -27,16 +27,16 @@ int StateExtractor::GetRelativeViewStateBase3(
 
 int StateExtractor::GetGridViewState(
 	const GameBoard& gmBoard,
-	const FieldOfView& fieldOfVIew,
+	const std::vector<int>& fieldOfVIew,
 	const size_t numCellStates)
 {
-	const auto height = fieldOfVIew.size();
-	const auto width = fieldOfVIew.front().size();
+	const auto height = gmBoard.GetBoardWidth();
+	const auto width = gmBoard.GetBoardLength();
 	const auto getValue = [&](const int indx) -> int
 	{
 		const auto i = indx / width;
 		const auto j = indx % width;
-		return GetGameCellValue(fieldOfVIew[i][j]);
+		return GetGameCellValue(fieldOfVIew[i*width+j]);
 	};
 	return ComputeVieGridValue(height * width, getValue);
 }

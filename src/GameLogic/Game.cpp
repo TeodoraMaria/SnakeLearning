@@ -95,7 +95,7 @@ void Game::DisablePlayer(const int snakeNumber)
 	(*it)->SetIsActive(false);
 }
 
-void Game::SaveMove(FileHelper& helper, const std::vector<std::vector<int>> view, SnakeMove move)
+void Game::SaveMove(FileHelper& helper, const std::vector<int> view, const SnakeMove& move)
 {
 	helper.WriteToFile(view, move);
 }

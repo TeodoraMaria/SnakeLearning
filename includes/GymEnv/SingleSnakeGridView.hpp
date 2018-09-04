@@ -25,7 +25,7 @@ namespace GymEnv
 		
 		size_t GetNumbOfObservations() const override;
 		int GetState() const override;
-		FieldOfView GetFieldOfView() const;
+		std::vector<int> GetFieldOfView() const;
 	
 	private:
 		const size_t m_gridWidth;
