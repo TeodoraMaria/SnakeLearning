@@ -28,6 +28,9 @@ namespace GameView
 
       m_board.reset(new Board(m_screenWidth, m_screenWidth));
       m_controller->addBoard(m_board.get());
+
+      m_renderer = OpenGLRenderer(m_board.get());
+      
    }
 
    GameWindow::~GameWindow()
@@ -42,39 +45,8 @@ namespace GameView
 
    void GameWindow::run()
    {
-      initSystems();
+      m_renderer.initWindow();
       gameLoop();
-   }
-
-
-   void GameWindow::initSystems()
-   {
-      //initial sdl;
-      SDL_Init(SDL_INIT_EVERYTHING);
-
-      m_window = SDL_CreateWindow("game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screenWidth, m_screenWidth, SDL_WINDOW_OPENGL);
-
-      if (m_window == nullptr) {
-         fatalError("could not create window");
-      }
-      SDL_GLContext glContext = SDL_GL_CreateContext(m_window);
-
-      if (glContext == nullptr) {
-         fatalError("could not create context");
-      }
-
-      GLenum error = glewInit();
-
-      if (error != GLEW_OK) {
-         fatalError("could not init gl");
-      }
-
-      SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-      glMatrixMode(GL_PROJECTION);
-      glLoadIdentity();
-      glOrtho(0.0f, m_screenWidth, m_screenHeight, 0.0f, 0.0f, 1.0f);
-      glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
    }
 
    void GameWindow::processInput()
@@ -97,13 +69,7 @@ namespace GameView
 
    void GameWindow::drawGame()
    {
-      glClearDepth(1.0);
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-      m_board->draw();
-
-      SDL_GL_SwapWindow(m_window);
-
+      m_renderer.Render(m_controller->getGameState());
    }
    void GameWindow::exitGame()
    {

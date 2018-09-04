@@ -2,6 +2,7 @@
 
 #include "Board.h"
 #include "Controller.h"
+#include "OpenGLRenderer.h"
 
 #include <SDL.h>
 #include <memory>
@@ -23,7 +24,7 @@ namespace GameView
       ~GameWindow();
 
       void run();
-      void initSystems();
+      
       void processInput();
       void gameLoop();
       void drawGame();
@@ -38,6 +39,8 @@ namespace GameView
       size_t m_screenHeight;
 
       GameState m_gameSate = GameState::PLAY;
+      
+      OpenGLRenderer m_renderer;
 
       std::unique_ptr<Board> m_board;
       std::unique_ptr<Controller> m_controller;

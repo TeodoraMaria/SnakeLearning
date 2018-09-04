@@ -19,9 +19,13 @@ Controller::Controller()
    {
       //std::make_shared<HumanPlayer2>(),
       
-      //std::make_shared<HumanPlayer2>(),
+      std::make_shared<HumanPlayer2>(),
+      /*std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
+      std::make_shared<AI::HardCoded::SingleBot>(),
+      std::make_shared<AI::HardCoded::SingleBot>(),
+      std::make_shared<AI::HardCoded::SingleBot>(),*/
       //IPlayerPtr(new AI::HardCoded::SingleBot()),
    });
 
@@ -30,7 +34,7 @@ Controller::Controller()
 		gameOptions.boardLength = 20;
 		gameOptions.boardWidth = 20;
 		gameOptions.numberOfPlayers = m_players.size();
-		gameOptions.numFoods = 1;
+		gameOptions.numFoods = 10;
 	}
    m_game = new Game(gameOptions, m_players);
    m_game->InitGame();
@@ -62,6 +66,11 @@ void Controller::addBoard(Board * board)
    m_board->setUpBoard(gameBoard.GetBoardLength(), gameBoard.GetBoardWidth());
 }
 
+GameState Controller::getGameState() const
+{
+   return m_game->GetGameState();
+}
+
 void Controller::updateBoard()
 {
    const GameState state=m_game->GetGameState();
@@ -86,31 +95,39 @@ void Controller::updateBoard()
 bool Controller::sendActions()
 {
    m_currentTime = SDL_GetTicks();
-   size_t timeRange = 2;
+   size_t timeRange = 500;
    if (m_currentTime > m_lastTime + timeRange) {
       GameState state = m_game->GetGameState();
 
-      if (m_game->GetLivingSnakes().size() == 1) {
-         std::cout << "1";
-      }
-
+      m_game->RunRound();
       for (auto player : m_players) {
-         
-         const auto snakeNumber = player->GetSnakeNumber();
-
-         const Snake& snake = state.GetSnake(snakeNumber);
-         if (snake.GetSnakeSize() != 0) {
-            const auto chosenMove = player->GetNextAction(state);
-            m_game->MoveSnake(snakeNumber, chosenMove);
-
-            //std::cout << player->GetSnakeNumber()<<" ";
-            auto humanPlayer = std::dynamic_pointer_cast<HumanPlayer2>(player);
-
-            if (humanPlayer != nullptr) {
-               humanPlayer->setDirection(Utils::InputDirection::DEFAULT);
-            }
+         auto humanPlayer = std::dynamic_pointer_cast<HumanPlayer2>(player);
+         if (humanPlayer != nullptr) {
+            humanPlayer->setDirection(Utils::InputDirection::DEFAULT);
          }
       }
+
+
+      //for (auto player : m_players) {
+      //   
+      //   const auto snakeNumber = player->GetSnakeNumber();
+
+      //   const Snake& snake = state.GetSnake(snakeNumber);
+      //   if (snake.GetSnakeSize() != 0) {
+      //      const auto chosenMove = player->GetNextAction(state);
+      //      m_game->MoveSnake(snakeNumber, chosenMove);
+
+      //      //std::cout << player->GetSnakeNumber()<<" ";
+      //      auto humanPlayer = std::dynamic_pointer_cast<HumanPlayer2>(player);
+
+      //      if (humanPlayer != nullptr) {
+      //         humanPlayer->setDirection(Utils::InputDirection::DEFAULT);
+      //      }
+      //   }
+      //}
+
+      //fix controlls for humans keep humanPlayer->setDirection(Utils::InputDirection::DEFAULT);
+
       m_lastTime = m_currentTime;
       return true;
    }

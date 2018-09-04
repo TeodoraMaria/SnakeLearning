@@ -26,6 +26,8 @@ public:
    void updateBoard();
    void addBoard(Board* board);
 
+   GameState getGameState()const;
+
    bool sendActions();
 
    size_t getAliveSnakes() const;
