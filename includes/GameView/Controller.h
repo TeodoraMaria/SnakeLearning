@@ -29,6 +29,7 @@ public:
    GameState getGameState()const;
 
    bool sendActions();
+   void resetPlayersInput();
 
    size_t getAliveSnakes() const;
 

@@ -92,20 +92,25 @@ void Controller::updateBoard()
    }
 }
 
+void Controller::resetPlayersInput()
+{
+   for (auto player : m_players) {
+      auto humanPlayer = std::dynamic_pointer_cast<HumanPlayer2>(player);
+      if (humanPlayer != nullptr) {
+         humanPlayer->setDirection(Utils::InputDirection::DEFAULT);
+      }
+   }
+}
+
 bool Controller::sendActions()
 {
    m_currentTime = SDL_GetTicks();
-   size_t timeRange = 500;
+   size_t timeRange = 30;
    if (m_currentTime > m_lastTime + timeRange) {
       GameState state = m_game->GetGameState();
-
+      
       m_game->RunRound();
-      for (auto player : m_players) {
-         auto humanPlayer = std::dynamic_pointer_cast<HumanPlayer2>(player);
-         if (humanPlayer != nullptr) {
-            humanPlayer->setDirection(Utils::InputDirection::DEFAULT);
-         }
-      }
+      resetPlayersInput();
       m_lastTime = m_currentTime;
       return true;
    }

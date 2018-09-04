@@ -6,10 +6,12 @@
 #include <string>
 namespace GameView
 {
-   OpenGLRenderer::OpenGLRenderer()
-   {}
+OpenGLRenderer::OpenGLRenderer(size_t resolutionX,size_t resolutionY)
+{
+    m_board = new Board(resolutionX, resolutionY);
+}
 
-   OpenGLRenderer::OpenGLRenderer(Board* board):m_board(board)
+OpenGLRenderer::OpenGLRenderer(Board* board):m_board(board)
 {}
 
 void OpenGLRenderer::Render(const GameState & gameState) const
@@ -25,6 +27,11 @@ void OpenGLRenderer::Render(const GameState & gameState) const
 
    SDL_GL_SwapWindow(m_window);
 
+}
+
+Board * OpenGLRenderer::getBoard() const
+{
+    return m_board;
 }
 
 void fatalError(std::string error)

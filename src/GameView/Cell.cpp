@@ -225,12 +225,8 @@ namespace GameView
             break;
          }
          default: {
-
-            double r = Utils::randomDouble(0.0, 1.0);
-            double g = Utils::randomDouble(0.0, 1.0);
-            double b = Utils::randomDouble(0.0, 1.0);
-
-            glColor3d(r, g, b);
+            //glColor3ub(rand() % 255, rand() % 255, rand() % 255);
+             glColor3d(0.0, 0.0, 0.0);
             break;
          }
       }
