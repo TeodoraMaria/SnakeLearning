@@ -4,5 +4,8 @@ using namespace AI::GeneticAlgorithm;
 
 IPlayer *GeneticTrainer::Train()
 {
+
+
+
     return nullptr;
 }

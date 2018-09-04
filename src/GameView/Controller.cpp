@@ -9,6 +9,8 @@
 #include "GameLogic/GameState.h"
 #include "AI/HardCoded/SingleBot.hpp"
 
+#include <chrono>
+
 namespace GameView
 {
 
@@ -19,7 +21,10 @@ Controller::Controller()
    {
       //std::make_shared<HumanPlayer2>(),
       
-      //std::make_shared<HumanPlayer2>(),
+     // std::make_shared<HumanPlayer2>(),
+      std::make_shared<AI::HardCoded::SingleBot>(),
+      std::make_shared<AI::HardCoded::SingleBot>(),
+      std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
@@ -31,10 +36,11 @@ Controller::Controller()
 
 	GameOptions gameOptions;
 	{
-		gameOptions.boardLength = 20;
-		gameOptions.boardWidth = 20;
+		gameOptions.boardLength = 100;
+		gameOptions.boardWidth = 100;
 		gameOptions.numberOfPlayers = m_players.size();
-		gameOptions.numFoods = 10;
+		gameOptions.numFoods = 50;
+        gameOptions.playWithoutRenedring = true;
 	}
    m_game = new Game(gameOptions, m_players);
    m_game->InitGame();
@@ -105,12 +111,16 @@ void Controller::resetPlayersInput()
 bool Controller::sendActions()
 {
    m_currentTime = SDL_GetTicks();
-   size_t timeRange = 30;
+   size_t timeRange = 0;
    if (m_currentTime > m_lastTime + timeRange) {
       GameState state = m_game->GetGameState();
-      
       m_game->RunRound();
+      
+     
+      //code
       resetPlayersInput();
+
+     
       m_lastTime = m_currentTime;
       return true;
    }

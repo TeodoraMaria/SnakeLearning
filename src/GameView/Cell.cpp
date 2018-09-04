@@ -35,7 +35,7 @@ namespace GameView
 
       switch (m_cellType) {
          case GameView::Utils::CellType::WALL: {
-            drawWall();
+            drawBlock();
             break;
          }
          case GameView::Utils::CellType::FIELD: {
@@ -131,7 +131,6 @@ namespace GameView
       yB = Utils::ruleOfThree(yB, m_height, 100);
       yC = Utils::ruleOfThree(yC, m_height, 100);
       yD = Utils::ruleOfThree(yD, m_height, 100);
-
 
       glVertex2d(m_x + xA, m_y + yA);
       glVertex2d(m_x + xB, m_y + yB);
