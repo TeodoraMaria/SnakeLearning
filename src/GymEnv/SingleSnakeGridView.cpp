@@ -22,15 +22,15 @@ size_t SingleSnakeGridView::GetNumbOfObservations() const
 	return std::pow(3, m_gridWidth * m_gridHeight);
 }
 
-int SingleSnakeGridView::GetState() const
-{
-	const auto gameState = m_game->GetGameState();
-	const auto fieldOfView = GetFieldOfView();
-	
-	return GymEnv::Utils::StateExtractor::GetGridViewState(
-		gameState.GetGameBoard(),
-		fieldOfView);
-}
+//const std::vector<int>& SingleSnakeGridView::GetState() const
+//{
+//	const auto gameState = m_game->GetGameState();
+//	const auto fieldOfView = GetFieldOfView();
+//	
+//	return GymEnv::Utils::StateExtractor::GetGridViewState(
+//		gameState.GetGameBoard(),
+//		fieldOfView);
+//}
 
 std::vector<int> SingleSnakeGridView::GetFieldOfView() const
 {

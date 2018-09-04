@@ -8,9 +8,16 @@ namespace GymEnv { namespace Utils
 	class StateExtractor
 	{
 	public:
+		static void GetRelativeViewState(
+			std::vector<int>& dest,
+			const Snake& snake,
+			const GameBoard& gmBoard);
+
 		static int GetRelativeViewStateBase3(
 			const GameState& gmState,
 			int snakeId);
+		
+		static int BinaryVectorToNumber(const std::vector<int>& binTable);
 		
 		static int GetGridViewState(
 			const GameBoard& gmBoard,

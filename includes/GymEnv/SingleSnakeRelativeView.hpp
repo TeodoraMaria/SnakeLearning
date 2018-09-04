@@ -23,6 +23,6 @@ namespace GymEnv
 			const GameOptions& gmOptions);
 		
 		size_t GetNumbOfObservations() const override;
-		int GetState() const override;
+		const std::vector<int> GetState() const override;
 	};
 }

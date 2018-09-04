@@ -1,8 +1,79 @@
 #include "StateExtractor.hpp"
+#include "Utils/PrintUtils.h"
 #include <array>
 #include <cmath>
+#include <iostream>
 
 using namespace GymEnv::Utils;
+
+static bool ItsAnObstacle(const int gridValue)
+{
+	return
+		(gridValue == BoardPart::WALL) ||
+		(gridValue >= startOfSnakeIndexes);
+}
+
+void StateExtractor::GetRelativeViewState(
+	std::vector<int>& dest,
+	const Snake& snake,
+	const GameBoard& gmBoard)
+{
+	const auto& head = snake.GetSnakeHead();
+	const auto snakeOrientation = snake.GetOrientation();
+	
+	const auto left = head + snakeOrientation.Rotate90Left();
+	const auto right = head + snakeOrientation.Rotate90Right();
+	const auto forward = head + snakeOrientation;
+	
+	const auto viewGrid = std::array<Coordinate, 3>({{ left, forward, right }});
+	for (auto i = 0u; i < viewGrid.size(); i++)
+	{
+		const auto gridValue = gmBoard[viewGrid[i]];
+		const auto wallInputIndx = i * 2 + 0;
+		const auto foodInputIndx = i * 2 + 1;
+		
+		if (gridValue == BoardPart::FOOD)
+		{
+			dest[foodInputIndx] = 1;
+			dest[wallInputIndx] = 0;
+		}
+		else if (ItsAnObstacle(gridValue))
+		{
+			dest[wallInputIndx] = 1;
+			dest[foodInputIndx] = 0;
+		}
+		else
+		{
+			dest[wallInputIndx] = 0;
+			dest[foodInputIndx] = 0;
+		}
+	}
+}
+
+/*
+** Receives a vector whcih contains values of 0 or 1.
+*/
+
+int StateExtractor::BinaryVectorToNumber(const std::vector<int>& binTable)
+{
+	auto result = 0;
+	
+	for (auto i = 0u; i < binTable.size() / 2; i++)
+	{
+		// Duplicated code will be soon removed.
+		const auto wallInputIndx = i * 2 + 0;
+		const auto foodInputIndx = i * 2 + 1;
+		
+		auto cellValue = emptySpaceValue;
+		if (binTable[wallInputIndx] != 0)
+			cellValue = wallValue;
+		else if (binTable[foodInputIndx] != 0)
+			cellValue = foodValue;
+		
+		result += cellValue * std::pow(3, i);
+	}
+	return result;
+}
 
 int StateExtractor::GetRelativeViewStateBase3(
 	const GameState& gmState,
@@ -30,15 +101,11 @@ int StateExtractor::GetGridViewState(
 	const std::vector<int>& fieldOfVIew,
 	const size_t numCellStates)
 {
-	const auto height = gmBoard.GetBoardWidth();
-	const auto width = gmBoard.GetBoardLength();
 	const auto getValue = [&](const int indx) -> int
 	{
-		const auto i = indx / width;
-		const auto j = indx % width;
-		return GetGameCellValue(fieldOfVIew[i*width+j]);
+		return GetGameCellValue(fieldOfVIew[indx]);
 	};
-	return ComputeVieGridValue(height * width, getValue);
+	return ComputeVieGridValue(fieldOfVIew.size(), getValue);
 }
 
 /*

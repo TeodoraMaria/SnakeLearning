@@ -21,9 +21,22 @@ size_t SingleSnakeRelativeView::GetNumbOfObservations() const
 	return std::pow(viewGridSize, cellStatesCount);
 }
 
-int SingleSnakeRelativeView::GetState() const
+const std::vector<int> SingleSnakeRelativeView::GetState() const
 {
-	return GymEnv::Utils::StateExtractor::GetRelativeViewStateBase3(
-		m_game->GetGameState(),
-		m_student->GetSnakeNumber());
+	const auto gmState = m_game->GetGameState();
+	const auto snake = gmState.GetSnake(m_student->GetSnakeNumber());
+	
+	auto container = std::vector<int>(6);
+	GymEnv::Utils::StateExtractor::GetRelativeViewState(
+		container,
+		snake,
+		gmState.GetGameBoard());
+	
+	return container;
 }
+//int SingleSnakeRelativeView::GetState() const
+//{
+//	return GymEnv::Utils::StateExtractor::GetRelativeViewStateBase3(
+//		m_game->GetGameState(),
+//		m_student->GetSnakeNumber());
+//}
