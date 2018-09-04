@@ -6,9 +6,46 @@
 #include <string>
 namespace GameView
 {
+
+void fatalError(std::string error)
+{
+    std::cout << error << std::endl;
+    SDL_Quit();
+    exit(1);
+}
+
+
 OpenGLRenderer::OpenGLRenderer(size_t resolutionX,size_t resolutionY)
 {
     m_board = new Board(resolutionX, resolutionY);
+
+    SDL_Init(SDL_INIT_EVERYTHING);
+    const size_t width = m_board->getWidth();
+    const size_t height = m_board->getHeight();
+    m_window = SDL_CreateWindow("game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL);
+
+    if (m_window == nullptr) {
+        fatalError("could not create window");
+    }
+    SDL_GLContext glContext = SDL_GL_CreateContext(m_window);
+
+    if (glContext == nullptr) {
+        fatalError("could not create context");
+    }
+
+    GLenum error = glewInit();
+
+    if (error != GLEW_OK) {
+        fatalError("could not init gl");
+    }
+
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0f, width, height, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+
 }
 
 OpenGLRenderer::OpenGLRenderer(Board* board):m_board(board)
@@ -34,12 +71,6 @@ Board * OpenGLRenderer::getBoard() const
     return m_board;
 }
 
-void fatalError(std::string error)
-{
-   std::cout << error << std::endl;
-   SDL_Quit();
-   exit(1);
-}
 
 void OpenGLRenderer::initWindow()
 {

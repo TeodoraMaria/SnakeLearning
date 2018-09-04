@@ -40,7 +40,7 @@ namespace GameView
    
    void GameWindow::run()
    {
-      m_renderer.initWindow();
+     // m_renderer.initWindow();
       gameLoop();
    }
 
