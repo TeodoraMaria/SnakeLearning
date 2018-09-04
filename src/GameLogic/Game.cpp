@@ -206,7 +206,10 @@ void Game::RestockFood()
 
 void Game::RunRound()
 {
-	PrintBoard();
+	if (!m_gameOptions.playWithoutRenedring)
+	{
+		PrintBoard();
+	}
 	std::random_shuffle(m_players.begin(), m_players.end());
 	for (auto player : m_players)
 	{

@@ -11,9 +11,9 @@ int main()
 
 	std::vector<IPlayerPtr> players(
 	{
-		IPlayerPtr(new HumanPlayer()),
-//		IPlayerPtr(new AI::HardCoded::SingleBot()),
-		//IPlayerPtr(new AI::HardCoded::SingleBot()),
+		//IPlayerPtr(new HumanPlayer()),
+		IPlayerPtr(new AI::HardCoded::SingleBot()),
+		IPlayerPtr(new AI::HardCoded::SingleBot()),
 		//IPlayerPtr(new AI::HardCoded::SingleBot()),
 	});
 	
@@ -24,6 +24,7 @@ int main()
 		gameOptions.numberOfPlayers = players.size();
 		gameOptions.numFoods = 1;
 		gameOptions.initialSnakeSize = 2;
+		gameOptions.playWithoutRenedring = true;
 	}
 	Game game(gameOptions, players);
 	
