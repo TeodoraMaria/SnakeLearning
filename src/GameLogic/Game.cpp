@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "FileHelper.h"
 #include "MultiplatformUtils/Getch.h"
 #include <algorithm>
 #include <stdlib.h>
@@ -94,6 +95,11 @@ void Game::DisablePlayer(const int snakeNumber)
 	(*it)->SetIsActive(false);
 }
 
+void Game::SaveMove(FileHelper& helper, const std::vector<std::vector<int>> view, SnakeMove move)
+{
+	helper.WriteToFile(view, move);
+}
+
 void Game::CheckIfGameOver()
 {
 	m_isGameOver = (GetLivingSnakes().size() == 0);
@@ -161,13 +167,15 @@ int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 		{
 			return snake.GetSnakeNumber() == snakeNumber;
 		});
-	
 	Coordinate snakeOrientation = snakeToMove.GetOrientation();
-	
 	if (move == SnakeMove::LEFT)
+	{
 		snakeOrientation = snakeOrientation.Rotate90Left();
+	}
 	else if (move == SnakeMove::RIGHT)
+	{
 		snakeOrientation = snakeOrientation.Rotate90Right();
+	}
 
 	const auto newSnakeHeadPosition =
 		snakeToMove.GetSnakeHead() + snakeOrientation;
@@ -178,14 +186,14 @@ int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 		m_gameBoard[newSnakeHeadPosition] = snakeNumber;
 		return 1;
 	}
-	else if (m_gameBoard.CoordIsEmpty(newSnakeHeadPosition))
+	else if (m_gameBoard.CoordIsEmpty(newSnakeHeadPosition) || newSnakeHeadPosition== snakeToMove.GetSnakeTail())
 	{
 		Coordinate freedPosition = snakeToMove.GetSnakeTail();
 		snakeToMove.Move(newSnakeHeadPosition);
 		m_gameBoard.MoveSnake(freedPosition, newSnakeHeadPosition);
 		return 0;
 	}
-	else
+	else 
 	{
 		m_gameBoard.KillSnake(snakeToMove.GetSnakeBody());
 		snakeToMove.Die();
@@ -204,7 +212,10 @@ void Game::RestockFood()
 
 void Game::RunRound()
 {
-	PrintBoard();
+	if (!m_gameOptions.playWithoutRenedring)
+	{
+		PrintBoard();
+	}
 	std::random_shuffle(m_players.begin(), m_players.end());
 	for (auto player : m_players)
 	{
@@ -212,7 +223,32 @@ void Game::RunRound()
 			break;
 		
 		const auto chosenMove = player->GetNextAction(GetGameState());
+		FileHelper fHelper();
+
 		const auto snakeNumber = player->GetSnakeNumber();
+		MoveSnake(snakeNumber, chosenMove);
+	}
+	RestockFood();
+}
+
+void Game::RunRoundAndSave(FileHelper& helper)
+{
+	if (!m_gameOptions.playWithoutRenedring)
+	{
+		PrintBoard();
+	}
+	std::random_shuffle(m_players.begin(), m_players.end());
+	for (auto player : m_players)
+	{
+		if (player->GetIsActive() == false)
+			break;
+
+		GameState gamestate = GetGameState();
+		const auto chosenMove = player->GetNextAction(gamestate);
+		const auto snakeNumber = player->GetSnakeNumber();
+		SaveMove(helper, gamestate.GetFieldOfView(gamestate.GetSnake(snakeNumber),5,5), chosenMove);
+
+		
 		MoveSnake(snakeNumber, chosenMove);
 	}
 	RestockFood();
@@ -220,13 +256,49 @@ void Game::RunRound()
 
 void Game::Play()
 {
-	while (!m_isGameOver)
+	if (m_gameOptions.saveGameplay)
 	{
-		RunRound();
-		CheckIfGameOver();
+		FileHelper helper(GenerateFileName());
+		while (!m_isGameOver)
+		{
+			RunRoundAndSave(helper);
+			CheckIfGameOver();
+		}
+	}
+	else 
+	{
+		while (!m_isGameOver)
+		{
+			RunRound();
+			CheckIfGameOver();
+		}
 	}
 
 	DisplayScoreBoard();
+}
+
+std::string Game::GenerateFileName()
+{
+	time_t now = time(0);
+
+	tm *ltm = localtime(&now);
+
+	std::string fileName = "Game_";
+
+	fileName.append(std::to_string(1900 + ltm->tm_year));
+	fileName.append("_");
+	fileName.append(std::to_string(1 + ltm->tm_mon));
+	fileName.append("_");
+	fileName.append(std::to_string(ltm->tm_mday));
+	fileName.append("_");
+	fileName.append(std::to_string(1 + ltm->tm_hour));
+	fileName.append("_");
+	fileName.append(std::to_string(1 + ltm->tm_min));
+	fileName.append("_");
+	fileName.append(std::to_string(1 + ltm->tm_sec));
+	fileName.append(".txt");
+	
+	return fileName;
 }
 
 void Game::InitFood() 

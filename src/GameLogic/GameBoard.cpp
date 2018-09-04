@@ -151,9 +151,12 @@ void GameBoard::GrowSnake(const size_t & snakeNumber, const Coordinate & locatio
 
 void GameBoard::MoveSnake(const Coordinate & freedLocation, const Coordinate & newLocation)
 {
-	(*this)[newLocation] = (*this)[freedLocation];
+	auto snakeNumber = (*this)[freedLocation];
 	(*this)[freedLocation] = BoardPart::EMPTY;
+	(*this)[newLocation] = snakeNumber;
 }
+	
+	
 
 void GameBoard::KillSnake(const std::list<Coordinate>& snakeBody)
 {
