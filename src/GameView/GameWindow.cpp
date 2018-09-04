@@ -46,24 +46,15 @@ namespace GameView
    {
       m_eventHandler->processInput();
       
-      //code
-      m_controller->sendActions();
-
-        // m_controller->updateBoard();
+      m_controller->sendActions(); 
    }
 
    void GameWindow::gameLoop()
    {
       while (m_gameSate != GameState::EXIT) {
-          auto begin = std::chrono::high_resolution_clock::now();
-          //code
          processInput();
          drawGame();
          m_eventHandler->checkIfGameOver();
-
-          auto end = std::chrono::high_resolution_clock::now();
-          if(std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()>7)
-          std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " milliseconds " << std::endl;
       }
 
    }

@@ -23,6 +23,7 @@ Controller::Controller()
       
      // std::make_shared<HumanPlayer2>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
+      
       std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
@@ -30,7 +31,8 @@ Controller::Controller()
       std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
-      std::make_shared<AI::HardCoded::SingleBot>(),
+      std::make_shared<AI::HardCoded::SingleBot>()
+      
       //IPlayerPtr(new AI::HardCoded::SingleBot()),
    });
 
@@ -39,7 +41,7 @@ Controller::Controller()
 		gameOptions.boardLength = 100;
 		gameOptions.boardWidth = 100;
 		gameOptions.numberOfPlayers = m_players.size();
-		gameOptions.numFoods = 50;
+		gameOptions.numFoods = 0;
         gameOptions.playWithoutRenedring = true;
 	}
    m_game = new Game(gameOptions, m_players);

@@ -193,6 +193,7 @@ int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 		m_gameBoard.MoveSnake(freedPosition, newSnakeHeadPosition);
 		return 0;
 	}
+    
 	else 
 	{
 		m_gameBoard.KillSnake(snakeToMove.GetSnakeBody());
@@ -200,6 +201,7 @@ int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 		DisablePlayer(snakeNumber);
 		return -1;
 	}
+    
 }
 
 void Game::RestockFood()
