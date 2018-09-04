@@ -222,7 +222,7 @@ void Game::RunRound()
 	for (auto player : m_players)
 	{
 		if (player->GetIsActive()==false)
-			break;
+			continue;
 		
 		const auto chosenMove = player->GetNextAction(GetGameState());
 		FileHelper fHelper();

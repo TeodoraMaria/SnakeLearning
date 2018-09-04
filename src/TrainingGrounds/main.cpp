@@ -36,10 +36,15 @@ int main()
 	
 	auto qoptions = AI::QLearning::QOptions();
 	{
-		qoptions.maxNumSteps = [](int episode) { return episode + 50; };
-		qoptions.numEpisodes = 600000;
-		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes * 4);
+		qoptions.maxNumSteps = [](int episode) { return episode + 100; };
+		qoptions.numEpisodes = 80000;
+		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes * 10);
 		qoptions.learningRate = 0.1;
+		qoptions.minRandActionChance = 0.001;
+		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
+		{
+			return 150u + (double)episode / qoptions.numEpisodes * 300.0;
+		};
 	}
 	
 	auto trainer = AI::QLearning::TabularTrainer(qoptions, env);

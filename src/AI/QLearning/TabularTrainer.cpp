@@ -81,6 +81,7 @@ void TabularTrainer::RunEpisode(TrainSession& trainSession)
 
 	auto episodeReward = 0.0;
 	auto prevState = 0;
+	auto stepsSinceLastFood = 0;
 	const auto maxNumSteps = m_qoptions.maxNumSteps(trainSession.episodeIndex);
 	for (auto step = 0; step < maxNumSteps; step++)
 	{
@@ -91,6 +92,17 @@ void TabularTrainer::RunEpisode(TrainSession& trainSession)
 		episodeReward += trainStepResult.reward;
 		prevState = state;
 		state = trainStepResult.newState;
+		
+		if (trainStepResult.reward > 0.01)
+			stepsSinceLastFood = 0;
+		else
+			stepsSinceLastFood++;
+		
+		const auto maxStepsWIthoutFood =
+			m_qoptions.maxStepsWithoutFood(trainSession.episodeIndex);
+			
+		if (stepsSinceLastFood >= maxStepsWIthoutFood)
+			break;
 		
 		// Render the env on the last episode.
 		if (trainSession.episodeIndex >= m_qoptions.numEpisodes - 10)
