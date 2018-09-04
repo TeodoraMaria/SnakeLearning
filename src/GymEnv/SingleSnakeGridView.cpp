@@ -32,7 +32,7 @@ int SingleSnakeGridView::GetState() const
 		fieldOfView);
 }
 
-FieldOfView SingleSnakeGridView::GetFieldOfView() const
+std::vector<int> SingleSnakeGridView::GetFieldOfView() const
 {
 	const auto gameState = m_game->GetGameState();
 	return gameState.GetFieldOfView(

@@ -36,15 +36,12 @@ const Snake & GameState::GetSnake(const int snakeNumber) const
 		});
 }
 
-FieldOfView GameState::GetFieldOfView(
+std::vector<int> GameState::GetFieldOfView(
 	const Snake& snake,
 	const int width,
 	const int length) const
 {
-	FieldOfView fieldOfView(width);
-	
-	for (auto& line : fieldOfView)
-		line.resize(length);
+	std::vector<int> fieldOfView(width*length);
 	
 	const auto left = snake.GetOrientation().Rotate90Left();
 	const auto right = snake.GetOrientation().Rotate90Right();
@@ -56,12 +53,12 @@ FieldOfView GameState::GetFieldOfView(
 			const auto pos = origin + right * x + snake.GetOrientation() * y;
 			if (m_gameBoard.IsWallOrBeyond(pos))
 			{
-				fieldOfView[y][x] = BoardPart::WALL;
+				fieldOfView[y*width+x] = BoardPart::WALL;
 			}
 			else 
 			{
 				assert(m_gameBoard.CoordIsBounded(pos));
-				fieldOfView[y][x] = m_gameBoard[pos];
+				fieldOfView[y*width+x] = m_gameBoard[pos];
 			}
 		}
 	
