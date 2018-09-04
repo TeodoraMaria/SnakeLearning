@@ -47,7 +47,6 @@ OpenGLRenderer::OpenGLRenderer(size_t resolutionX,size_t resolutionY,size_t line
     glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
 
     m_board->setUpBoard(lines, cols);
-
 }
 
 OpenGLRenderer::OpenGLRenderer()
