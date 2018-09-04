@@ -16,20 +16,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	${CMAKE_SOURCE_DIR}/includes/
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
+target_link_libraries(${PROJECT_NAME}
 	Utils
 )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES
-	ARCHIVE_OUTPUT_DIRECTORY	"${CMAKE_SOURCE_DIR}/bin"
-	LIBRARY_OUTPUT_DIRECTORY	"${CMAKE_SOURCE_DIR}/bin"
-	RUNTIME_OUTPUT_DIRECTORY	"${CMAKE_SOURCE_DIR}/bin"
-	EXECUTABLE_OUTPUT_PATH		"${CMAKE_SOURCE_DIR}/bin"
-)
-
-# Flags
-# String(CONCAT Flags ${Flags} " " "-Wall")
-# String(CONCAT Flags ${Flags} " " "-Wextra")
-# String(CONCAT Flags ${Flags} " " "-Werror")
-# String(CONCAT Flags ${Flags} " " "-Waddress")
-# Set(CMAKE_CXX_FLAGS "${Flags}")
+SetDefaultTargetProperties()
+SetCompileFlags_IfParentRequiresIt()

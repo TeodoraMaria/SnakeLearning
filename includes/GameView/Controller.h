@@ -26,9 +26,14 @@ public:
    void updateBoard();
    void addBoard(Board* board);
 
+   GameState getGameState()const;
+
    bool sendActions();
+   void resetPlayersInput();
 
    size_t getAliveSnakes() const;
+   size_t getCols() const;
+   size_t getLines()const;
 
 private:
    void processInputPlayer1(const SDL_Event& keyPressed);

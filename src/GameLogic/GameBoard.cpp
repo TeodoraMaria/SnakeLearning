@@ -1,5 +1,6 @@
 #include "GameBoard.h"
 #include <algorithm>
+#include <assert.h>
 
 /*
 ** Constructors & Destructors.
@@ -71,6 +72,7 @@ int GameBoard::operator[](const Coordinate & coord) const
 
 bool GameBoard::IsFood(const Coordinate & location) const
 {
+	assert(CoordIsBounded(location));
 	return (*this)[location] == BoardPart::FOOD;
 }
 

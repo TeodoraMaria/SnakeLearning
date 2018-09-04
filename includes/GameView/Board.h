@@ -15,6 +15,9 @@ namespace GameView
       void draw();
       void setCellValueAt(int i, int j, int value);
 
+      size_t getWidth()const;
+      size_t getHeight()const;
+
       void setUpBoard(int rows, int cols);
 
    private:

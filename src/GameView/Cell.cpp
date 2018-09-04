@@ -220,20 +220,20 @@ namespace GameView
             glColor3f(0.0, 1.0, 0.0);
             break;
          }
-         case 11:{
+         case 2: {
             glColor3f(1.0, 1.0, 0.0);
             break;
          }
-         case 12: {
-            glColor3f(0.0, 1.0, 1.0);
-            break;
-         }
          default: {
-            glColor3f(0.0, 0.0, 0.0);
+            //glColor3ub(rand() % 255, rand() % 255, rand() % 255);
+             glColor3d(0.0, 0.0, 0.0);
             break;
          }
       }
    }
+
+   
+
    void Cell::rotate(double& x,double& y,double degrees ) const
    {
       double centerX=m_width/2;

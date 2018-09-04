@@ -16,11 +16,11 @@ Game::Game(
 	m_gameOptions(gameOptions),
 	m_players(players)
 {
-	m_players.resize(gameOptions.GetNumberOfPlayers());
+	m_players.resize(gameOptions.numberOfPlayers);
 	m_gameBoard = GameBoard(
-		gameOptions.GetGameBoardType(),
-		gameOptions.GetBoardLength(),
-		gameOptions.GetBoardWidth());
+		gameOptions.gameBoardType,
+		gameOptions.boardLength,
+		gameOptions.boardWidth);
 }
 
 Game::~Game()
@@ -82,7 +82,8 @@ void Game::InitSnakes()
 void Game::AddSnakeToGame(const int snakeNumber)
 {
 	Snake snake(snakeNumber);
-	snake.InitSnake(m_gameBoard);
+	
+	snake.InitSnake(m_gameBoard, m_gameOptions.initialSnakeSize);
 	m_snakes.push_back(snake);
 }
 
@@ -143,8 +144,9 @@ void Game::DisplayScoreBoard()
 	std::sort(m_snakes.begin(), m_snakes.end(),
 		[](const auto& snakeOne, const auto& snakeTwo)
 		{
-		return snakeOne.GetScore() > snakeTwo.GetScore();
+			return snakeOne.GetScore() > snakeTwo.GetScore();
 		});
+
 	std::cout << "\nSCORE BOARD:\n";
 	for (const auto& snake : m_snakes) 
 	{
@@ -157,7 +159,7 @@ int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 	auto& snakeToMove = *std::find_if(m_snakes.begin(), m_snakes.end(), 
 		[snakeNumber](const auto& snake) 
 		{
-		return snake.GetSnakeNumber() == snakeNumber; 
+			return snake.GetSnakeNumber() == snakeNumber;
 		});
 	Coordinate snakeOrientation = snakeToMove.GetOrientation();
 	if (move == SnakeMove::LEFT)
@@ -194,6 +196,14 @@ int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 	}
 }
 
+void Game::RestockFood()
+{
+	while (m_gameBoard.GetFoodPortions() < m_gameOptions.numFoods && m_gameBoard.HasFreeSpace())
+	{
+		m_gameBoard.PlaceFood();
+	}
+}
+
 void Game::RunRound()
 {
 	PrintBoard();
@@ -223,15 +233,7 @@ void Game::Play()
 
 void Game::InitFood() 
 {
-	for (auto i = 0u; i < m_gameOptions.GetFoodPortions(); ++i)
-	{
-		m_gameBoard.PlaceFood();
-	}
-}
-
-void Game::RestockFood()
-{
-	while (m_gameBoard.GetFoodPortions() < m_gameOptions.GetFoodPortions() && m_gameBoard.HasFreeSpace())
+	for (auto i = 0u; i < m_gameOptions.numFoods; ++i)
 	{
 		m_gameBoard.PlaceFood();
 	}

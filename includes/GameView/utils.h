@@ -1,4 +1,6 @@
 #pragma once
+#include <random>
+
 
 namespace GameView
 {
@@ -47,5 +49,12 @@ namespace GameView
          return value*envMaxRange / valueMaxRange;
       }
 
+      static double randomDouble(double lwoerBound, double upperBound)
+      {
+         std::uniform_real_distribution<double> unif(lwoerBound, upperBound);
+         std::default_random_engine engine;
+         return unif(engine);
+
+      }
    }
 }

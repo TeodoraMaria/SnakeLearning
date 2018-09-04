@@ -6,7 +6,7 @@ using namespace GymEnv::Utils;
 
 int StateExtractor::GetRelativeViewStateBase3(
 	const GameState& gmState,
-	const int snakeId) const
+	const int snakeId)
 {
 	const auto& snake = gmState.GetSnake(snakeId);
 	const auto& head = snake.GetSnakeHead();
@@ -20,6 +20,23 @@ int StateExtractor::GetRelativeViewStateBase3(
 	return ComputeVieGridValue(gmState.GetGameBoard(), viewGrid);
 }
 
+int StateExtractor::GetGridViewState(
+	const GameBoard& gmBoard,
+	const FieldOfView& fieldOfVIew,
+	const size_t numCellStates)
+{
+	const auto totalNbOfCells = fieldOfVIew.size() * fieldOfVIew.front().size();
+	auto viewGrid = std::vector<Coordinate>();
+
+	for (const auto& line : fieldOfVIew)
+		for (const auto& coord : line)
+			viewGrid.push_back(coord);
+	
+	assert(viewGrid.size() == totalNbOfCells);
+	
+	return ComputeVieGridValue(gmBoard, viewGrid, numCellStates);
+}
+
 /*
 ** Private helpers.
 */
@@ -27,18 +44,17 @@ int StateExtractor::GetRelativeViewStateBase3(
 int StateExtractor::ComputeVieGridValue(
 	const GameBoard& gmBoard,
 	const std::vector<Coordinate>& viewGrid,
-	const int base) const
+	const int base)
 {
 	int state = 0;
 	
 	for (auto i = 0u; i < viewGrid.size(); i++)
 	{
-		if (gmBoard[viewGrid[i]] == 0)
+		if (gmBoard[viewGrid[i]] == BoardPart::EMPTY)
 			continue;
 		
 		auto cellValue = StateExtractor::emptySpaceValue;
 		
-		// Non food.
 		if (gmBoard[viewGrid[i]] != BoardPart::FOOD)
 			cellValue = StateExtractor::wallValue;
 		else

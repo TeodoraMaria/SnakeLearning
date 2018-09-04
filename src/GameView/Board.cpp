@@ -26,6 +26,16 @@ namespace GameView
       m_gameCells[i][j].setValue(value);
    }
 
+   size_t Board::getWidth() const
+   {
+      return m_windowWidth;
+   }
+
+   size_t Board::getHeight() const
+   {
+      return m_windowHeight;
+   }
+
    void Board::setUpBoard(int rows, int cols)
    {
       size_t widthOffset = m_windowWidth / rows;

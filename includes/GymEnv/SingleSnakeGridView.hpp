@@ -4,8 +4,7 @@
 #include "StepResult.h"
 #include "SnakeStudent.hpp"
 #include "StateExtractor.hpp"
-#include "GameLogic/Game.h"
-#include "GameView/TermRenderer.hpp"
+#include "GameView/IGameRenderer.hpp"
 #include <cstddef>
 #include <vector>
 
@@ -15,14 +14,20 @@
 
 namespace GymEnv
 {
-	class SingleSnakeRelativeView : public SingleSnakeEnvBase
+	class SingleSnakeGridView : public SingleSnakeEnvBase
 	{
 	public:
-		SingleSnakeRelativeView(
+		SingleSnakeGridView(
+			size_t gridWidth,
+			size_t gridHeight,
 			GameView::IGameRenderer* gameRenderer,
 			const GameOptions& gmOptions);
 		
 		size_t GetNumbOfObservations() const override;
 		int GetState() const override;
+	
+	private:
+		const size_t m_gridWidth;
+		const size_t m_gridHeight;
 	};
 }

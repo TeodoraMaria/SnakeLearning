@@ -5,71 +5,40 @@
 
 using namespace GymEnv;
 
-const std::vector<SnakeMove> SingleSnakeRelativeView::actions =
-{{
-	SnakeMove::LEFT,
-	SnakeMove::FORWARD,
-	SnakeMove::RIGHT,
-}};
-
 SingleSnakeRelativeView::SingleSnakeRelativeView(
-	GameView::IGameRenderer* gameRenderer) :
-	m_game(),
-	m_student(),
-	m_stateExtractor(),
-	m_gameRenderer(std::unique_ptr<GameView::IGameRenderer>(gameRenderer))
-{
-	m_student = std::make_shared<SnakeStudent>();
-}
-
-size_t SingleSnakeRelativeView::GetNumbOfObservations() const
-{
-	static const size_t viewGridSize = 3;
-	
-	// 0 - Nothing, 1 - Wall, 2 - Food.
-	static const size_t cellStatesCount = 3;
-	
-	return std::pow(viewGridSize, cellStatesCount);
-}
-
-void SingleSnakeRelativeView::Reset()
+	GameView::IGameRenderer* gameRenderer,
+	const GameOptions& gmOptions) :
+	SingleSnakeEnvBase(gameRenderer, gmOptions)
 {
 	auto players = std::vector<IPlayerPtr>(
 	{
 		IPlayerPtr(m_student)
 	});
 	
-	const auto gameOptions = GameOptions(
-		GameBoardType::BOX,
-		10,
-		10,
-		players.size());
+	auto gameOptions = GameOptions();
+	{
+		gameOptions.gameBoardType = GameBoardType::BOX;
+		gameOptions.boardWidth = 10;
+		gameOptions.boardLength = 10;
+		gameOptions.numberOfPlayers = players.size();
+		gameOptions.numFoods = 1;
+	}
 	
 	m_game = std::make_unique<Game>(Game(gameOptions, players));
-	m_game->InitGame();
+}
+
+size_t SingleSnakeRelativeView::GetNumbOfObservations() const
+{
+	// 0 - Nothing, 1 - Wall, 2 - Food.
+	static const size_t cellStatesCount = 3;
+	static const size_t viewGridSize = 3;
+	
+	return std::pow(viewGridSize, cellStatesCount);
 }
 
 int SingleSnakeRelativeView::GetState() const
 {
-	return m_stateExtractor.GetRelativeViewStateBase3(
+	return GymEnv::Utils::StateExtractor::GetRelativeViewStateBase3(
 		m_game->GetGameState(),
 		m_student->GetSnakeNumber());
-}
-
-StepResult SingleSnakeRelativeView::Step(const SnakeMove moveDirection)
-{
-	m_student->SetNextAction(moveDirection);
-	
-	auto stepResult = StepResult();
-	stepResult.reward = m_game->MoveSnake(
-		m_student->GetSnakeNumber(),
-		moveDirection);
-	
-	stepResult.isDone = (stepResult.reward == -1);
-	return stepResult;
-}
-
-void SingleSnakeRelativeView::Render()
-{
-	m_gameRenderer->Render(m_game->GetGameState());
 }
