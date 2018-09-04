@@ -100,8 +100,8 @@ void TabularTrainer::RunEpisode(TrainSession& trainSession)
 			std::cout << "State: " << state << std::endl;
 			
 			const auto gridViewEnv = dynamic_cast<GymEnv::SingleSnakeGridView*>(m_env);
-			if (gridViewEnv)
-				::Utils::Print::PrintTable(gridViewEnv->GetFieldOfView());
+			//if (gridViewEnv)
+				//::Utils::Print::PrintTable(gridViewEnv->GetFieldOfView());
 		}
 		
 		// Track die states.

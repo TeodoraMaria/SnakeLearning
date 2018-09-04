@@ -14,7 +14,7 @@ namespace GymEnv { namespace Utils
 		
 		static int GetGridViewState(
 			const GameBoard& gmBoard,
-			const FieldOfView& fieldOfVIew,
+			const std::vector<int>& fieldOfVIew,
 			size_t numCellStates = 3);
 		
 	private:

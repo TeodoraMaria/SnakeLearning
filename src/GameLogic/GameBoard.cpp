@@ -14,11 +14,7 @@ GameBoard::GameBoard(
 	m_width(width),
 	m_gameBoardType(gameBoardType)
 {
-	m_board.resize(m_width);
-	for (size_t index = 0; index < m_width; ++index)
-	{
-		m_board[index].resize(m_length);
-	}
+	m_board.resize(m_width*m_length);
 }
 
 GameBoard::~GameBoard()
@@ -42,13 +38,10 @@ size_t GameBoard::GetBoardWidth() const
 size_t GameBoard::GetFoodPortions() const
 {
 	size_t sum = 0;
-	for (const auto& line : m_board)
-	{
-		sum += std::count_if(
-			line.cbegin(),
-			line.cend(),
-			[](const auto& elem) { return elem == BoardPart::FOOD; });
-	}
+	sum += std::count_if(
+		m_board.cbegin(),
+		m_board.cend(),
+		[](const auto& elem) { return elem == BoardPart::FOOD; });
 	return sum;
 }
 
@@ -58,12 +51,12 @@ size_t GameBoard::GetFoodPortions() const
 
 int& GameBoard::operator[](const Coordinate & coord)
 {
-	return m_board[coord.GetX()][coord.GetY()];
+	return m_board[coord.GetX()*m_length +coord.GetY()];
 }
 
 int GameBoard::operator[](const Coordinate & coord) const
 {
-	return m_board[coord.GetX()][coord.GetY()];
+	return m_board[coord.GetX()*m_length + coord.GetY()];
 }
 
 /*
@@ -88,9 +81,8 @@ bool GameBoard::IsWallOrBeyond(const Coordinate& coord) const
 
 bool GameBoard::HasFreeSpace() const
 {
-	for (const auto& line : m_board)
-		for (const auto& elem : line)
-			if (elem == 0)
+	for (const auto& elem : m_board)
+		if (elem == 0)
 				return true;
 	return false;
 }
@@ -110,9 +102,8 @@ bool GameBoard::CoordIsBounded(const Coordinate& coord) const
 
 void GameBoard::Init()
 {
-	for (auto& line : m_board)
-		for (auto& elem : line)
-			elem = BoardPart::EMPTY;
+	for (auto& elem : m_board)
+		elem = BoardPart::EMPTY;
 
 	if (!(m_gameBoardType == GameBoardType::LIMITLESS))
 	{
@@ -124,14 +115,14 @@ void GameBoard::AddLimitsToBoard()
 {
 	for (size_t index = 0; index < m_width; ++index)
 	{
-		m_board[index][0] = BoardPart::WALL;
-		m_board[index][m_length - 1] = BoardPart::WALL;
+		m_board[index*m_length + 0] = BoardPart::WALL;
+		m_board[index*m_length + m_length - 1] = BoardPart::WALL;
 	}
 
 	for (size_t index = 0; index < m_length; ++index)
 	{
-		m_board[0][index] = BoardPart::WALL;
-		m_board[m_width - 1][index] = BoardPart::WALL;
+		m_board[0 * m_length + index] = BoardPart::WALL;
+		m_board[(m_width - 1) * m_length + index] = BoardPart::WALL;
 	}
 }
 

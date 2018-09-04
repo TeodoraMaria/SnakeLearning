@@ -95,7 +95,7 @@ void Game::DisablePlayer(const int snakeNumber)
 	(*it)->SetIsActive(false);
 }
 
-void Game::SaveMove(FileHelper& helper, const std::vector<std::vector<int>> view, SnakeMove move)
+void Game::SaveMove(FileHelper& helper, const std::vector<int> view, const SnakeMove& move)
 {
 	helper.WriteToFile(view, move);
 }
@@ -193,6 +193,7 @@ int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 		m_gameBoard.MoveSnake(freedPosition, newSnakeHeadPosition);
 		return 0;
 	}
+    
 	else 
 	{
 		m_gameBoard.KillSnake(snakeToMove.GetSnakeBody());
@@ -200,6 +201,7 @@ int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 		DisablePlayer(snakeNumber);
 		return -1;
 	}
+    
 }
 
 void Game::RestockFood()

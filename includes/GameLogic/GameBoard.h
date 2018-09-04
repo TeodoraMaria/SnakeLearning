@@ -50,11 +50,10 @@ public:
 	Coordinate GenerateCoordinate() const;
 
 private:
-	typedef std::vector<std::vector<int>> Board;
 	
 	void AddLimitsToBoard();
 	
-	Board m_board;
+	std::vector<int> m_board;
 	size_t m_length;
 	size_t m_width;
 	GameBoardType m_gameBoardType;
