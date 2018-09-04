@@ -11,7 +11,7 @@
 #include "GameWindow.h"
 #include "EventHandler.h"
 
-
+#include <chrono>
 
 
 namespace GameView
@@ -39,24 +39,31 @@ namespace GameView
    
    void GameWindow::run()
    {
-     // m_renderer.initWindow();
       gameLoop();
    }
 
    void GameWindow::processInput()
    {
       m_eventHandler->processInput();
-      if (m_controller->sendActions()) {
-         m_controller->updateBoard();
-      }
+      
+      //code
+      m_controller->sendActions();
+
+        // m_controller->updateBoard();
    }
 
    void GameWindow::gameLoop()
    {
       while (m_gameSate != GameState::EXIT) {
+          auto begin = std::chrono::high_resolution_clock::now();
+          //code
          processInput();
          drawGame();
          m_eventHandler->checkIfGameOver();
+
+          auto end = std::chrono::high_resolution_clock::now();
+          if(std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()>7)
+          std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " milliseconds " << std::endl;
       }
 
    }

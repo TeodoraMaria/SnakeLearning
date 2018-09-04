@@ -14,16 +14,16 @@ namespace GameView
    }
    void Board::draw()
    {
-      for (const auto& cellVec : m_gameCells) {
-         for (const auto& cell : cellVec) {
+      for (const auto& cell : m_gameCells) {
+         //for (const auto& cell : cellVec) {
             cell.draw();
-         }
+         //}
       }
    }
 
    void Board::setCellValueAt(int i, int j, int value)
    {
-      m_gameCells[i][j].setValue(value);
+      m_gameCells[i*m_cols+j].setValue(value);
    }
 
    size_t Board::getWidth() const
@@ -38,16 +38,18 @@ namespace GameView
 
    void Board::setUpBoard(int rows, int cols)
    {
+       m_rows = rows;
+       m_cols = cols;
       size_t widthOffset = m_windowWidth / rows;
       size_t heightOffset = m_windowHeight / cols;
 
-      m_gameCells.resize(cols);
+      m_gameCells.resize(cols*rows);
 
       for (size_t i = 0; i < cols; i++) {
-         m_gameCells[i].resize(rows);
+         //m_gameCells[i].resize(rows);
 
          for (size_t j = 0; j < rows; j++) {
-            m_gameCells[i][j] = Cell(i*widthOffset, j*heightOffset, widthOffset, heightOffset, BoardPart::EMPTY);
+            m_gameCells[i*cols+j] = Cell(i*widthOffset, j*heightOffset, widthOffset, heightOffset, BoardPart::EMPTY);
          }
       }
    }

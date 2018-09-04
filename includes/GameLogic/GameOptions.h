@@ -1,6 +1,7 @@
 #pragma once
 #include "GameUtils.h"
 #include <cstddef>
+#include <functional>
 
 struct GameOptions
 {
@@ -8,7 +9,7 @@ struct GameOptions
 	size_t boardLength = 10;
 	size_t boardWidth = 10;
 	size_t numberOfPlayers = 1;
-	size_t numFoods = 1;
+	std::function<size_t ()> numFoods = []() { return 1; };
 	
 	size_t initialSnakeSize = 3;
 

@@ -21,7 +21,7 @@ namespace GameView
       void setUpBoard(int rows, int cols);
 
    private:
-      using GameCells = std::vector<std::vector<Cell>>;
+      using GameCells = std::vector<Cell>;
 
       GameCells m_gameCells;
       size_t m_rows = 0;
