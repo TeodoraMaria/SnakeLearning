@@ -1,8 +1,9 @@
 #pragma once
 
+#include "QTable.h"
+#include "QOptions.h"
 #include "AI/ITrainer.hpp"
 #include "GymEnv/SingleSnakeEnvBase.hpp"
-#include "QTable.h"
 #include <cstddef>
 #include <random>
 #include <map>

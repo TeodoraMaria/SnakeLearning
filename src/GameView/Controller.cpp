@@ -34,7 +34,7 @@ Controller::Controller()
 		gameOptions.boardLength = 20;
 		gameOptions.boardWidth = 20;
 		gameOptions.numberOfPlayers = m_players.size();
-		gameOptions.numFoods = 10;
+		gameOptions.numFoods = []() { return 10; };
 	}
    m_game = new Game(gameOptions, m_players);
    m_game->InitGame();
