@@ -1,5 +1,6 @@
 #include "GameState.h"
 #include <algorithm>
+#include <assert.h>
 
 GameState::GameState(const GameBoard & gameBoard, const std::vector<Snake>& snakes)
 	:m_gameBoard(gameBoard), m_snakes(snakes)
@@ -53,6 +54,7 @@ FieldOfView GameState::GetFieldOfView(
 			}
 			else 
 			{
+				assert(m_gameBoard.CoordIsBounded(pos));
 				fieldOfView[y][x] = m_gameBoard[pos];
 			}
 		}

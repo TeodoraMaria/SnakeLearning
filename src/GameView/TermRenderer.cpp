@@ -4,14 +4,16 @@
 
 #ifdef _WIN32
 	#include <windows.h>
-	#include <assert.h>
+	#include <iomanip>
 #endif
 
 
 using namespace GameView;
 
-static void PrinCell(const int cellValue)
+static void PrinCell(const Coordinate& coord, const GameState& gameState)
 {
+	const auto cellValue = gameState.GetGameBoard()[coord];
+	
 	if (cellValue == BoardPart::EMPTY)
 		std::cout << " ";
 	else if (cellValue == BoardPart::WALL)
@@ -29,7 +31,11 @@ static void PrinCell(const int cellValue)
 		else
 			color = 100 + (snakeIndex % 7);
 		
-		printf("\033[%dmo", color);
+		auto bodyChar = 'o';
+		if (gameState.IsSnakeHead(coord))
+			bodyChar = 'X';
+		
+		printf("\033[%dm%c", color, bodyChar);
 	}
 	
 	// Reset.
@@ -37,11 +43,25 @@ static void PrinCell(const int cellValue)
 }
 
 #ifdef _WIN32
+	// Haven't compiled on windows.
 	void TermRenderer::Render(const GameState& gameState) const
 	{
-		std::cout
-			<< "PLease implement me. "
-			<< "Can't access IsSnakeHead() btw." << std::endl;
+		HANDLE  hConsole;
+		int k;
+
+		hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		for (size_t i = 0; i < gameState.GetGameBoard().GetBoardWidth(); i++)
+		{
+			for (size_t j = 0; j<gameState.GetGameBoard().GetBoardLength(); j++)
+			{
+				const auto coord = Coordinate(i, j);
+				k = gameState.IsSnakeHead(coord) ? 12 : 15;
+				SetConsoleTextAttribute(hConsole, k);
+				std::cout << std::setw(4) << gameState.GetGameBoard()[coord] << " ";
+			}
+			std::cout << std::endl;
+		}
+		std::cout << std::endl;
 	}
 #else
 	void TermRenderer::Render(const GameState& gameState) const
@@ -51,7 +71,7 @@ static void PrinCell(const int cellValue)
 		for (size_t i = 0; i < gameBoard.GetBoardWidth(); i++)
 		{
 			for (size_t j = 0; j < gameBoard.GetBoardLength(); j++)
-				PrinCell(gameBoard[Coordinate(i, j)]);
+				PrinCell(Coordinate(i, j), gameState);
 			std::cout << std::endl;
 		}
 		std::cout << std::endl;

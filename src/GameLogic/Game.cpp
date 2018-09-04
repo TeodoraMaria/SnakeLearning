@@ -194,6 +194,14 @@ int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 	}
 }
 
+void Game::RestockFood()
+{
+	while (m_gameBoard.GetFoodPortions() < m_gameOptions.numFoods && m_gameBoard.HasFreeSpace())
+	{
+		m_gameBoard.PlaceFood();
+	}
+}
+
 void Game::RunRound()
 {
 	PrintBoard();
@@ -224,14 +232,6 @@ void Game::Play()
 void Game::InitFood() 
 {
 	for (auto i = 0u; i < m_gameOptions.numFoods; ++i)
-	{
-		m_gameBoard.PlaceFood();
-	}
-}
-
-void Game::RestockFood()
-{
-	while (m_gameBoard.GetFoodPortions() < m_gameOptions.numFoods && m_gameBoard.HasFreeSpace())
 	{
 		m_gameBoard.PlaceFood();
 	}

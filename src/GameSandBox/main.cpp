@@ -19,8 +19,8 @@ int main()
 	
 	GameOptions gameOptions;
 	{
-		gameOptions.boardLength = 10;
-		gameOptions.boardWidth = 10;
+		gameOptions.boardLength = 5;
+		gameOptions.boardWidth = 5;
 		gameOptions.numberOfPlayers = players.size();
 		gameOptions.numFoods = 1;
 		gameOptions.initialSnakeSize = 2;

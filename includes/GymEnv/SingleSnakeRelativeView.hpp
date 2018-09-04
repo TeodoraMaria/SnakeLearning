@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SingleSnakeEnvBase.hpp"
 #include "StepResult.h"
 #include "SnakeStudent.hpp"
 #include "StateExtractor.hpp"
@@ -14,23 +15,14 @@
 
 namespace GymEnv
 {
-	class SingleSnakeRelativeView
+	class SingleSnakeRelativeView : public SingleSnakeEnvBase
 	{
 	public:
-		static const std::vector<SnakeMove> actions;
-
-		SingleSnakeRelativeView(GameView::IGameRenderer* gameRenderer);
+		SingleSnakeRelativeView(
+			GameView::IGameRenderer* gameRenderer,
+			const GameOptions& gmOptions);
 		
-		size_t GetNumbOfObservations() const;
-		int GetState() const;
-		
-		void Reset();
-		void Render();
-		StepResult Step(SnakeMove moveDirection);
-	
-	private:
-		std::unique_ptr<Game> m_game;
-		std::shared_ptr<SnakeStudent> m_student;
-		std::unique_ptr<GameView::IGameRenderer> m_gameRenderer;
+		size_t GetNumbOfObservations() const override;
+		int GetState() const override;
 	};
 }

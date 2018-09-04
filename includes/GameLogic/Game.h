@@ -22,12 +22,12 @@ public:
 	void PrintBoard();
 	void DisplayScoreBoard();
 	int MoveSnake(const size_t& snakeNumber, const SnakeMove& move);
+	void RestockFood();
 
 private:
 	void InitSnakes();
 	void CheckIfGameOver();
 	void InitFood();
-	void RestockFood();
 	void AddSnakeToGame(const int snakeNumber);
 	void DisablePlayer(const int snakeNumber);
 	bool IsSnakeHead(const Coordinate& coord) const;

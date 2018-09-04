@@ -20,6 +20,23 @@ int StateExtractor::GetRelativeViewStateBase3(
 	return ComputeVieGridValue(gmState.GetGameBoard(), viewGrid);
 }
 
+int StateExtractor::GetGridViewState(
+	const GameBoard& gmBoard,
+	const FieldOfView& fieldOfVIew,
+	const size_t numCellStates)
+{
+	const auto totalNbOfCells = fieldOfVIew.size() * fieldOfVIew.front().size();
+	auto viewGrid = std::vector<Coordinate>();
+
+	for (const auto& line : fieldOfVIew)
+		for (const auto& coord : line)
+			viewGrid.push_back(coord);
+	
+	assert(viewGrid.size() == totalNbOfCells);
+	
+	return ComputeVieGridValue(gmBoard, viewGrid, numCellStates);
+}
+
 /*
 ** Private helpers.
 */

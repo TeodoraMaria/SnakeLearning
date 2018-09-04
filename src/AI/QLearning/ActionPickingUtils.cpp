@@ -78,7 +78,9 @@ int AI::QLearning::Utils::PickAction(
 	}
 	
 	// Greedy pick.
-	const auto maxActionQ = *std::max_element(actionsQ.begin(), actionsQ.end());
+	const auto maxActionQ = *std::max_element(
+		actionsQ.cbegin(),
+		actionsQ.cend());
 
 	auto maxActionIndex = (!shuffleEquals) ? 0 :
 		GetIndexOfOneMax(actionsQ, maxActionQ, merseneTwister);

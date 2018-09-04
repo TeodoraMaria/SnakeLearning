@@ -11,6 +11,11 @@ namespace GymEnv { namespace Utils
 			const GameState& gmState,
 			int snakeId);
 		
+		static int GetGridViewState(
+			const GameBoard& gmBoard,
+			const FieldOfView& fieldOfVIew,
+			size_t numCellStates = 3);
+		
 	private:
 		static const int emptySpaceValue = 0;
 		static const int wallValue = 1;

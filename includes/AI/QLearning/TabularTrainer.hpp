@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AI/ITrainer.hpp"
-#include "GymEnv/SingleSnakeRelativeView.hpp"
+#include "GymEnv/SingleSnakeEnvBase.hpp"
 #include "QTable.h"
 #include <cstddef>
 #include <random>
@@ -12,7 +12,7 @@ namespace AI{ namespace QLearning
 	class TabularTrainer : public AI::ITrainer
 	{
 	public:
-		TabularTrainer();
+		TabularTrainer(GymEnv::SingleSnakeEnvBase* env);
 		IPlayer* Train() override;
 	
 	private:
@@ -21,19 +21,19 @@ namespace AI{ namespace QLearning
 		struct TrainSession;
 		struct TrainStepResult;
 	
-		const double learningRate = 0.1;
+		const double learningRate = 0.5;
 		const double qDiscountFactor = 0.99;
-		const double numEpisodes = 3000;
+		const double numEpisodes = 50000;
 		const double maxNumSteps = 100;
 		
 		const double maxRandActionChance = 0.9;
 		const double minRandActionChance = 0.00;
-		const double randActionDecayFactor = 1.0 / 8000;
+		const double randActionDecayFactor = 1.0 / (5 * numEpisodes);
 		
 		// Reward stuff.
-		const double foodReward = 1;
-		const double dieReward = -1;
-		const double stepReward = -0.005;
+		const double foodReward = 100;
+		const double dieReward = 0;
+		const double stepReward = 0;
 		
 		void RunEpisode(TrainSession& trainSession);
 		TrainStepResult RunStep(
@@ -50,7 +50,7 @@ namespace AI{ namespace QLearning
 		
 		std::mt19937 m_merseneTwister;
 		QTable m_qtable;
-		GymEnv::SingleSnakeRelativeView m_env;
+		GymEnv::SingleSnakeEnvBase* m_env;
 	};
 	
 	struct TabularTrainer::TrainSession

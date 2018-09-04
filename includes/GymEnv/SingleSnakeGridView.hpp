@@ -1,10 +1,10 @@
 #pragma once
 
+#include "SingleSnakeEnvBase.hpp"
 #include "StepResult.h"
 #include "SnakeStudent.hpp"
 #include "StateExtractor.hpp"
-#include "GameLogic/Game.h"
-#include "GameView/TermRenderer.hpp"
+#include "GameView/IGameRenderer.hpp"
 #include <cstddef>
 #include <vector>
 
@@ -14,26 +14,20 @@
 
 namespace GymEnv
 {
-	class SingleSnakeGridView
+	class SingleSnakeGridView : public SingleSnakeEnvBase
 	{
 	public:
-		static const std::vector<SnakeMove> actions;
-
 		SingleSnakeGridView(
 			size_t gridWidth,
 			size_t gridHeight,
-			GameView::IGameRenderer* gameRenderer);
+			GameView::IGameRenderer* gameRenderer,
+			const GameOptions& gmOptions);
 		
-		size_t GetNumbOfObservations() const;
-		int GetState() const;
-		
-		void Reset();
-		void Render();
-		StepResult Step(SnakeMove moveDirection);
+		size_t GetNumbOfObservations() const override;
+		int GetState() const override;
 	
 	private:
-		std::unique_ptr<Game> m_game;
-		std::shared_ptr<SnakeStudent> m_student;
-		std::unique_ptr<GameView::IGameRenderer> m_gameRenderer;
+		const size_t m_gridWidth;
+		const size_t m_gridHeight;
 	};
 }
