@@ -14,16 +14,19 @@
 
 using namespace AI::QLearning;
 
-TabularTrainer::TabularTrainer(GymEnv::SingleSnakeEnvBase* env) :
+TabularTrainer::TabularTrainer(
+	QOptions& qoptions,
+	GymEnv::SingleSnakeEnvBase* const env) :
 	m_merseneTwister(std::random_device()()),
 	m_qtable(),
+	m_qoptions(qoptions),
 	m_env(env)
 {
 }
 
 IPlayer* TabularTrainer::Train()
 {
-	auto randomDistrib = std::uniform_real_distribution<double>(-1.0, 1.0);
+//	auto randomDistrib = std::uniform_real_distribution<double>(-1.0, 1.0);
 	m_qtable = ::Utils::Matrix::MakeMatrix(
 		m_env->GetNumbOfObservations(),
 		m_env->actions.size(),
@@ -33,11 +36,11 @@ IPlayer* TabularTrainer::Train()
 	
 	auto trainSession = TrainSession();
 	
-	trainSession.randomActionChance = maxRandActionChance;
+	trainSession.randomActionChance = m_qoptions.maxRandActionChance;
 	trainSession.dieStates = std::map<State, int>();
 	
 	// Train.
-	for (auto episode = 0; episode < numEpisodes; episode++)
+	for (auto episode = 0; episode < m_qoptions.numEpisodes; episode++)
 	{
 		trainSession.episodeIndex = episode;
 		RunEpisode(trainSession);
@@ -78,18 +81,19 @@ void TabularTrainer::RunEpisode(TrainSession& trainSession)
 
 	auto episodeReward = 0.0;
 	auto prevState = 0;
+	const auto maxNumSteps = m_qoptions.maxNumSteps(trainSession.episodeIndex);
 	for (auto step = 0; step < maxNumSteps; step++)
 	{
 		const auto trainStepResult = RunStep(
 			state,
-			trainSession.randomActionChance);
+			trainSession);
 		
 		episodeReward += trainStepResult.reward;
 		prevState = state;
 		state = trainStepResult.newState;
 		
 		// Render the env on the last episode.
-		if (trainSession.episodeIndex >= numEpisodes - 10)
+		if (trainSession.episodeIndex >= m_qoptions.numEpisodes - 10)
 		{
 			m_env->Render();
 			std::cout << "Prev State: " << prevState << std::endl;
@@ -103,7 +107,7 @@ void TabularTrainer::RunEpisode(TrainSession& trainSession)
 		// Track die states.
 		if (trainStepResult.isDone)
 		{
-			if (trainSession.episodeIndex > numEpisodes * 0.95)
+			if (trainSession.episodeIndex > m_qoptions.numEpisodes * 0.95)
 				trainSession.dieStates[prevState]++;
 			break;
 		}
@@ -111,8 +115,8 @@ void TabularTrainer::RunEpisode(TrainSession& trainSession)
 		// Update random action chance.
 		trainSession.randomActionChance = ::Utils::Math::Lerp(
 			trainSession.randomActionChance,
-			minRandActionChance,
-			randActionDecayFactor);
+			m_qoptions.minRandActionChance,
+			m_qoptions.randActionDecayFactor);
 	}
 
 	printf(
@@ -125,19 +129,21 @@ void TabularTrainer::RunEpisode(TrainSession& trainSession)
 
 TabularTrainer::TrainStepResult TabularTrainer::RunStep(
 	const State currentState,
-	const double randomActionChance)
+	const TrainSession& trainSession)
 {
 	assert(currentState < m_qtable.size());
 	
 	// Get action with a random noise.
 	const auto actionIndex = QLearning::Utils::PickAction(
 		m_qtable[currentState],
-		randomActionChance,
+		trainSession.randomActionChance,
 		m_merseneTwister);
 
 	const auto stepResult = m_env->Step(m_env->actions[actionIndex]);
 	const auto newState = m_env->GetState();
-	const auto reward = ComputeStepReward(stepResult);
+	const auto reward = ComputeStepReward(
+		stepResult,
+		trainSession.episodeIndex);
 
 	UpdateActionQuality(
 		currentState,
@@ -155,14 +161,15 @@ TabularTrainer::TrainStepResult TabularTrainer::RunStep(
 }
 
 double TabularTrainer::ComputeStepReward(
-	const GymEnv::StepResult& stepResult) const
+	const GymEnv::StepResult& stepResult,
+	const int episode) const
 {
-	auto reward = stepReward;
+	auto reward = m_qoptions.stepReward(episode);
 	
 	if (stepResult.reward > 0)
-		reward += foodReward;
+		reward += m_qoptions.foodReward(episode);
 	else if (stepResult.reward < 0)
-		reward += dieReward;
+		reward += m_qoptions.dieReward(episode);
 	
 	return reward;
 }
@@ -171,7 +178,7 @@ double TabularTrainer::UpdateActionQuality(
 	const int currentState,
 	const int newState,
 	const int actionIndex,
-	const double actionReward,
+	const double reward,
 	const bool isDone)
 {
 	double bestNextQ;
@@ -187,8 +194,8 @@ double TabularTrainer::UpdateActionQuality(
 
 	const auto currentActionQ = m_qtable[currentState][actionIndex];
 	m_qtable[currentState][actionIndex] +=
-		learningRate *
-		(actionReward + qDiscountFactor * bestNextQ - currentActionQ);
+		m_qoptions.learningRate *
+		(reward + m_qoptions.qDiscountFactor * bestNextQ - currentActionQ);
 	
 	return m_qtable[currentState][actionIndex];
 }

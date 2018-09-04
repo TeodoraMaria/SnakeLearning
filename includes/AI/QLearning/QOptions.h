@@ -4,7 +4,7 @@
 
 namespace AI { namespace QLearning
 {
-	typedef std::function<double ()> DblFunc;
+	typedef std::function<double (int episode)> DblFunc;
 	
 	struct QOptions
 	{
@@ -13,8 +13,8 @@ namespace AI { namespace QLearning
 		double qDiscountFactor = 0.99;
 		
 		// Tweeking episodes.
-		DblFunc numEpisodes;
-		DblFunc maxNumSteps;
+		size_t numEpisodes;
+		std::function<size_t (int episode)> maxNumSteps;
 		
 		// Random action chance.
 		double maxRandActionChance = 1;
@@ -22,8 +22,8 @@ namespace AI { namespace QLearning
 		double randActionDecayFactor = 1.0 / 100000;
 		
 		// Rewards.
-		DblFunc foodReward = []() { return 1.0; };
-		DblFunc dieReward = []() { return -1.0; };
-		DblFunc stepReward = []() { return -0.001; };
+		DblFunc foodReward = [](int episode) { return 1.0; };
+		DblFunc dieReward = [](int episode) { return -1.0; };
+		DblFunc stepReward = [](int episode) { return -0.001; };
 	};
 }}
