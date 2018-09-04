@@ -16,8 +16,7 @@ void OpenGLRenderer::Render(const GameState & gameState) const
 {
    glClearDepth(1.0);
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-   
+  
    const GameBoard gameBoard = gameState.GetGameBoard();
    m_board->setUpBoard(gameBoard.GetBoardLength(), gameBoard.GetBoardWidth());
 

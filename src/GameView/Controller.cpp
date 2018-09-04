@@ -19,13 +19,13 @@ Controller::Controller()
    {
       //std::make_shared<HumanPlayer2>(),
       
-      std::make_shared<HumanPlayer2>(),
-      /*std::make_shared<AI::HardCoded::SingleBot>(),
+      //std::make_shared<HumanPlayer2>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
-      std::make_shared<AI::HardCoded::SingleBot>(),*/
+      std::make_shared<AI::HardCoded::SingleBot>(),
+      std::make_shared<AI::HardCoded::SingleBot>(),
       //IPlayerPtr(new AI::HardCoded::SingleBot()),
    });
 
@@ -106,28 +106,6 @@ bool Controller::sendActions()
             humanPlayer->setDirection(Utils::InputDirection::DEFAULT);
          }
       }
-
-
-      //for (auto player : m_players) {
-      //   
-      //   const auto snakeNumber = player->GetSnakeNumber();
-
-      //   const Snake& snake = state.GetSnake(snakeNumber);
-      //   if (snake.GetSnakeSize() != 0) {
-      //      const auto chosenMove = player->GetNextAction(state);
-      //      m_game->MoveSnake(snakeNumber, chosenMove);
-
-      //      //std::cout << player->GetSnakeNumber()<<" ";
-      //      auto humanPlayer = std::dynamic_pointer_cast<HumanPlayer2>(player);
-
-      //      if (humanPlayer != nullptr) {
-      //         humanPlayer->setDirection(Utils::InputDirection::DEFAULT);
-      //      }
-      //   }
-      //}
-
-      //fix controlls for humans keep humanPlayer->setDirection(Utils::InputDirection::DEFAULT);
-
       m_lastTime = m_currentTime;
       return true;
    }

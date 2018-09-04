@@ -33,8 +33,6 @@ namespace GameView
 
    private:
 
-      SDL_Window* m_window;
-
       size_t m_screenWidth;
       size_t m_screenHeight;
 

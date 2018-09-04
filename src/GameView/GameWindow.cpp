@@ -36,13 +36,7 @@ namespace GameView
    GameWindow::~GameWindow()
    {}
 
-   void fatalError(std::string error)
-   {
-      std::cout << error << std::endl;
-      SDL_Quit();
-      exit(1);
-   }
-
+   
    void GameWindow::run()
    {
       m_renderer.initWindow();
