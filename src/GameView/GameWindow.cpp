@@ -18,7 +18,7 @@ namespace GameView
 {
 
     GameWindow::GameWindow(size_t screenWidth, size_t screenHeight)
-        :m_screenWidth(screenWidth), m_screenHeight(screenHeight), m_renderer(screenWidth, screenHeight)
+        :m_screenWidth(screenWidth), m_screenHeight(screenHeight)
    {
       m_eventHandler = std::make_unique<EventHandler>();
      // m_eventHandler.reset(new EventHandler());
@@ -27,11 +27,10 @@ namespace GameView
       m_controller.reset(new Controller());
       m_eventHandler->addGameController(m_controller.get());
 
+      m_renderer = OpenGLRenderer(screenWidth, screenHeight, m_controller->getLines(), m_controller->getCols());
+
       m_board.reset(m_renderer.getBoard());
       m_controller->addBoard(m_board.get());
-
-      
-      
    }
 
    GameWindow::~GameWindow()

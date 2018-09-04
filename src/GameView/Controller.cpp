@@ -120,6 +120,14 @@ size_t Controller::getAliveSnakes() const
 {  
    return m_game->GetLivingSnakes().size();
 }
+size_t Controller::getCols() const
+{
+    return m_game->GetGameBoard().GetBoardLength();
+}
+size_t Controller::getLines() const
+{
+    return m_game->GetGameBoard().GetBoardWidth();
+}
 void Controller::processInputPlayer1(const SDL_Event & keyPressed)
 {
    auto player1 = dynamic_cast<HumanPlayer2*>(m_players[0].get());
