@@ -121,7 +121,7 @@ namespace GameView
 
       double xD = 80;
       double yD = 80;
-
+/*
       xA = Utils::ruleOfThree(xA, m_width, 100);
       xB = Utils::ruleOfThree(xB, m_width, 100);
       xC = Utils::ruleOfThree(xC, m_width, 100);
@@ -131,7 +131,7 @@ namespace GameView
       yB = Utils::ruleOfThree(yB, m_height, 100);
       yC = Utils::ruleOfThree(yC, m_height, 100);
       yD = Utils::ruleOfThree(yD, m_height, 100);
-
+*/
       glVertex2d(m_x + xA, m_y + yA);
       glVertex2d(m_x + xB, m_y + yB);
       glVertex2d(m_x + xC, m_y + yC);
@@ -161,7 +161,7 @@ namespace GameView
 
       double xD = 80;
       double yD = 80;
-
+/*
       xA = Utils::ruleOfThree(xA, m_width, 100);
       xB = Utils::ruleOfThree(xB, m_width, 100);
       xC = Utils::ruleOfThree(xC, m_width, 100);
@@ -171,7 +171,7 @@ namespace GameView
       yB = Utils::ruleOfThree(yB, m_height, 100);
       yC = Utils::ruleOfThree(yC, m_height, 100);
       yD = Utils::ruleOfThree(yD, m_height, 100);
-
+*/
       rotate(xA, yA, 90.0);
       rotate(xB, yB, 90.0);
       rotate(xC, yC, 90.0);
@@ -220,7 +220,7 @@ namespace GameView
             break;
          }
          case 2: {
-            glColor3f(1.0, 1.0, 0.0);
+            glColor3f(1.0, 0.0, 0.0);
             break;
          }
          default: {

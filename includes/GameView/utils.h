@@ -44,17 +44,5 @@ namespace GameView
          SNAKE_BODY_BENT_NW
       };
 
-      static double ruleOfThree(double value, double envMaxRange, double valueMaxRange)
-      {
-         return value*envMaxRange / valueMaxRange;
-      }
-
-      static double randomDouble(double lwoerBound, double upperBound)
-      {
-         std::uniform_real_distribution<double> unif(lwoerBound, upperBound);
-         std::default_random_engine engine;
-         return unif(engine);
-
-      }
    }
 }

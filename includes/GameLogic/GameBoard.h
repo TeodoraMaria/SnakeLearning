@@ -23,6 +23,8 @@ enum class GameBoardType
 class GameBoard
 {
 public:
+	static bool IsObstacle(BoardPart boardPart);
+
 	GameBoard(
 		const GameBoardType& gameBoardType = GameBoardType::BOX,
 		const size_t& length = 10,
