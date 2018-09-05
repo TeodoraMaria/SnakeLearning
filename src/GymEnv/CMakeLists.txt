@@ -7,7 +7,15 @@ file(GLOB srcs "*.cpp" "*.h" "*.hpp")
 file(GLOB includes
 	"${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/*.h"
 	"${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/*.hpp")
-add_library(${PROJECT_NAME} STATIC ${srcs} ${includes})
+
+file(GLOB stateObserver
+	"StateObserver/*.cpp"
+	"${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/StateObserver/*.hpp"
+)
+
+source_group("StateObserver" FILES ${stateObserver})
+
+add_library(${PROJECT_NAME} STATIC ${srcs} ${includes} ${stateObserver})
 
 target_include_directories(${PROJECT_NAME} PRIVATE
 	${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/
