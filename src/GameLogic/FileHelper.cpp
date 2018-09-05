@@ -16,5 +16,5 @@ void FileHelper::WriteToFile(const std::vector<int> view, SnakeMove move)
 	{
 		m_file << elem << " ";
 	}
-	m_file << std::endl << static_cast<int>(move)<<std::endl;
+	m_file << "," << static_cast<int>(move)<<std::endl;
 }

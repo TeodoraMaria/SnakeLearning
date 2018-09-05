@@ -19,8 +19,8 @@ int main()
 	
 	GameOptions gameOptions;
 	{
-		gameOptions.boardLength = 5;
-		gameOptions.boardWidth = 5;
+		gameOptions.boardLength = 10;
+		gameOptions.boardWidth = 10;
 		gameOptions.numberOfPlayers = players.size();
 		gameOptions.numFoods = 1;
 		gameOptions.initialSnakeSize = 2;
@@ -31,6 +31,12 @@ int main()
 	
 	std::cout << "W for foward, A for left, D for right\n\n";
 	
+	game.InitGame();
+	game.Play();
+	game.InitGame();
+	game.Play();
+	game.InitGame();
+	game.Play();
 	game.InitGame();
 	game.Play();
 	return 0;

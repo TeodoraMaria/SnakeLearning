@@ -285,7 +285,7 @@ std::string Game::GenerateFileName()
 
 	tm *ltm = localtime(&now);
 
-	std::string fileName = "Game_";
+	std::string fileName = "D:\\SnakeData\\Game_";
 
 	fileName.append(std::to_string(1900 + ltm->tm_year));
 	fileName.append("_");
@@ -298,7 +298,7 @@ std::string Game::GenerateFileName()
 	fileName.append(std::to_string(1 + ltm->tm_min));
 	fileName.append("_");
 	fileName.append(std::to_string(1 + ltm->tm_sec));
-	fileName.append(".txt");
+	fileName.append(".csv");
 	
 	return fileName;
 }
