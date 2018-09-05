@@ -3,6 +3,17 @@
 
 using namespace Utils::Matrix;
 
+std::vector<double> Utils::Matrix::MakeVector(
+	const size_t size,
+	std::function<double ()> getInitValue)
+{
+	auto result = std::vector<double>(size);
+	for (auto& value : result)
+		value = getInitValue();
+	
+	return result;
+}
+
 DoubleMatrix Utils::Matrix::MakeMatrix(
 	const size_t lines,
 	const size_t cols,

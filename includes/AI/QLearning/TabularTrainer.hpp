@@ -38,6 +38,8 @@ namespace AI{ namespace QLearning
 			double actionReward,
 			bool isDone);
 		
+		void TryInitQField(int key);
+		
 		std::mt19937 m_merseneTwister;
 		QTable m_qtable;
 		QOptions m_qoptions;

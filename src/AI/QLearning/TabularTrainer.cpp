@@ -36,12 +36,7 @@ static void PrintDieStates(const std::unordered_map<int, int>& dieStates)
 
 IPlayer* TabularTrainer::Train()
 {
-	m_qtable = ::Utils::Matrix::MakeMatrix(
-		m_env->GetNumbOfObservations(),
-		m_env->actions.size(),
-		[&]() { return m_qoptions.tabInitializer(m_merseneTwister); }
-	);
-	
+	m_qtable.reserve(m_env->GetNumbOfObservations());
 	auto trainSession = TrainSession();
 	
 	trainSession.randomActionChance = m_qoptions.maxRandActionChance;
@@ -156,6 +151,7 @@ TabularTrainer::TrainStepResult TabularTrainer::RunStep(
 	assert(currentState < m_qtable.size());
 
 	// Get action with a random noise.
+	TryInitQField(currentState);
 	const auto actionIndex = QLearning::Utils::PickAction(
 		m_qtable[currentState],
 		trainSession.randomActionChance,
@@ -223,6 +219,7 @@ double TabularTrainer::UpdateActionQuality(
 		bestNextQ = 0;
 	else
 	{
+		TryInitQField(newState);
 		bestNextQ = *std::max_element(
 			m_qtable[newState].begin(),
 			m_qtable[newState].end());
@@ -234,4 +231,14 @@ double TabularTrainer::UpdateActionQuality(
 		(reward + m_qoptions.qDiscountFactor * bestNextQ - currentActionQ);
 	
 	return m_qtable[currentState][actionIndex];
+}
+
+void TabularTrainer::TryInitQField(const int key)
+{
+	if (m_qtable.find(key) == m_qtable.end())
+	{
+		m_qtable[key] = ::Utils::Matrix::MakeVector(
+			m_env->actions.size(),
+			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); });
+	}
 }

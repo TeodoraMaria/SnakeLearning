@@ -13,13 +13,7 @@ void Utils::Print::PrintTable(
 	for (auto i = 0u; i < table.size(); i++)
 	{
 		std::cout << std::setw(indexWith) << i << ") ";
-		for (auto j = 0u; j < table[i].size(); j++)
-		{
-			std::cout
-				<< std::setw(width) << std::fixed
-				<< std::setprecision(precision) << table[i][j];
-		}
-		std::cout << std::endl;
+		Utils::Print::PrintTable(table[i], precision, width);
 	}
 }
 

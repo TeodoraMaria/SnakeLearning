@@ -1,8 +1,9 @@
 #pragma once
 
 #include <vector>
+#include <unordered_map>
 
 namespace AI { namespace QLearning
 {
-	typedef std::vector<std::vector<double>> QTable;
+	typedef std::unordered_map<int, std::vector<double>> QTable;
 }}

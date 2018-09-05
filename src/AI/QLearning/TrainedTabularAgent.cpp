@@ -43,7 +43,7 @@ SnakeMove TrainedTabularAgent::GetNextAction(const GameState& gmState) const
 		m_interpretableBoardParts);
 	
 	const auto actionIndex = QLearning::Utils::PickAction(
-		m_qBrains[state],
+		m_qBrains.at(state),
 		0, // Noise
 		merseneTwister);
 	

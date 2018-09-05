@@ -81,7 +81,7 @@ void MainSingleSnakeGridView()
 	{
 		gridModel.baseModel = baseModel;
 		gridModel.gridWidth = 2;
-		gridModel.gridHeight = 5;
+		gridModel.gridHeight = 7;
 		gridModel.deltaCoord = Coordinate(0, 0);
 	}
 	
