@@ -50,6 +50,16 @@ ThreeDirectionalObserver::InterpretRayCast(
 	return result;
 }
 
+/*
+**	For i : range(3):
+**		detectedObjIndx = raycast(directions[i])
+**
+** 		if detected anything:
+**			result[i * totalNbOfInterpretables + detectedObjIndx] = dist to obj
+** Where result is the given container.
+** The distance is reversed: 1.0 for being very close.
+*/
+
 void ThreeDirectionalObserver::Observe(
 	std::vector<double>& observationContainer,
 	const GameState& gmState,
