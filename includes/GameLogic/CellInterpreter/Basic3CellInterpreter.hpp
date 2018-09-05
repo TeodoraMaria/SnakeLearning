@@ -12,7 +12,7 @@ namespace GameLogic { namespace CellInterpreter
 	
 	class Basic3CellInterpreter : public ICellInterpreter
 	{
-		size_t NbOfInterpretableCells() const override;
+		size_t NbOfInterpretableParts() const override;
 		size_t InterpretCell(BoardPart boardPart) const override;
 	};
 }}

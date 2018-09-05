@@ -12,7 +12,7 @@ namespace GameLogic { namespace CellInterpreter
 	{
 	public:
 		// Number of cells this boy can interpret.
-		virtual size_t NbOfInterpretableCells() const = 0;
+		virtual size_t NbOfInterpretableParts() const = 0;
 
 		// Get the index of the board part type. For example, if it
 		// can interpret 4 types of cells, then it could return:

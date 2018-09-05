@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameLogic/IPlayer.h"
+#include "GeneticNetwork.h"
 
 namespace AI{ namespace GeneticAlgorithm
 {
@@ -10,6 +11,10 @@ namespace AI{ namespace GeneticAlgorithm
 
         GeneticBot();
         SnakeMove GetNextAction(const GameState& gameState) const override;
+
+        void setNetwork(const GeneticNetwork& network);
+
+    private:
+        GeneticNetwork m_network;
     };
-}
-}
+}}
