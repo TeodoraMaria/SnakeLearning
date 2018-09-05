@@ -6,6 +6,7 @@
 #include "StateExtractor.hpp"
 #include "GameLogic/Game.h"
 #include "GameView/TermRenderer.hpp"
+#include "GymEnv/StateObserver/ThreeDirectionalObserver.hpp"
 #include <cstddef>
 #include <vector>
 
@@ -20,9 +21,13 @@ namespace GymEnv
 	public:
 		SingleSnakeRelativeView(
 			GameView::IGameRenderer* gameRenderer,
-			const GameOptions& gmOptions);
+			const GameOptions& gmOptions,
+			GameLogic::CellInterpreter::ICellInterpreterPtr cellInterptreter);
 		
 		size_t GetNumbOfObservations() const override;
-		const std::vector<int> GetState() const override;
+		const std::vector<double> GetState() const override;
+	
+	private:
+		GymEnv::StateObserver::ThreeDirectionalObserverUPtr m_stateObserver;
 	};
 }

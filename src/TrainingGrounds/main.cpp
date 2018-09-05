@@ -4,6 +4,8 @@
 #include "GymEnv/SingleSnakeRelativeView.hpp"
 #include "GymEnv/SingleSnakeGridView.hpp"
 #include "GameView/OpenGLRenderer.h"
+#include "GameLogic/CellInterpreter/Basic3CellInterpreter.hpp"
+#include "GameLogic/CellInterpreter/WallFoodBody.hpp"
 
 #include "GameLogic/Game.h"
 #include "GameLogic/HumanPlayer.h"
@@ -17,14 +19,19 @@ int main()
 	
 	auto gmOptions = GameOptions();
 	{
-		gmOptions.boardLength = 9;
-		gmOptions.boardWidth = 9;
-		gmOptions.numFoods = 1;
+		gmOptions.boardLength = 25;
+		gmOptions.boardWidth = 25;
+		gmOptions.numFoods = 10;
 	}
 	
 	auto gmRenderer = new GameView::TermRenderer();
 //	auto gmRenderer = new GameView::OpenGLRenderer(200, 200, gmOptions.boardLength, gmOptions.boardWidth);
-	auto env = new GymEnv::SingleSnakeRelativeView(gmRenderer, gmOptions);
+	auto env = new GymEnv::SingleSnakeRelativeView(
+		gmRenderer,
+		gmOptions,
+//		std::make_shared<GameLogic::CellInterpreter::Basic3CellInterpreter>()
+		std::make_shared<GameLogic::CellInterpreter::WallFoodBody>()
+	);
 	
 //	const auto gridViewWidth = 5;
 //	const auto gridViewHeight = 3;
@@ -37,8 +44,8 @@ int main()
 	auto qoptions = AI::QLearning::QOptions();
 	{
 		qoptions.maxNumSteps = [](int episode) { return episode + 100; };
-		qoptions.numEpisodes = 30000;
-		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes * 3);
+		qoptions.numEpisodes = 40000;
+		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes * 9);
 		qoptions.learningRate = 0.1;
 		qoptions.minRandActionChance = 0;
 		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t

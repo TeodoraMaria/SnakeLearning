@@ -25,3 +25,16 @@ double Utils::Math::randomDouble(double lwoerBound, double upperBound)
     std::default_random_engine engine;
     return unif(engine);
 }
+
+/*
+** Convert the given value to a binary int by approximating.
+*/
+
+int Utils::Math::DoubleToBinaryInt(
+	const double value,
+	const double eps)
+{
+	if (Math::Approx(value, 0, eps))
+		return 0;
+	return 1;
+}

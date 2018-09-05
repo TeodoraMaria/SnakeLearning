@@ -1,5 +1,6 @@
 #include "StateExtractor.hpp"
 #include "Utils/PrintUtils.h"
+#include "Utils/MathUtils.h"
 #include <array>
 #include <cmath>
 #include <iostream>
@@ -54,23 +55,30 @@ void StateExtractor::GetRelativeViewState(
 ** Receives a vector whcih contains values of 0 or 1.
 */
 
-int StateExtractor::BinaryVectorToNumber(const std::vector<int>& binTable)
+int StateExtractor::BinaryVectorToNumber(
+	const std::vector<double>& binTable,
+	const size_t cellStates)
 {
 	auto result = 0;
 	
-	for (auto i = 0u; i < binTable.size() / 2; i++)
+	const auto numInterpretables = cellStates - 1;
+	for (auto i = 0u; i < binTable.size() / numInterpretables; i++)
 	{
-		// Duplicated code will be soon removed.
-		const auto wallInputIndx = i * 2 + 0;
-		const auto foodInputIndx = i * 2 + 1;
+		auto cellValue = 0;
+		for (auto j = 0u; j < numInterpretables; j++)
+		{
+			const auto indx = i * numInterpretables + j;
+			const auto intBinTableValue =
+				::Utils::Math::DoubleToBinaryInt(binTable[indx]);
+			
+			if (intBinTableValue != 0)
+			{
+				cellValue = j + 1;
+				break;
+			}
+		}
 		
-		auto cellValue = emptySpaceValue;
-		if (binTable[wallInputIndx] != 0)
-			cellValue = wallValue;
-		else if (binTable[foodInputIndx] != 0)
-			cellValue = foodValue;
-		
-		result += cellValue * std::pow(3, i);
+		result += cellValue * std::pow(cellStates, i);
 	}
 	return result;
 }

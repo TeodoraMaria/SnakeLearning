@@ -4,17 +4,17 @@
 
 using namespace GymEnv;
 
-SingleSnakeGridView::SingleSnakeGridView(
-	const size_t gridWidth,
-	const size_t gridHeight,
-	GameView::IGameRenderer* const gameRenderer,
-	const GameOptions& gmOptions
-) :
-	GymEnv::SingleSnakeEnvBase(gameRenderer, gmOptions),
-	m_gridWidth(gridWidth),
-	m_gridHeight(gridHeight)
-{
-}
+//SingleSnakeGridView::SingleSnakeGridView(
+//	const size_t gridWidth,
+//	const size_t gridHeight,
+//	GameView::IGameRenderer* const gameRenderer,
+//	const GameOptions& gmOptions
+//) :
+//	GymEnv::SingleSnakeEnvBase(gameRenderer, gmOptions),
+//	m_gridWidth(gridWidth),
+//	m_gridHeight(gridHeight)
+//{
+//}
 
 size_t SingleSnakeGridView::GetNumbOfObservations() const
 {

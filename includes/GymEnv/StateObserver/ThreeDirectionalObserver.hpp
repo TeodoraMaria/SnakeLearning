@@ -36,6 +36,8 @@ namespace GymEnv { namespace StateObserver
 		const size_t m_rightFieldSize;
 	};
 	
+	typedef std::unique_ptr<ThreeDirectionalObserver> ThreeDirectionalObserverUPtr;
+	
 	struct ThreeDirectionalObserver::InterpretRayCastResult
 	{
 		size_t detectedPart;

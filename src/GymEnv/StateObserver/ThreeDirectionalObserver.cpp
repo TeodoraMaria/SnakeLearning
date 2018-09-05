@@ -1,4 +1,5 @@
 #include "StateObserver/ThreeDirectionalObserver.hpp"
+#include "Utils/PrintUtils.h"
 #include <assert.h>
 
 using namespace GymEnv::StateObserver;
@@ -32,7 +33,7 @@ ThreeDirectionalObserver::InterpretRayCast(
 	
 	for (auto i = 0u; i < distance; i++)
 	{
-		const auto pos = origin + direction * i;
+		const auto pos = origin + direction * (i + 1);
 		const auto boardPart = static_cast<BoardPart>(gmBoard[pos]);
 		const auto interpretationId =
 			m_cellInterpreter->InterpretCell(boardPart);
@@ -109,4 +110,9 @@ void ThreeDirectionalObserver::Observe(
 	putDist(left, m_leftFieldSize, 0);
 	putDist(forward, m_forwardFieldSize, 1);
 	putDist(right, m_rightFieldSize, 2);
+	
+//	auto aux = std::vector<std::vector<double>>(1);
+//	aux[0] = observationContainer;
+//	::Utils::Print::PrintTable(aux);
+	
 }

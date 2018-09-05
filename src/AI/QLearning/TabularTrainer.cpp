@@ -77,8 +77,10 @@ IPlayer* TabularTrainer::Train()
 void TabularTrainer::RunEpisode(TrainSession& trainSession)
 {
 	m_env->Reset();
-	const auto& rawState = m_env->GetState();
-	auto state = GymEnv::Utils::StateExtractor::BinaryVectorToNumber(rawState);
+	const auto rawState = m_env->GetState();
+	auto state = GymEnv::Utils::StateExtractor::BinaryVectorToNumber(
+		rawState,
+		m_env->GetCellInterpreter()->NbOfInterpretableCells());
 	
 	auto episodeReward = 0.0;
 	auto prevState = 0;
@@ -109,12 +111,8 @@ void TabularTrainer::RunEpisode(TrainSession& trainSession)
 		if (trainSession.episodeIndex >= m_qoptions.numEpisodes - 10)
 		{
 			m_env->Render();
-//			std::cout << "PrevState: " << prevState << std::endl;
-//			std::cout << "CurrentState: " << state << std::endl;
-//			
-//			auto aux = std::vector<std::vector<int>>(1);
-//			aux[0] = rawState;
-//			::Utils::Print::PrintTable(aux);
+			std::cout << "PrevState: " << prevState << std::endl;
+			std::cout << "CurrentState: " << state << std::endl;
 		}
 		
 		// Track die states.
@@ -145,7 +143,7 @@ TabularTrainer::TrainStepResult TabularTrainer::RunStep(
 	const TrainSession& trainSession)
 {
 	assert(currentState < m_qtable.size());
-	
+
 	// Get action with a random noise.
 	const auto actionIndex = QLearning::Utils::PickAction(
 		m_qtable[currentState],
@@ -154,9 +152,10 @@ TabularTrainer::TrainStepResult TabularTrainer::RunStep(
 
 	const auto stepResult = m_env->Step(m_env->actions[actionIndex]);
 	const auto newRawState = m_env->GetState();
-	const auto newState =
-		GymEnv::Utils::StateExtractor::BinaryVectorToNumber(newRawState);
-	
+	const auto newState = GymEnv::Utils::StateExtractor::BinaryVectorToNumber(
+		newRawState,
+		m_env->GetCellInterpreter()->NbOfInterpretableCells());
+
 	assert(newState < m_qtable.size());
 	
 	const auto reward = ComputeStepReward(
