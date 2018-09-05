@@ -1,14 +1,14 @@
 #pragma once
 #include <vector>
-#include <SDL.h>
 #include <memory>
-
 
 #include "GameLogic/Game.h"
 #include "GameLogic/HumanPlayer.h"
 
 #include "HumanPlayer2.h"
 #include "GameLogic/IPlayer.h"
+
+union SDL_Event;
 
 namespace GameView
 {

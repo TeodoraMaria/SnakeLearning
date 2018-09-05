@@ -1,9 +1,11 @@
 #include "TermRenderer.hpp"
 #include "Board.h"
-#include "SDL.h"
+
+#include <SDL.h>
 
 namespace GameView
-{
+{   
+
    class OpenGLRenderer :public IGameRenderer
    {
    public:
@@ -20,8 +22,6 @@ namespace GameView
       Board* m_board=nullptr;
 
       SDL_Window* m_window=nullptr;
-
-
    };
 
 

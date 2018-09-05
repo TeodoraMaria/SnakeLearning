@@ -19,9 +19,9 @@ double Utils::Math::ruleOfThree(double value, double envMaxRange, double valueMa
     return value*envMaxRange / valueMaxRange;
 }
 
-double Utils::Math::randomDouble(double lwoerBound, double upperBound)
+double Utils::Math::randomDouble(double lowerBound, double upperBound)
 {
-    std::uniform_real_distribution<double> unif(lwoerBound, upperBound);
+    std::uniform_real_distribution<double> unif(lowerBound, upperBound);
     std::default_random_engine engine;
     return unif(engine);
 }
