@@ -19,12 +19,12 @@ Controller::Controller()
 {
    m_players = std::vector<IPlayerPtr>(
    {
-      //std::make_shared<HumanPlayer2>(),
+      std::make_shared<HumanPlayer2>(),
       
      // std::make_shared<HumanPlayer2>(),
-      std::make_shared<AI::HardCoded::SingleBot>(),
+     // std::make_shared<AI::HardCoded::SingleBot>(),
       
-      std::make_shared<AI::HardCoded::SingleBot>(),
+      /*std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
@@ -32,16 +32,16 @@ Controller::Controller()
       std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>(),
       std::make_shared<AI::HardCoded::SingleBot>()
-      
+      */
       //IPlayerPtr(new AI::HardCoded::SingleBot()),
    });
 
 	GameOptions gameOptions;
 	{
-		gameOptions.boardLength = 100;
-		gameOptions.boardWidth = 100;
+		gameOptions.boardLength = 25;
+		gameOptions.boardWidth = 25;
 		gameOptions.numberOfPlayers = m_players.size();
-		gameOptions.numFoods = 50;
+		gameOptions.numFoods = 3;
         gameOptions.playWithoutRenedring = true;
 	}
    m_game = new Game(gameOptions, m_players);
@@ -113,14 +113,14 @@ void Controller::resetPlayersInput()
 bool Controller::sendActions()
 {
    m_currentTime = SDL_GetTicks();
-   size_t timeRange = 0;
+   size_t timeRange = 500;
    if (m_currentTime > m_lastTime + timeRange) {
       GameState state = m_game->GetGameState();
       m_game->RunRound();
       
      
       //code
-      resetPlayersInput();
+     // resetPlayersInput();
 
      
       m_lastTime = m_currentTime;

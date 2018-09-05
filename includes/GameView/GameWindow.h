@@ -3,6 +3,7 @@
 #include "Board.h"
 #include "Controller.h"
 #include "OpenGLRenderer.h"
+#include "TermRenderer.hpp"
 
 #include <SDL.h>
 #include <memory>
@@ -39,6 +40,7 @@ namespace GameView
       GameState m_gameSate = GameState::PLAY;
       
       OpenGLRenderer m_renderer;
+      
 
       std::unique_ptr<Board> m_board;
       std::unique_ptr<Controller> m_controller;

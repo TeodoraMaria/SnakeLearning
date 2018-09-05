@@ -16,7 +16,7 @@ SnakeMove HumanPlayer2::GetNextAction(const GameState & gameState) const
    SnakeMove move = GetUserInput();
    
 
-  // TranslateMoveToSnakeView(move, gameState);
+   TranslateMoveToSnakeView(move, gameState);
    return move != SnakeMove::DOWN ? move : SnakeMove::FORWARD;
 }
 
@@ -60,6 +60,7 @@ void HumanPlayer2::TranslateMoveToSnakeView(SnakeMove & move, const GameState & 
 {
    const auto& snake = gameState.GetSnake(GetSnakeNumber());
    auto orientation = snake.GetOrientation();
+   RotateLeft(move);
    if (orientation == Coordinate::RIGHT) {
       RotateLeft(move);
    } else if (orientation == Coordinate::DOWN) {

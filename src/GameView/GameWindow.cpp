@@ -28,7 +28,7 @@ namespace GameView
       m_eventHandler->addGameController(m_controller.get());
 
       m_renderer = OpenGLRenderer(screenWidth, screenHeight, m_controller->getLines(), m_controller->getCols());
-
+   
       m_board.reset(m_renderer.getBoard());
       m_controller->addBoard(m_board.get());
    }
@@ -62,6 +62,7 @@ namespace GameView
    void GameWindow::drawGame()
    {
       m_renderer.Render(m_controller->getGameState());
+       
    }
    void GameWindow::exitGame()
    {
