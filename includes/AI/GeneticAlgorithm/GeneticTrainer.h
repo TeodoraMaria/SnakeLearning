@@ -28,16 +28,8 @@ namespace AI{namespace GeneticAlgorithm
         GymEnv::SingleSnakeEnvBase* m_env;
         GeneticOptions m_options;
         std::vector<GeneticNetwork> m_networks;
-        std::vector<NetworkProbability> m_networkProb;
+        std::vector<double> m_networkProb;
 
 
     };
-
-    struct NetworkProbability
-    {
-        double selectionProb;
-        double cumulativeProb;
-    };
-
-
 }}

@@ -21,11 +21,11 @@ IPlayer *GeneticTrainer::Train()
     }
 
     for (size_t i = 0; i < m_options.numEpisodes; i++) {
-        runEpisode();
+       // runEpisode();
 
-        selectNewNetworks();
-        crossover();
-        mutate();
+        //selectNewNetworks();
+        //crossover();
+        //mutate();
 
 
     }
@@ -103,14 +103,13 @@ void GeneticTrainer::selectNewNetworks()
         fitnessSum += network.getFitness();
     }
 
-    m_networkProb[0].selectionProb = m_networks[0].getFitness() / fitnessSum;
-    m_networkProb[0].cumulativeProb = m_networkProb[0].selectionProb;
+    m_networkProb[0] = m_networks[0].getFitness() / fitnessSum;
 
     for (size_t i = 1; i < m_options.numOfNetworks; i++) {
-        m_networkProb[i].selectionProb = m_networks[i].getFitness() / fitnessSum;
+        double selectionProb = m_networks[i].getFitness() / fitnessSum;
         
         //ci = ci-1 + si; 
-        m_networkProb[i].cumulativeProb = m_networkProb[i - 1].cumulativeProb + m_networkProb[i].selectionProb;
+        m_networkProb[i] = m_networkProb[i - 1] + selectionProb;
     }
 
     std::vector<GeneticNetwork> newNetworks;
@@ -124,7 +123,7 @@ void GeneticTrainer::selectNewNetworks()
         GeneticNetwork selectedNetwork;
 
         for (size_t j = 0; j < m_options.numOfNetworks; j++) {
-            if (selectionValue > m_networkProb[i].cumulativeProb) {
+            if (selectionValue > m_networkProb[i]) {
                 selectedNetwork = m_networks[i];
                 break;
             }
