@@ -3,6 +3,7 @@
 #include "AI/ITrainer.hpp"
 #include "GymEnv/SingleSnakeEnvBase.hpp"
 #include "GeneticOptions.h"
+#include "GeneticNetwork.h"
 #include "GeneticBot.h"
 #include <vector>
 
@@ -11,15 +12,31 @@ namespace AI{namespace GeneticAlgorithm
     class GeneticTrainer :public AI::ITrainer
     {
     public:
-        GeneticTrainer(GymEnv::SingleSnakeEnvBase* env);
+        GeneticTrainer(GeneticOptions options,GymEnv::SingleSnakeEnvBase* env);
         virtual IPlayer * Train() override;
 
     private:
         void runEpisode();
-        void runStep();
+        double runStep(const std::vector<int>& state, const GeneticNetwork& network);
+        void runBot(GeneticNetwork& network);
+        void crossover();
+        void selectNewNetworks();
+        void mutate();
+        
 
+
+        GymEnv::SingleSnakeEnvBase* m_env;
         GeneticOptions m_options;
-        std::vector<GeneticBot> m_bots;
+        std::vector<GeneticNetwork> m_networks;
+        std::vector<NetworkProbability> m_networkProb;
+
+
+    };
+
+    struct NetworkProbability
+    {
+        double selectionProb;
+        double cumulativeProb;
     };
 
 
