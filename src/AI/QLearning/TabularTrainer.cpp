@@ -59,7 +59,7 @@ IPlayer* TabularTrainer::Train()
 	
 	return new AI::QLearning::TrainedAgent::TrainedTabularAgent(
 		m_env->actions,
-		m_env->GetCellInterpreter()->NbOfInterpretableCells(),
+		m_env->GetCellInterpreter()->NbOfInterpretableParts(),
 		m_qtable,
 		std::shared_ptr<GymEnv::StateObserver::IStateObserver>(
 			m_env->GetObserver()->Clone()));
@@ -75,7 +75,7 @@ void TabularTrainer::RunEpisode(TrainSession& trainSession)
 	const auto rawState = m_env->GetState();
 	auto state = GymEnv::Utils::StateExtractor::BinaryVectorToNumber(
 		rawState,
-		m_env->GetCellInterpreter()->NbOfInterpretableCells());
+		m_env->GetCellInterpreter()->NbOfInterpretableParts());
 	
 	auto episodeReward = 0.0;
 	auto prevState = 0;
@@ -165,7 +165,7 @@ TabularTrainer::TrainStepResult TabularTrainer::RunStep(
 	const auto newRawState = m_env->GetState();
 	const auto newState = GymEnv::Utils::StateExtractor::BinaryVectorToNumber(
 		newRawState,
-		m_env->GetCellInterpreter()->NbOfInterpretableCells());
+		m_env->GetCellInterpreter()->NbOfInterpretableParts());
 
 	assert(newState < m_qtable.size());
 	

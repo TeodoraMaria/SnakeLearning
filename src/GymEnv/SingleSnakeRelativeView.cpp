@@ -24,7 +24,7 @@ size_t SingleSnakeRelativeView::GetNumbOfObservations() const
 {
 	static const size_t viewGridSize = 3;
 	
-	return std::pow(viewGridSize, m_celInterpreter->NbOfInterpretableCells());
+	return std::pow(viewGridSize, m_celInterpreter->NbOfInterpretableParts());
 }
 
 std::vector<double> SingleSnakeRelativeView::GetState() const

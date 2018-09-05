@@ -25,7 +25,7 @@ const IStateObserver* SingleSnakeGridView::GetObserver() const
 size_t SingleSnakeGridView::GetNumbOfObservations() const
 {
 	return std::pow(
-		m_celInterpreter->NbOfInterpretableCells(),
+		m_celInterpreter->NbOfInterpretableParts(),
 		m_gridObserver->GetWidth() * m_gridObserver->GetHeight());
 }
 

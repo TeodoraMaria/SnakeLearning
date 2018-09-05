@@ -22,7 +22,7 @@ size_t GridObserver::NbOfObservations() const
 {
 	return
 		(m_width * m_height) *
-		(m_cellInterpreter->NbOfInterpretableCells() - 1);
+		(m_cellInterpreter->NbOfInterpretableParts() - 1);
 }
 
 void GridObserver::Observe(
@@ -54,7 +54,7 @@ void GridObserver::Observe(
 			
 			const auto indx =
 				startOfIndex *
-				(m_cellInterpreter->NbOfInterpretableCells() - 1);
+				(m_cellInterpreter->NbOfInterpretableParts() - 1);
 
 			const auto interpretVal = m_cellInterpreter->InterpretCell(cellVal);
 			

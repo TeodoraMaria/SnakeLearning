@@ -19,7 +19,7 @@ ThreeDirectionalObserver::ThreeDirectionalObserver(
 
 size_t ThreeDirectionalObserver::NbOfObservations() const
 {
-	return 3 * (m_cellInterpreter->NbOfInterpretableCells() - 1);
+	return 3 * (m_cellInterpreter->NbOfInterpretableParts() - 1);
 }
 
 /*
@@ -46,7 +46,7 @@ void ThreeDirectionalObserver::Observe(
 	const auto right = forward.Rotate90Right();
 	
 	const auto nbOfInterpretables =
-		m_cellInterpreter->NbOfInterpretableCells() - 1;
+		m_cellInterpreter->NbOfInterpretableParts() - 1;
 	
 	// Put the 'distance' in the detected part index, if any detected.
 	const auto putDist = [&](
