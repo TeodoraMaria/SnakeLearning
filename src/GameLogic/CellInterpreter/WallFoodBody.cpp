@@ -2,7 +2,7 @@
 
 using namespace GameLogic::CellInterpreter;
 
-size_t WallFoodBody::NbOfInterpretableCells() const
+size_t WallFoodBody::NbOfInterpretableParts() const
 {
 	return 4;
 }

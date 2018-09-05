@@ -2,7 +2,7 @@
 
 using namespace GameLogic::CellInterpreter;
 
-size_t Basic3CellInterpreter::NbOfInterpretableCells() const
+size_t Basic3CellInterpreter::NbOfInterpretableParts() const
 {
 	return 3;
 }
