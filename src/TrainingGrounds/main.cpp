@@ -112,6 +112,18 @@ void MainSingleSnakeGridView()
 	
 	auto trainer = AI::QLearning::TabularTrainer(qoptions, env);
 	trainer.Train();
+//	auto trainedAgent = trainer.Train();
+//
+//		std::vector<IPlayerPtr> players(
+//		{
+//			IPlayerPtr(trainedAgent),
+//	//		IPlayerPtr(new AI::HardCoded::SingleBot()),
+//		});
+//
+//		Game game(gmOptions, players);
+//
+//		game.InitGame();
+//		game.Play();
 }
 
 int main()
