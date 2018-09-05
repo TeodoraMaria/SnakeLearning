@@ -21,11 +21,11 @@ IPlayer *GeneticTrainer::Train()
     }
 
     for (size_t i = 0; i < m_options.numEpisodes; i++) {
-       // runEpisode();
+        runEpisode();
 
-        //selectNewNetworks();
-        //crossover();
-        //mutate();
+        selectNewNetworks();
+        crossover();
+        mutate();
 
 
     }
@@ -83,8 +83,11 @@ void GeneticTrainer::runBot(GeneticNetwork& network)
     for (size_t i = 0; i < m_options.maxNumSteps; i++) {
 
        double reward=runStep(state,network);
-
+           //dead
        network.updateFitness(reward);
+       if (reward == -1000.0) {
+           break;
+       }
 
     }
 
