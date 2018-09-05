@@ -1,8 +1,10 @@
 #pragma once
 
-
 #include "AI/ITrainer.hpp"
 #include "GymEnv/SingleSnakeEnvBase.hpp"
+#include "GeneticOptions.h"
+#include "GeneticBot.h"
+#include <vector>
 
 namespace AI{namespace GeneticAlgorithm
 {
@@ -13,13 +15,11 @@ namespace AI{namespace GeneticAlgorithm
         virtual IPlayer * Train() override;
 
     private:
-        const size_t numEpisodes = 50000;
-        const size_t maxNumSteps = 100;
+        void runEpisode();
+        void runStep();
 
-        //void runEpisode();
-
-        //void runStep();
-
+        GeneticOptions m_options;
+        std::vector<GeneticBot> m_bots;
     };
 
 

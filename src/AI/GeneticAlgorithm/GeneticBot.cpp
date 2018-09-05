@@ -2,7 +2,10 @@
 
 using namespace AI::GeneticAlgorithm;
 
+GeneticBot::GeneticBot()
+{}
+
 SnakeMove GeneticBot::GetNextAction(const GameState & gameState) const
 {
-    return SnakeMove();
+    const GameBoard& board = gameState.GetGameBoard();
 }
