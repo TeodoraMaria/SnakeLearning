@@ -8,7 +8,8 @@ namespace AI{namespace GeneticAlgorithm
         size_t numEpisodes;
         size_t maxNumSteps;
         size_t numOfNetworks;
-        double mutationProbrability;
+        double mutationProb;
+        double crossoverProb;
     };
     
 }}

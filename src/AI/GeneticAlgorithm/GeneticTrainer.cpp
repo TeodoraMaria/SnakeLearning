@@ -7,10 +7,8 @@ using namespace AI::GeneticAlgorithm;
 GeneticTrainer::GeneticTrainer(GeneticOptions options, GymEnv::SingleSnakeEnvBase* env):
     m_options(options),m_env(env)
 {
-  
     m_networks.resize(m_options.numOfNetworks);
     m_networkProb.resize(m_options.numOfNetworks);
-
 }
 
 IPlayer *GeneticTrainer::Train()
@@ -96,7 +94,15 @@ void GeneticTrainer::runBot(GeneticNetwork& network)
 
 void GeneticTrainer::crossover()
 {
+    //check for 2 networks at a time
+    double crossoverValue;
+    for (size_t i = 0; i < m_options.numOfNetworks; i+=2) {
 
+        crossoverValue = Utils::Math::randomDouble(0.00000001, 1.0);
+        if (crossoverValue < m_options.crossoverProb) {
+            //TODO:crossover
+            //something.crossover(m_networks[i],m_networks[i+1]);
+    }
 }
 
 void GeneticTrainer::selectNewNetworks()
@@ -139,6 +145,14 @@ void GeneticTrainer::selectNewNetworks()
 
 void GeneticTrainer::mutate()
 {
+    double mutationValue;
+    for (auto& network : m_networks) {
+        mutationValue = Utils::Math::randomDouble(0.00000001, 1.0);
+        if (mutationValue < m_options.mutationProb) {
+            //TODO:mutation;
+            //network.mutate?
+        }
+    }
 
 }
 
