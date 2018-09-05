@@ -14,17 +14,21 @@
 
 namespace GymEnv
 {
+	struct SingleSnakeGridViewModel
+	{
+		size_t gridWidth = 3;
+		size_t gridHeight = 3;
+		GameView::IGameRenderer* gameRenderer;
+		const GameOptions* gmOptions;
+		GameLogic::CellInterpreter::ICellInterpreterPtr celInterpreter;
+	};
+	
 	class SingleSnakeGridView : public SingleSnakeEnvBase
 	{
 	public:
-		SingleSnakeGridView(
-			size_t gridWidth,
-			size_t gridHeight,
-			GameView::IGameRenderer* gameRenderer,
-			const GameOptions& gmOptions);
+		SingleSnakeGridView(const SingleSnakeGridViewModel& model);
 		
 		size_t GetNumbOfObservations() const override;
-//		int GetState() const override;
 		std::vector<int> GetFieldOfView() const;
 	
 	private:

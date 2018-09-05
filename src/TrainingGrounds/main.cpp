@@ -13,10 +13,10 @@
 #include <time.h>
 #include <iostream>
 
-int main()
+using namespace GameLogic;
+
+void MainSingleSnakeRelativeView()
 {
-	srand(time(nullptr));
-	
 	auto gmOptions = GameOptions();
 	{
 		gmOptions.boardLength = 25;
@@ -25,26 +25,19 @@ int main()
 	}
 	
 	auto gmRenderer = new GameView::TermRenderer();
-//	auto gmRenderer = new GameView::OpenGLRenderer(200, 200, gmOptions.boardLength, gmOptions.boardWidth);
-	auto env = new GymEnv::SingleSnakeRelativeView(
-		gmRenderer,
-		gmOptions,
-//		std::make_shared<GameLogic::CellInterpreter::Basic3CellInterpreter>()
-		std::make_shared<GameLogic::CellInterpreter::WallFoodBody>()
-	);
+	auto baseModel = GymEnv::SingleSnakeEnvBaseModel();
+	{
+		baseModel.gmOptions = &gmOptions;
+		baseModel.gmRenderer = gmRenderer;
+		baseModel.celInterpreter = std::make_shared<CellInterpreter::Basic3CellInterpreter>();
+//		baseModel.celInterpreter = std::make_shared<CellInterpreter::WallFoodBody>();
+	}
 	
-//	const auto gridViewWidth = 5;
-//	const auto gridViewHeight = 3;
-//	auto env = new GymEnv::SingleSnakeGridView(
-//		gridViewWidth,
-//		gridViewHeight,
-//		gmRenderer,
-//		gmOptions);
-//
+	auto env = new GymEnv::SingleSnakeRelativeView(baseModel);
 	auto qoptions = AI::QLearning::QOptions();
 	{
 		qoptions.maxNumSteps = [](int episode) { return episode + 100; };
-		qoptions.numEpisodes = 40000;
+		qoptions.numEpisodes = 10000;
 		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes * 9);
 		qoptions.learningRate = 0.1;
 		qoptions.minRandActionChance = 0;
@@ -55,20 +48,13 @@ int main()
 	}
 	
 	auto trainer = AI::QLearning::TabularTrainer(qoptions, env);
-	auto trainedAgent = trainer.Train();
+	trainer.Train();
+}
 
-//	auto a = std::vector<int>({ 1, 0, 0, 0, 0, 0 });
-//	std::cout << GymEnv::Utils::StateExtractor::BinaryVectorToNumber(a) << std::endl;
+int main()
+{
+	srand(time(nullptr));
 	
-//	std::vector<IPlayerPtr> players(
-//	{
-//		IPlayerPtr(trainedAgent),
-////		IPlayerPtr(new AI::HardCoded::SingleBot()),
-//	});
-//
-//	Game game(gmOptions, players);
-//
-//	game.InitGame();
-//	game.Play();
+	MainSingleSnakeRelativeView();
 	return 0;
 }

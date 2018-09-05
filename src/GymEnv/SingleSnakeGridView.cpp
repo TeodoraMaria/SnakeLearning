@@ -4,6 +4,11 @@
 
 using namespace GymEnv;
 
+//SingleSnakeGridView::SingleSnakeGridView(const SingleSnakeGridViewModel& model) :
+////	GymEnv::SingleSnakeEnvBase()
+//{
+//
+//}
 //SingleSnakeGridView::SingleSnakeGridView(
 //	const size_t gridWidth,
 //	const size_t gridHeight,

@@ -7,13 +7,17 @@
 
 namespace GymEnv
 {
+	struct SingleSnakeEnvBaseModel
+	{
+		GameView::IGameRenderer* gmRenderer;
+		const GameOptions* gmOptions;
+		GameLogic::CellInterpreter::ICellInterpreterPtr celInterpreter;
+	};
+
 	class SingleSnakeEnvBase : public SnakeEnvBase
 	{
 	public:
-		SingleSnakeEnvBase(
-			GameView::IGameRenderer* gmRenderer,
-			const GameOptions& gmOptions,
-			GameLogic::CellInterpreter::ICellInterpreterPtr celInterpreter);
+		SingleSnakeEnvBase(const SingleSnakeEnvBaseModel& model);
 		
 		GameLogic::CellInterpreter::ICellInterpreterPtr GetCellInterpreter();
 		virtual size_t GetNumbOfObservations() const = 0;

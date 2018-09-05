@@ -19,10 +19,7 @@ namespace GymEnv
 	class SingleSnakeRelativeView : public SingleSnakeEnvBase
 	{
 	public:
-		SingleSnakeRelativeView(
-			GameView::IGameRenderer* gameRenderer,
-			const GameOptions& gmOptions,
-			GameLogic::CellInterpreter::ICellInterpreterPtr cellInterptreter);
+		SingleSnakeRelativeView(const SingleSnakeEnvBaseModel& baseModel);
 		
 		size_t GetNumbOfObservations() const override;
 		const std::vector<double> GetState() const override;

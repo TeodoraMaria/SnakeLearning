@@ -8,13 +8,11 @@ using namespace GymEnv;
 using namespace GymEnv::StateObserver;
 
 SingleSnakeRelativeView::SingleSnakeRelativeView(
-	GameView::IGameRenderer* gameRenderer,
-	const GameOptions& gmOptions,
-	GameLogic::CellInterpreter::ICellInterpreterPtr cellInterptreter) :
-	SingleSnakeEnvBase(gameRenderer, gmOptions, cellInterptreter)
+	const SingleSnakeEnvBaseModel& baseModel) :
+	SingleSnakeEnvBase(baseModel)
 {
 	m_stateObserver =
-		std::make_unique<ThreeDirectionalObserver>(cellInterptreter);
+		std::make_unique<ThreeDirectionalObserver>(baseModel.celInterpreter);
 }
 
 size_t SingleSnakeRelativeView::GetNumbOfObservations() const
