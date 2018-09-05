@@ -24,7 +24,11 @@ void MainSingleSnakeRelativeView()
 		gmOptions.numFoods = 10;
 	}
 	
-	auto gmRenderer = new GameView::TermRenderer();
+//	auto gmRenderer = new GameView::TermRenderer();
+	auto gmRenderer = new GameView::OpenGLRenderer(
+		500, 500,
+		gmOptions.boardLength, gmOptions.boardWidth);
+
 	auto baseModel = GymEnv::SingleSnakeEnvBaseModel();
 	{
 		baseModel.gmOptions = &gmOptions;
@@ -45,6 +49,65 @@ void MainSingleSnakeRelativeView()
 		{
 			return 150u + (double)episode / qoptions.numEpisodes * 300.0;
 		};
+		qoptions.milsToSleepBetweenFrames = 50;
+	}
+	
+	auto trainer = AI::QLearning::TabularTrainer(qoptions, env);
+	trainer.Train();
+}
+
+void MainSingleSnakeGridView()
+{
+	auto gmOptions = GameOptions();
+	{
+		gmOptions.boardLength = 25;
+		gmOptions.boardWidth = 25;
+		gmOptions.numFoods = 10;
+	}
+	
+//	auto gmRenderer = new GameView::TermRenderer();
+	auto gmRenderer = new GameView::OpenGLRenderer(
+		500, 500,
+		gmOptions.boardLength, gmOptions.boardWidth);
+	auto baseModel = GymEnv::SingleSnakeEnvBaseModel();
+	{
+		baseModel.gmOptions = &gmOptions;
+		baseModel.gmRenderer = gmRenderer;
+//		baseModel.celInterpreter = std::make_shared<CellInterpreter::Basic3CellInterpreter>();
+		baseModel.celInterpreter = std::make_shared<CellInterpreter::WallFoodBody>();
+	}
+	
+	auto gridModel = GymEnv::SingleSnakeGridViewModel();
+	{
+		gridModel.baseModel = baseModel;
+		gridModel.gridWidth = 2;
+		gridModel.gridHeight = 5;
+		gridModel.deltaCoord = Coordinate(0, 0);
+	}
+	
+	auto env = new GymEnv::SingleSnakeGridView(gridModel);
+	auto qoptions = AI::QLearning::QOptions();
+	{
+		qoptions.maxNumSteps = [&](int episode)
+		{
+			return 50 + (double)episode / qoptions.numEpisodes * 1000;
+		};
+		qoptions.numEpisodes = 50000;
+		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes * 9);
+		qoptions.learningRate = 0.1;
+		qoptions.minRandActionChance = 0;
+		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
+		{
+			return 50u + (double)episode / qoptions.numEpisodes * 500.0;
+		};
+		
+//		auto qInitDistrib = std::uniform_real_distribution<>(-1.0, 1.0);
+		qoptions.tabInitializer = [&](std::mt19937& merseneTwister)
+		{
+//			return qInitDistrib(merseneTwister);
+			return 0.5;
+		};
+		qoptions.milsToSleepBetweenFrames = 20;
 	}
 	
 	auto trainer = AI::QLearning::TabularTrainer(qoptions, env);
@@ -55,6 +118,7 @@ int main()
 {
 	srand(time(nullptr));
 	
-	MainSingleSnakeRelativeView();
+//	MainSingleSnakeRelativeView();
+	MainSingleSnakeGridView();
 	return 0;
 }

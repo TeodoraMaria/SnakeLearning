@@ -22,35 +22,6 @@ size_t ThreeDirectionalObserver::NbOfObservations() const
 	return 3 * (m_cellInterpreter->NbOfInterpretableCells() - 1);
 }
 
-ThreeDirectionalObserver::InterpretRayCastResult
-ThreeDirectionalObserver::InterpretRayCast(
-	const GameBoard& gmBoard,
-	const Coordinate& origin,
-	const Coordinate& direction,
-	const size_t distance) const
-{
-	auto result = InterpretRayCastResult();
-	
-	for (auto i = 0u; i < distance; i++)
-	{
-		const auto pos = origin + direction * (i + 1);
-		const auto boardPart = static_cast<BoardPart>(gmBoard[pos]);
-		const auto interpretationId =
-			m_cellInterpreter->InterpretCell(boardPart);
-		
-		if (interpretationId != 0)
-		{
-			result.detectedPart = interpretationId;
-			result.distance = i;
-			return result;
-		}
-	}
-	
-	result.detectedPart = 0;
-	result.distance = distance;
-	return result;
-}
-
 /*
 **	For i : range(3):
 **		detectedObjIndx = raycast(directions[i])
@@ -110,9 +81,46 @@ void ThreeDirectionalObserver::Observe(
 	putDist(left, m_leftFieldSize, 0);
 	putDist(forward, m_forwardFieldSize, 1);
 	putDist(right, m_rightFieldSize, 2);
+}
+
+IStateObserver* ThreeDirectionalObserver::Clone() const
+{
+	return new ThreeDirectionalObserver(
+		m_cellInterpreter,
+		m_leftFieldSize,
+		m_forwardFieldSize,
+		m_rightFieldSize);
+}
+
+/*
+** Private methods.
+*/
+
+ThreeDirectionalObserver::InterpretRayCastResult
+ThreeDirectionalObserver::InterpretRayCast(
+	const GameBoard& gmBoard,
+	const Coordinate& origin,
+	const Coordinate& direction,
+	const size_t distance) const
+{
+	auto result = InterpretRayCastResult();
 	
-//	auto aux = std::vector<std::vector<double>>(1);
-//	aux[0] = observationContainer;
-//	::Utils::Print::PrintTable(aux);
+	for (auto i = 0u; i < distance; i++)
+	{
+		const auto pos = origin + direction * (i + 1);
+		const auto boardPart = static_cast<BoardPart>(gmBoard[pos]);
+		const auto interpretationId =
+			m_cellInterpreter->InterpretCell(boardPart);
+		
+		if (interpretationId != 0)
+		{
+			result.detectedPart = interpretationId;
+			result.distance = i;
+			return result;
+		}
+	}
 	
+	result.detectedPart = 0;
+	result.distance = distance;
+	return result;
 }

@@ -20,7 +20,9 @@ namespace GymEnv { namespace StateObserver
 			std::vector<double>& observationContainer,
 			const GameState& gmState,
 			int snakeId) const override;
-	
+		
+		IStateObserver* Clone() const override;
+		
 	private:
 		struct InterpretRayCastResult;
 	

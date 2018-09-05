@@ -14,5 +14,7 @@ namespace GymEnv { namespace StateObserver
 			std::vector<double>& observationContainer,
 			const GameState& gmState,
 			int snakeId) const = 0;
+		
+		virtual IStateObserver* Clone() const = 0;
 	};
 }}

@@ -3,45 +3,44 @@
 #include <cmath>
 
 using namespace GymEnv;
+using namespace GymEnv::StateObserver;
 
-//SingleSnakeGridView::SingleSnakeGridView(const SingleSnakeGridViewModel& model) :
-////	GymEnv::SingleSnakeEnvBase()
-//{
-//
-//}
-//SingleSnakeGridView::SingleSnakeGridView(
-//	const size_t gridWidth,
-//	const size_t gridHeight,
-//	GameView::IGameRenderer* const gameRenderer,
-//	const GameOptions& gmOptions
-//) :
-//	GymEnv::SingleSnakeEnvBase(gameRenderer, gmOptions),
-//	m_gridWidth(gridWidth),
-//	m_gridHeight(gridHeight)
-//{
-//}
+SingleSnakeGridView::SingleSnakeGridView(
+	const SingleSnakeGridViewModel& model
+) :
+	GymEnv::SingleSnakeEnvBase(model.baseModel)
+{
+	m_gridObserver = std::make_unique<StateObserver::GridObserver>(
+		model.baseModel.celInterpreter,
+		model.gridWidth,
+		model.gridHeight,
+		model.deltaCoord);
+}
+
+const IStateObserver* SingleSnakeGridView::GetObserver() const
+{
+	return m_gridObserver.get();
+}
 
 size_t SingleSnakeGridView::GetNumbOfObservations() const
 {
-	// 3 = Empty | Food | Wall / Body
-	return std::pow(3, m_gridWidth * m_gridHeight);
+	return std::pow(
+		m_celInterpreter->NbOfInterpretableCells(),
+		m_gridObserver->GetWidth() * m_gridObserver->GetHeight());
 }
 
-//const std::vector<int>& SingleSnakeGridView::GetState() const
-//{
-//	const auto gameState = m_game->GetGameState();
-//	const auto fieldOfView = GetFieldOfView();
-//	
-//	return GymEnv::Utils::StateExtractor::GetGridViewState(
-//		gameState.GetGameBoard(),
-//		fieldOfView);
-//}
-
-std::vector<int> SingleSnakeGridView::GetFieldOfView() const
+std::vector<double> SingleSnakeGridView::GetState() const
 {
-	const auto gameState = m_game->GetGameState();
-	return gameState.GetFieldOfView(
-		gameState.GetSnake(m_student->GetSnakeNumber()),
-		m_gridHeight,
-		m_gridWidth);
+	const auto gmState = m_game->GetGameState();
+	const auto snake = gmState.GetSnake(m_student->GetSnakeNumber());
+	
+	auto observationContainer =
+		std::vector<double>(m_gridObserver->NbOfObservations());
+	
+	m_gridObserver->Observe(
+		observationContainer,
+		gmState,
+		m_student->GetSnakeNumber());
+	
+	return observationContainer;
 }

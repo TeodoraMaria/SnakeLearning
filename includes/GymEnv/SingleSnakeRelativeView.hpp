@@ -21,8 +21,9 @@ namespace GymEnv
 	public:
 		SingleSnakeRelativeView(const SingleSnakeEnvBaseModel& baseModel);
 		
+		const StateObserver::IStateObserver* GetObserver() const override;
 		size_t GetNumbOfObservations() const override;
-		const std::vector<double> GetState() const override;
+		std::vector<double> GetState() const override;
 	
 	private:
 		GymEnv::StateObserver::ThreeDirectionalObserverUPtr m_stateObserver;
