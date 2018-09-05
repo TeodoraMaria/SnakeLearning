@@ -26,12 +26,10 @@ TabularTrainer::TabularTrainer(
 
 IPlayer* TabularTrainer::Train()
 {
-	auto randomDistrib = std::uniform_real_distribution<double>(-1.0, 1.0);
 	m_qtable = ::Utils::Matrix::MakeMatrix(
 		m_env->GetNumbOfObservations(),
 		m_env->actions.size(),
-		[&]() { return randomDistrib(m_merseneTwister); }
-//		[&]() { return 0.5; }
+		[&]() { return m_qoptions.tabInitializer(m_merseneTwister); }
 	);
 	
 	auto trainSession = TrainSession();

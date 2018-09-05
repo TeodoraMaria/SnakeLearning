@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <random>
 
 namespace AI { namespace QLearning
 {
@@ -27,5 +28,8 @@ namespace AI { namespace QLearning
 		DblFunc foodReward = [](int episode) { return 1.0; };
 		DblFunc dieReward = [](int episode) { return -1.0; };
 		DblFunc stepReward = [](int episode) { return -0.001; };
+		
+		std::function<double (std::mt19937& merseneTwister)> tabInitializer =
+			[](auto& merseneTwister) { return 0.0; };
 	};
 }}
