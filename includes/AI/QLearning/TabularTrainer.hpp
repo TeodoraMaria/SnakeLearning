@@ -6,7 +6,7 @@
 #include "GymEnv/SingleSnakeEnvBase.hpp"
 #include <cstddef>
 #include <random>
-#include <map>
+#include <unordered_map>
 
 namespace AI{ namespace QLearning
 {
@@ -48,7 +48,7 @@ namespace AI{ namespace QLearning
 	{
 		int episodeIndex;
 		double randomActionChance;
-		std::map<State, int> dieStates;
+		std::unordered_map<State, int> dieStates;
 	};
 	
 	struct TabularTrainer::TrainStepResult

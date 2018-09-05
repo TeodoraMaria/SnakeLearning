@@ -24,6 +24,20 @@ void Utils::Print::PrintTable(
 }
 
 void Utils::Print::PrintTable(
+	const std::vector<double>& table,
+	const size_t precision,
+	const size_t width)
+{
+	for (const auto& value : table)
+	{
+		std::cout
+			<< std::setw(width) << std::fixed
+			<< std::setprecision(precision) << value;
+	}
+	std::cout << std::endl;
+}
+
+void Utils::Print::PrintTable(
 	const std::vector<std::vector<int>>& table,
 	const size_t width,
 	const size_t indexWidth)

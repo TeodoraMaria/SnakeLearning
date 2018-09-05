@@ -15,11 +15,6 @@ SnakeEnvBase::SnakeEnvBase(GameView::IGameRenderer* gameRenderer)
 		m_gameRenderer = gameRenderer;
 }
 
-const Game& SnakeEnvBase::GetGame() const
-{
-	return *m_game.get();
-}
-
 void SnakeEnvBase::Render() const
 {
 	if (m_gameRenderer)
