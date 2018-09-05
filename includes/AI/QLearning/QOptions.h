@@ -31,5 +31,15 @@ namespace AI { namespace QLearning
 		
 		std::function<double (std::mt19937& merseneTwister)> tabInitializer =
 			[](auto& merseneTwister) { return 0.0; };
+		
+		// Printings.
+		bool printDieStates = true;
+		
+		// - Only the (1 - dieStatesGamePart) * games will be considered for
+		// - dieStates.
+		double dieStatesGamePart = 0.05;
+		
+		size_t lastNGamesToRender = 10;
+		size_t milsToSleepBetweenFrames = 0;
 	};
 }}
