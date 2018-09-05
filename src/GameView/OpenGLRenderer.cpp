@@ -1,6 +1,7 @@
 #include "OpenGLRenderer.h"
 #include "Board.h"
 
+#include <SDL.h>
 #include <GL/glew.h>
 #include <iostream>
 #include <string>
