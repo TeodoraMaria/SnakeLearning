@@ -225,7 +225,6 @@ void Game::RunRound()
 			continue;
 		
 		const auto chosenMove = player->GetNextAction(GetGameState());
-		FileHelper fHelper();
 
 		const auto snakeNumber = player->GetSnakeNumber();
 		MoveSnake(snakeNumber, chosenMove);
