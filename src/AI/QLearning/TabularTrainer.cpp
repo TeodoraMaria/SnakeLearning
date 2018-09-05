@@ -26,12 +26,12 @@ TabularTrainer::TabularTrainer(
 
 IPlayer* TabularTrainer::Train()
 {
-//	auto randomDistrib = std::uniform_real_distribution<double>(-1.0, 1.0);
+	auto randomDistrib = std::uniform_real_distribution<double>(-1.0, 1.0);
 	m_qtable = ::Utils::Matrix::MakeMatrix(
 		m_env->GetNumbOfObservations(),
 		m_env->actions.size(),
-//		[&]() { return randomDistrib(m_merseneTwister); }
-		[&]() { return 0.5; }
+		[&]() { return randomDistrib(m_merseneTwister); }
+//		[&]() { return 0.5; }
 	);
 	
 	auto trainSession = TrainSession();
@@ -77,8 +77,9 @@ IPlayer* TabularTrainer::Train()
 void TabularTrainer::RunEpisode(TrainSession& trainSession)
 {
 	m_env->Reset();
-	auto state = m_env->GetState();
-
+	const auto& rawState = m_env->GetState();
+	auto state = GymEnv::Utils::StateExtractor::BinaryVectorToNumber(rawState);
+	
 	auto episodeReward = 0.0;
 	auto prevState = 0;
 	auto stepsSinceLastFood = 0;
@@ -108,12 +109,12 @@ void TabularTrainer::RunEpisode(TrainSession& trainSession)
 		if (trainSession.episodeIndex >= m_qoptions.numEpisodes - 10)
 		{
 			m_env->Render();
-			std::cout << "Prev State: " << prevState << std::endl;
-			std::cout << "State: " << state << std::endl;
-			
-			const auto gridViewEnv = dynamic_cast<GymEnv::SingleSnakeGridView*>(m_env);
-			//if (gridViewEnv)
-				//::Utils::Print::PrintTable(gridViewEnv->GetFieldOfView());
+//			std::cout << "PrevState: " << prevState << std::endl;
+//			std::cout << "CurrentState: " << state << std::endl;
+//			
+//			auto aux = std::vector<std::vector<int>>(1);
+//			aux[0] = rawState;
+//			::Utils::Print::PrintTable(aux);
 		}
 		
 		// Track die states.
@@ -152,7 +153,12 @@ TabularTrainer::TrainStepResult TabularTrainer::RunStep(
 		m_merseneTwister);
 
 	const auto stepResult = m_env->Step(m_env->actions[actionIndex]);
-	const auto newState = m_env->GetState();
+	const auto newRawState = m_env->GetState();
+	const auto newState =
+		GymEnv::Utils::StateExtractor::BinaryVectorToNumber(newRawState);
+	
+	assert(newState < m_qtable.size());
+	
 	const auto reward = ComputeStepReward(
 		stepResult,
 		trainSession.episodeIndex);

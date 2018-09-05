@@ -24,7 +24,7 @@ namespace GymEnv
 			const GameOptions& gmOptions);
 		
 		size_t GetNumbOfObservations() const override;
-		int GetState() const override;
+//		int GetState() const override;
 		std::vector<int> GetFieldOfView() const;
 	
 	private:
