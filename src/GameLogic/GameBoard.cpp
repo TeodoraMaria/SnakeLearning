@@ -3,6 +3,17 @@
 #include <assert.h>
 
 /*
+** Static methods
+*/
+
+bool GameBoard::IsObstacle(const BoardPart boardPart)
+{
+	return
+		(boardPart == BoardPart::WALL) ||
+		(static_cast<int>(boardPart) >= startOfSnakeIndexes);
+}
+
+/*
 ** Constructors & Destructors.
 */
 
