@@ -96,9 +96,9 @@ void Game::DisablePlayer(const int snakeNumber)
 	(*it)->SetIsActive(false);
 }
 
-void Game::SaveMove(FileHelper& helper, const std::vector<int> view, const SnakeMove& move)
+void Game::SaveMove(FileHelper& helper, const std::vector<int> view, const SnakeMove& move, const int snakeNumber)
 {
-	helper.WriteToFile(view, move);
+	helper.WriteToFile(view, move, snakeNumber);
 }
 
 void Game::CheckIfGameOver()
@@ -239,7 +239,7 @@ void Game::RunRoundAndSave(FileHelper& helper)
 	GameState gamestate = GetGameState();
 	if (!m_gameOptions.playWithoutRenedring && m_gameRenderer != nullptr)
 	{
-		m_gameRenderer->Render(gamestate);
+		PrintBoard();
 	}
 	std::random_shuffle(m_players.begin(), m_players.end());
 	for (auto player : m_players)
@@ -249,7 +249,7 @@ void Game::RunRoundAndSave(FileHelper& helper)
 		
 		const auto chosenMove = player->GetNextAction(gamestate);
 		const auto snakeNumber = player->GetSnakeNumber();
-		SaveMove(helper, gamestate.GetFieldOfView(gamestate.GetSnake(snakeNumber),5,5), chosenMove);
+		SaveMove(helper, gamestate.GetFieldOfView(gamestate.GetSnake(snakeNumber),5,5), chosenMove, snakeNumber);
 
 		
 		MoveSnake(snakeNumber, chosenMove);
