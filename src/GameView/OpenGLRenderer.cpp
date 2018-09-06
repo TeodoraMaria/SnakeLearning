@@ -17,36 +17,9 @@ void fatalError(std::string error)
 
 
 OpenGLRenderer::OpenGLRenderer(size_t resolutionX,size_t resolutionY,size_t lines,size_t cols)
+    :m_resolutionX(resolutionX),m_resolutionY(resolutionY)
 {
     m_board = new Board(resolutionX, resolutionY);
-
-    SDL_Init(SDL_INIT_EVERYTHING);
-    const size_t width = m_board->getWidth();
-    const size_t height = m_board->getHeight();
-    m_window = SDL_CreateWindow("game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL);
-
-    if (m_window == nullptr) {
-        fatalError("could not create window");
-    }
-    SDL_GLContext glContext = SDL_GL_CreateContext(m_window);
-
-    if (glContext == nullptr) {
-        fatalError("could not create context");
-    }
-
-    GLenum error = glewInit();
-
-    if (error != GLEW_OK) {
-        fatalError("could not init gl");
-    }
-
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0.0f, width, height, 0.0f, 0.0f, 1.0f);
-    glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
-
     m_board->setUpBoard(lines, cols);
 }
 
@@ -55,6 +28,11 @@ OpenGLRenderer::OpenGLRenderer()
 
 void OpenGLRenderer::Render(const GameState & gameState) const
 {
+    if (m_initialized == false) {
+        init();
+        m_initialized = true;
+    }
+
    glClearDepth(1.0);
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   
@@ -90,6 +68,33 @@ void OpenGLRenderer::updateBoard(const GameState & gameState) const
    */
 }
 
+void OpenGLRenderer::init() const
+{
+    SDL_Init(SDL_INIT_EVERYTHING);
+    m_window = SDL_CreateWindow("game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_resolutionX, m_resolutionY, SDL_WINDOW_OPENGL);
 
+    if (m_window == nullptr) {
+        fatalError("could not create window");
+    }
+    SDL_GLContext glContext = SDL_GL_CreateContext(m_window);
+
+    if (glContext == nullptr) {
+        fatalError("could not create context");
+    }
+
+    GLenum error = glewInit();
+
+    if (error != GLEW_OK) {
+        fatalError("could not init gl");
+    }
+
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0f, m_resolutionX, m_resolutionY, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+
+}
 
 }
