@@ -126,11 +126,19 @@ void MainSingleSnakeGridView()
 //		game.Play();
 }
 
+void GeneticSingleSnake()
+{
+
+}
+
 int main(int nargs,char** args)
 {
 	srand(time(nullptr));
 	
 //	MainSingleSnakeRelativeView();
 //	MainSingleSnakeGridView();
+
+    GeneticSingleSnake();
+
 	return 0;
 }
