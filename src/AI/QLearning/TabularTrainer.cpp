@@ -36,7 +36,7 @@ static void PrintDieStates(const std::unordered_map<int, int>& dieStates)
 
 IPlayer* TabularTrainer::Train()
 {
-	m_qtable.reserve(m_env->GetNumbOfObservations());
+//	m_qtable.reserve(m_env->GetNumbOfObservations());
 	auto trainSession = TrainSession();
 	
 	trainSession.randomActionChance = m_qoptions.maxRandActionChance;

@@ -9,7 +9,7 @@ namespace GymEnv { namespace Utils
 	class StateExtractor
 	{
 	public:
-		static int BinaryVectorToNumber(
+		static unsigned long long BinaryVectorToNumber(
 			const std::vector<double>& binTable,
 			size_t cellStates);
 	};

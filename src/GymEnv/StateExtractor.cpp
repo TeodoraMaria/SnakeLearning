@@ -11,11 +11,11 @@ using namespace GymEnv::Utils;
 ** Receives a vector whcih contains values of 0 or 1.
 */
 
-int StateExtractor::BinaryVectorToNumber(
+unsigned long long StateExtractor::BinaryVectorToNumber(
 	const std::vector<double>& binTable,
 	const size_t cellStates)
 {
-	auto result = 0;
+	unsigned long long result = 0;
 	
 	const auto numInterpretables = cellStates - 1;
 	for (auto i = 0u; i < binTable.size() / numInterpretables; i++)

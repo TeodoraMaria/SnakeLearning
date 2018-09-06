@@ -7,11 +7,12 @@
 #include "GymEnv/SingleSnakeRelativeView.hpp"
 #include "GymEnv/SingleSnakeGridView.hpp"
 #include "GameView/OpenGLRenderer.h"
+
 #include "GameLogic/CellInterpreter/Basic3CellInterpreter.hpp"
 #include "GameLogic/CellInterpreter/WallFoodBody.hpp"
-
 #include "GameLogic/Game.h"
 #include "GameLogic/HumanPlayer.h"
+
 #include <stdlib.h>
 #include <time.h>
 #include <iostream>
@@ -25,17 +26,16 @@ void MainSingleSnakeRelativeView()
 		gmOptions.boardLength = 25;
 		gmOptions.boardWidth = 25;
 		gmOptions.numFoods = 10;
+//		gmOptions.gameRenderer = new GameView::TermRenderer();
+		gmOptions.gameRenderer = new GameView::OpenGLRenderer(
+			500, 500,
+			gmOptions.boardLength, gmOptions.boardWidth);
 	}
 	
-//	auto gmRenderer = new GameView::TermRenderer();
-	auto gmRenderer = new GameView::OpenGLRenderer(
-		500, 500,
-		gmOptions.boardLength, gmOptions.boardWidth);
-
 	auto baseModel = GymEnv::SingleSnakeEnvBaseModel();
 	{
 		baseModel.gmOptions = &gmOptions;
-		baseModel.gmRenderer = gmRenderer;
+		baseModel.gmRenderer = gmOptions.gameRenderer;
 		baseModel.celInterpreter = std::make_shared<CellInterpreter::Basic3CellInterpreter>();
 //		baseModel.celInterpreter = std::make_shared<CellInterpreter::WallFoodBody>();
 	}
@@ -66,18 +66,18 @@ void MainSingleSnakeGridView()
 		gmOptions.boardLength = 25;
 		gmOptions.boardWidth = 25;
 		gmOptions.numFoods = 10;
+//		gmOptions.gameRenderer = new GameView::TermRenderer();
+		gmOptions.gameRenderer = new GameView::OpenGLRenderer(
+			500, 500,
+			gmOptions.boardLength, gmOptions.boardWidth);
 	}
 	
-//	auto gmRenderer = new GameView::TermRenderer();
-	auto gmRenderer = new GameView::OpenGLRenderer(
-		500, 500,
-		gmOptions.boardLength, gmOptions.boardWidth);
 	auto baseModel = GymEnv::SingleSnakeEnvBaseModel();
 	{
+		baseModel.gmRenderer = gmOptions.gameRenderer;
 		baseModel.gmOptions = &gmOptions;
-		baseModel.gmRenderer = gmRenderer;
-//		baseModel.celInterpreter = std::make_shared<CellInterpreter::Basic3CellInterpreter>();
-		baseModel.celInterpreter = std::make_shared<CellInterpreter::WallFoodBody>();
+		baseModel.celInterpreter = std::make_shared<CellInterpreter::Basic3CellInterpreter>();
+//		baseModel.celInterpreter = std::make_shared<CellInterpreter::WallFoodBody>();
 	}
 	
 	auto gridModel = GymEnv::SingleSnakeGridViewModel();

@@ -5,5 +5,5 @@
 
 namespace AI { namespace QLearning
 {
-	typedef std::unordered_map<int, std::vector<double>> QTable;
+	typedef std::unordered_map<unsigned long long, std::vector<double>> QTable;
 }}

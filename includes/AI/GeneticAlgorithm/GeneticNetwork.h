@@ -1,7 +1,7 @@
-#pragma once;
+#pragma once
 
 #include <vector>
-#include <GameLogic\GameBoard.h>
+#include <GameLogic/GameBoard.h>
 
 namespace AI{namespace GeneticAlgorithm{
    
