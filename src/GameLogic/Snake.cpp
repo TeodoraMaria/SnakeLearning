@@ -114,6 +114,7 @@ void Snake::GenerateBody(
 
 Coordinate Snake::GetOrientation() const
 {
+	assert(m_snakeBody.size() > 1);
 	auto neck = m_snakeBody.begin();
 	std::advance(neck, 1);
 	return m_snakeBody.front() - *neck;
