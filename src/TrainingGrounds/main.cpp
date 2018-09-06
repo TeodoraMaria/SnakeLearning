@@ -126,11 +126,11 @@ void MainSingleSnakeGridView()
 //		game.Play();
 }
 
-int main()
+int main(int nargs,char** args)
 {
 	srand(time(nullptr));
 	
 //	MainSingleSnakeRelativeView();
-	MainSingleSnakeGridView();
+//	MainSingleSnakeGridView();
 	return 0;
 }
