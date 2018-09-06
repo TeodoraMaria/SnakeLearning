@@ -20,4 +20,10 @@ namespace Utils { namespace Print
 		const std::vector<std::vector<int>>& table,
 		size_t width = 15,
 		size_t indexWidth = 5);
+	
+	void PrintMatrix(
+		const std::vector<double>& table,
+		size_t matrixWidth,
+		size_t precision = 2,
+		size_t width = 4);
 }}

@@ -38,7 +38,8 @@ void TabularTrainer::SetQTable(const QTable& qtable)
 	m_qtable = qtable;
 }
 
-static void PrintDieStates(const std::unordered_map<int, int>& dieStates)
+static void PrintDieStates(
+	const std::unordered_map<unsigned long long, int>& dieStates)
 {
 	std::cout << "Die states: " << std::endl;
 	for (const auto& pair : dieStates)
@@ -48,7 +49,6 @@ static void PrintDieStates(const std::unordered_map<int, int>& dieStates)
 IPlayer* TabularTrainer::Train()
 {
 	auto trainSession = TrainSession();
-	
 	trainSession.randomActionChance = m_qoptions.maxRandActionChance;
 	trainSession.dieStates = std::unordered_map<State, int>();
 	
@@ -74,18 +74,24 @@ IPlayer* TabularTrainer::Train()
 ** Private methods.
 */
 
+bool TabularTrainer::IsRenderPhase(const int episode) const
+{
+	return (episode >= m_qoptions.numEpisodes - m_qoptions.lastNGamesToRender);
+}
+
 void TabularTrainer::RunEpisode(TrainSession& trainSession)
 {
 	m_env->Reset();
 	const auto rawState = m_env->GetState();
-	auto state = GymEnv::Utils::StateExtractor::BinaryVectorToNumber(
+	State state = GymEnv::Utils::StateExtractor::BinaryVectorToNumber(
 		rawState,
 		m_env->GetCellInterpreter()->NbOfInterpretableParts());
 	
 	auto episodeReward = 0.0;
-	auto prevState = 0;
+	State prevState = 0;
 	auto stepsSinceLastFood = 0;
 	const auto maxNumSteps = m_qoptions.maxNumSteps(trainSession.episodeIndex);
+	
 	for (auto step = 0; step < maxNumSteps; step++)
 	{
 		const auto trainStepResult = RunStep(
@@ -107,11 +113,7 @@ void TabularTrainer::RunEpisode(TrainSession& trainSession)
 		if (stepsSinceLastFood >= maxStepsWIthoutFood)
 			break;
 		
-		// Render the env on the last episode.
-		const auto renderGame = (trainSession.episodeIndex >=
-			m_qoptions.numEpisodes - m_qoptions.lastNGamesToRender);
-		
-		if (renderGame)
+		if (IsRenderPhase(trainSession.episodeIndex))
 		{
 			m_env->Render();
 			std::cout << "PrevState: " << prevState << std::endl;
@@ -167,19 +169,18 @@ TabularTrainer::TrainStepResult TabularTrainer::RunStep(
 	
 	std::vector<double> newRawState;
 	State newState = 0;
-	double reward;
-	
+
 	const auto stepResult = m_env->Step(m_env->actions[actionIndex]);
+	const auto reward = ComputeStepReward(
+		stepResult,
+		trainSession.episodeIndex);
+	
 	if (!stepResult.isDone)
 	{
 		newRawState = m_env->GetState();
 		newState = GymEnv::Utils::StateExtractor::BinaryVectorToNumber(
 			newRawState,
 			m_env->GetCellInterpreter()->NbOfInterpretableParts());
-
-		reward = ComputeStepReward(
-			stepResult,
-			trainSession.episodeIndex);
 
 		UpdateActionQuality(
 			currentState,
@@ -191,15 +192,15 @@ TabularTrainer::TrainStepResult TabularTrainer::RunStep(
 	
 	auto trainStepResult = TrainStepResult();
 	trainStepResult.newState = newState;
-	trainStepResult.reward = stepResult.isDone ? 0 : reward;
+	trainStepResult.reward = reward;
 	trainStepResult.isDone = stepResult.isDone;
 
-	const auto renderGame = (trainSession.episodeIndex >=
-		m_qoptions.numEpisodes - m_qoptions.lastNGamesToRender);
-
-	if (renderGame && !stepResult.isDone)
+	if (IsRenderPhase(trainSession.episodeIndex) && !stepResult.isDone)
 	{
-		::Utils::Print::PrintTable(newRawState);
+		std::cout << "Computed state: " << newState << std::endl;
+		::Utils::Print::PrintMatrix(
+			newRawState,
+			m_env->GetCellInterpreter()->NbOfInterpretableParts() - 1);
 	}
 
 	return trainStepResult;
@@ -220,8 +221,8 @@ double TabularTrainer::ComputeStepReward(
 }
 
 double TabularTrainer::UpdateActionQuality(
-	const int currentState,
-	const int newState,
+	const State currentState,
+	const State newState,
 	const int actionIndex,
 	const double reward,
 	const bool isDone)
@@ -246,7 +247,7 @@ double TabularTrainer::UpdateActionQuality(
 	return m_qtable[currentState][actionIndex];
 }
 
-void TabularTrainer::TryInitQField(const int key)
+void TabularTrainer::TryInitQField(const State key)
 {
 	if (m_qtable.find(key) == m_qtable.end())
 	{

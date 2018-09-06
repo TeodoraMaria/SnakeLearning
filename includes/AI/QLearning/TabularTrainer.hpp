@@ -21,10 +21,12 @@ namespace AI { namespace QLearning
 		IPlayer* Train() override;
 	
 	private:
-		typedef int State;
+		typedef unsigned long long State;
 		
 		struct TrainSession;
 		struct TrainStepResult;
+		
+		bool IsRenderPhase(const int episode) const;
 		
 		void RunEpisode(TrainSession& trainSession);
 		TrainStepResult RunStep(
@@ -36,13 +38,13 @@ namespace AI { namespace QLearning
 			const int episode) const;
 			
 		double UpdateActionQuality(
-			int currentState,
-			int newState,
+			State currentState,
+			State newState,
 			int actionIndex,
 			double actionReward,
 			bool isDone);
 		
-		void TryInitQField(int key);
+		void TryInitQField(State key);
 		
 		std::mt19937 m_merseneTwister;
 		QTable m_qtable;

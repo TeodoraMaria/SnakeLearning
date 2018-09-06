@@ -46,3 +46,24 @@ void Utils::Print::PrintTable(
 		std::cout << std::endl;
 	}
 }
+
+void Utils::Print::PrintMatrix(
+	const std::vector<double>& table,
+	const size_t matrixWidth,
+	const size_t precision,
+	const size_t width)
+{
+	const auto height = table.size() / matrixWidth;
+	for (auto i = 0u; i < height; i++)
+	{
+		std::cout << std::setw(3) << i << ") ";
+		for (auto j = 0u; j < matrixWidth; j++)
+		{
+			std::cout
+				<< std::setw(width) << std::fixed
+				<< std::setprecision(precision)
+				<< table[i * matrixWidth + j] << " ";
+		}
+		std::cout << std::endl;
+	}
+}
