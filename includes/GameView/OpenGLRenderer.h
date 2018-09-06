@@ -17,10 +17,15 @@ namespace GameView
       Board* getBoard()const; 
    private:
       void updateBoard(const GameState& gameState) const;
+      void init() const;
+
+      mutable bool m_initialized = false;
+      size_t m_resolutionX;
+      size_t m_resolutionY;
 
       Board* m_board=nullptr;
 
-      SDL_Window* m_window=nullptr;
+      mutable SDL_Window* m_window=nullptr;
    };
 
 
