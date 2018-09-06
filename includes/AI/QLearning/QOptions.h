@@ -18,6 +18,11 @@ namespace AI { namespace QLearning
 		size_t numEpisodes;
 		std::function<size_t (int episode)> maxNumSteps;
 		
+		// Action picking epsilon. This value is used for double comparison.
+		// If multiple actions have the same max quality, then a random one
+		// is picked.
+		double actionQualityEps = 0.001;
+		
 		// Random action chance.
 		double maxRandActionChance = 1;
 		double minRandActionChance = 0.00;

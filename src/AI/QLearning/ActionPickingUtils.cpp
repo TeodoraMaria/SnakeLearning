@@ -5,14 +5,15 @@ typedef std::uniform_int_distribution<int> IntDistrib;
 
 static size_t CountElementsWithValue(
 	const std::vector<double>& tab,
-	const double targetValue)
+	const double targetValue,
+	const double eps)
 {
 	return std::count_if(
 		tab.begin(),
 		tab.end(),
 		[&](const auto& value)
 		{
-			return ::Utils::Math::Approx(value, targetValue);
+			return ::Utils::Math::Approx(value, targetValue, eps);
 		});
 }
 
@@ -23,11 +24,13 @@ static size_t CountElementsWithValue(
 static int GetIndexOfOneMax(
 	const std::vector<double>& actionsQ,
 	const double maxActionQ,
-	std::mt19937& merseneTwister)
+	std::mt19937& merseneTwister,
+	const double eps)
 {
 	const auto maxElementsCount = CountElementsWithValue(
 		actionsQ,
-		maxActionQ);
+		maxActionQ,
+		eps);
 
 	if (maxElementsCount == 1)
 		return 0;
@@ -41,11 +44,12 @@ static int GetIndexOfOneMax(
 static int GetIndexOfNthMaxElement(
 	const std::vector<double>& actionsQ,
 	const double maxActionQ,
-	int maxActionIndex)
+	int maxActionIndex,
+	const double eps)
 {
 	for (auto i = 0u; i < actionsQ.size(); i++)
 	{
-		if (::Utils::Math::Approx(actionsQ[i], maxActionQ))
+		if (::Utils::Math::Approx(actionsQ[i], maxActionQ, eps))
 		{
 			if (maxActionIndex == 0)
 				return i;
@@ -66,7 +70,8 @@ int AI::QLearning::Utils::PickAction(
 	const std::vector<double>& actionsQ,
 	const double noise,
 	std::mt19937& merseneTwister,
-	const bool shuffleEquals)
+	const bool shuffleEquals,
+	const double eps)
 {
 	auto chanceDistrib = std::uniform_real_distribution<double>(0, 1.0);
 	
@@ -83,7 +88,7 @@ int AI::QLearning::Utils::PickAction(
 		actionsQ.cend());
 
 	auto maxActionIndex = (!shuffleEquals) ? 0 :
-		GetIndexOfOneMax(actionsQ, maxActionQ, merseneTwister);
+		GetIndexOfOneMax(actionsQ, maxActionQ, merseneTwister, eps);
 
-	return GetIndexOfNthMaxElement(actionsQ, maxActionQ, maxActionIndex);
+	return GetIndexOfNthMaxElement(actionsQ, maxActionQ, maxActionIndex, eps);
 }

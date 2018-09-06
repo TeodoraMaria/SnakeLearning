@@ -27,6 +27,16 @@ TabularTrainer::TabularTrainer(
 {
 }
 
+const QTable& TabularTrainer::GetQTable() const
+{
+	return m_qtable;
+}
+
+void TabularTrainer::SetQTable(const QTable& qtable)
+{
+	m_qtable = qtable;
+}
+
 static void PrintDieStates(const std::unordered_map<int, int>& dieStates)
 {
 	std::cout << "Die states: " << std::endl;
@@ -36,7 +46,6 @@ static void PrintDieStates(const std::unordered_map<int, int>& dieStates)
 
 IPlayer* TabularTrainer::Train()
 {
-//	m_qtable.reserve(m_env->GetNumbOfObservations());
 	auto trainSession = TrainSession();
 	
 	trainSession.randomActionChance = m_qoptions.maxRandActionChance;
@@ -148,14 +157,13 @@ TabularTrainer::TrainStepResult TabularTrainer::RunStep(
 	const State currentState,
 	const TrainSession& trainSession)
 {
-	assert(currentState < m_qtable.size());
-
 	// Get action with a random noise.
 	TryInitQField(currentState);
 	const auto actionIndex = QLearning::Utils::PickAction(
 		m_qtable[currentState],
 		trainSession.randomActionChance,
-		m_merseneTwister);
+		m_merseneTwister,
+		m_qoptions.actionQualityEps);
 
 	const auto stepResult = m_env->Step(m_env->actions[actionIndex]);
 	const auto newRawState = m_env->GetState();
@@ -163,8 +171,6 @@ TabularTrainer::TrainStepResult TabularTrainer::RunStep(
 		newRawState,
 		m_env->GetCellInterpreter()->NbOfInterpretableParts());
 
-	assert(newState < m_qtable.size());
-	
 	const auto renderGame = (trainSession.episodeIndex >=
 		m_qoptions.numEpisodes - m_qoptions.lastNGamesToRender);
 
