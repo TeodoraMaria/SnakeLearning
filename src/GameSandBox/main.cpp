@@ -35,12 +35,7 @@ int main(int argc, char** argv)
 	
 	game.InitGame();
 	game.Play();
-	game.InitGame();
-	game.Play();
-	game.InitGame();
-	game.Play();
-	game.InitGame();
-	game.Play();
+	
 	delete gameOptions.gameRenderer;
 	return 0;
 }

@@ -34,7 +34,7 @@ private:
 	void InitFood();
 	void AddSnakeToGame(const int snakeNumber);
 	void DisablePlayer(const int snakeNumber);
-	void SaveMove(FileHelper& helper, const std::vector<int> view, const SnakeMove& move);
+	void SaveMove(FileHelper& helper, const std::vector<int> view, const SnakeMove& move, const int snakeNumber);
 	bool IsSnakeHead(const Coordinate& coord) const;
 	std::string GenerateFileName();
 
