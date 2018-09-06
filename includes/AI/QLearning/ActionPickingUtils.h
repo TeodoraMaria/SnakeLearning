@@ -13,5 +13,6 @@ namespace AI { namespace QLearning { namespace Utils
 		const std::vector<double>& actionsQ,
 		double noise,
 		std::mt19937& merseneTwister,
-		bool shuffleEquals = true);
+		bool shuffleEquals = true,
+		double eps = 0.000001);
 }}}

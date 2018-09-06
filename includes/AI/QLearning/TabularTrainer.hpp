@@ -8,12 +8,16 @@
 #include <random>
 #include <unordered_map>
 
-namespace AI{ namespace QLearning
+namespace AI { namespace QLearning
 {
 	class TabularTrainer : public AI::ITrainer
 	{
 	public:
 		TabularTrainer(QOptions& qoptions, GymEnv::SingleSnakeEnvBase* env);
+		
+		const QTable& GetQTable() const;
+		void SetQTable(const QTable& qtable);
+		
 		IPlayer* Train() override;
 	
 	private:

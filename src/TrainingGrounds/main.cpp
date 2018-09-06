@@ -1,4 +1,5 @@
 #include "AI/QLearning/TabularTrainer.hpp"
+#include "Ai/QLearning/TabularQJsonUtils.h"
 #include "AI/HardCoded/SingleBot.hpp"
 #include "AI/GeneticAlgorithm/GeneticTrainer.h"
 #include "AI/GeneticAlgorithm/GeneticOptions.h"
@@ -83,8 +84,8 @@ void MainSingleSnakeGridView()
 	auto gridModel = GymEnv::SingleSnakeGridViewModel();
 	{
 		gridModel.baseModel = baseModel;
-		gridModel.gridWidth = 2;
-		gridModel.gridHeight = 7;
+		gridModel.gridWidth = 3;
+		gridModel.gridHeight = 5;
 		gridModel.deltaCoord = Coordinate(0, 0);
 	}
 	
@@ -93,10 +94,13 @@ void MainSingleSnakeGridView()
 	{
 		qoptions.maxNumSteps = [&](int episode)
 		{
-			return 50 + (double)episode / qoptions.numEpisodes * 1000;
+			return 50 + (double)episode / qoptions.numEpisodes * 5000;
 		};
+		qoptions.qDiscountFactor = 0.85;
+		qoptions.actionQualityEps = 0.005;
+		
 		qoptions.numEpisodes = 50000;
-		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes * 9);
+		qoptions.randActionDecayFactor = 1.0;// / (qoptions.numEpisodes * 9);
 		qoptions.learningRate = 0.1;
 		qoptions.minRandActionChance = 0;
 		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
@@ -104,18 +108,43 @@ void MainSingleSnakeGridView()
 			return 50u + (double)episode / qoptions.numEpisodes * 500.0;
 		};
 		
-//		auto qInitDistrib = std::uniform_real_distribution<>(-1.0, 1.0);
+		auto qInitDistrib = std::uniform_real_distribution<>(-1.0, 1.0);
 		qoptions.tabInitializer = [&](std::mt19937& merseneTwister)
 		{
-//			return qInitDistrib(merseneTwister);
-			return 0.5;
+			return qInitDistrib(merseneTwister);
+//			return 0.5;
 		};
-		qoptions.milsToSleepBetweenFrames = 20;
+		qoptions.milsToSleepBetweenFrames = 5;
 	}
 	
 	auto trainer = AI::QLearning::TabularTrainer(qoptions, env);
+	
+	const auto jsonFilePath = std::string() +
+		"aux_files/qtabular/TrainedGrid" +
+		std::to_string(gridModel.gridWidth) + "x" +
+		std::to_string(gridModel.gridHeight) + ".json";
+	
+	try
+	{
+		trainer.SetQTable(AI::QLearning::Utils::LoadQTable(jsonFilePath.c_str()));
+	}
+	catch (...)
+	{
+		std::cerr << "Warning: failed to load qtable." << std::endl;
+	}
+	
 	trainer.Train();
+	
+	try
+	{
+		AI::QLearning::Utils::SaveQTable(trainer.GetQTable(), jsonFilePath.c_str());
+	}
+	catch (...)
+	{
+		std::cerr << "Warning: failed to save qtable." << std::endl;
+	}
 //	auto trainedAgent = trainer.Train();
+	
 //
 //		std::vector<IPlayerPtr> players(
 //		{
@@ -160,14 +189,14 @@ void GeneticSingleSnake()
 
 }
 
-int main(int nargs,char** args)
+int main(int nargs, char** args)
 {
 	srand(time(nullptr));
 	
 //	MainSingleSnakeRelativeView();
 	MainSingleSnakeGridView();
 
-   // GeneticSingleSnake();
-
+//    GeneticSingleSnake();
+	
 	return 0;
 }
