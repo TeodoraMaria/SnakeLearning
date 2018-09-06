@@ -1,6 +1,5 @@
 #include "TermRenderer.hpp"
 #include "Board.h"
-
 #include <SDL.h>
 
 namespace GameView

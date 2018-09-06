@@ -3,9 +3,10 @@
 #include <vector>
 #include "GameLogic/Game.h"
 #include "GameLogic/HumanPlayer.h"
+#include "GameView/OpenGLRenderer.h"
 #include "AI/HardCoded/SingleBot.hpp"
 
-int main()
+int main(int argc, char** argv)
 {
 	srand(time(NULL));
 
@@ -26,6 +27,7 @@ int main()
 		gameOptions.initialSnakeSize = 2;
 		//gameOptions.playWithoutRenedring = true;
 		gameOptions.saveGameplay = true;
+		gameOptions.gameRenderer = new GameView::OpenGLRenderer();
 	}
 	Game game(gameOptions, players);
 	
@@ -39,5 +41,6 @@ int main()
 	game.Play();
 	game.InitGame();
 	game.Play();
+	delete gameOptions.gameRenderer;
 	return 0;
 }

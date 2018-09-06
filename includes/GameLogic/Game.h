@@ -4,6 +4,7 @@
 #include "GameOptions.h"
 #include "GameBoard.h"
 #include "FileHelper.h"
+#include "GameView/IGameRenderer.hpp"
 #include <string>
 
 class Game
@@ -41,6 +42,7 @@ private:
 
 	GameBoard m_gameBoard;
 	GameOptions m_gameOptions;
+	GameView::IGameRenderer* m_gameRenderer;
 	std::vector<IPlayerPtr> m_players;
 	std::vector<Snake> m_snakes;
 	bool m_isGameOver = false;

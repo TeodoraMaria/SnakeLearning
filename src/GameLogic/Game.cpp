@@ -22,6 +22,7 @@ Game::Game(
 		gameOptions.gameBoardType,
 		gameOptions.boardLength,
 		gameOptions.boardWidth);
+	m_gameRenderer = gameOptions.gameRenderer;
 }
 
 Game::~Game()
@@ -214,9 +215,10 @@ void Game::RestockFood()
 
 void Game::RunRound()
 {
-	if (!m_gameOptions.playWithoutRenedring)
+	GameState gameState = GetGameState();
+	if (!m_gameOptions.playWithoutRenedring && m_gameRenderer!=nullptr)
 	{
-		PrintBoard();
+		m_gameRenderer->Render(gameState);
 	}
 	std::random_shuffle(m_players.begin(), m_players.end());
 	for (auto player : m_players)
@@ -224,7 +226,7 @@ void Game::RunRound()
 		if (player->GetIsActive()==false)
 			continue;
 		
-		const auto chosenMove = player->GetNextAction(GetGameState());
+		const auto chosenMove = player->GetNextAction(gameState);
 
 		const auto snakeNumber = player->GetSnakeNumber();
 		MoveSnake(snakeNumber, chosenMove);
@@ -234,17 +236,17 @@ void Game::RunRound()
 
 void Game::RunRoundAndSave(FileHelper& helper)
 {
-	if (!m_gameOptions.playWithoutRenedring)
+	GameState gamestate = GetGameState();
+	if (!m_gameOptions.playWithoutRenedring && m_gameRenderer != nullptr)
 	{
-		PrintBoard();
+		m_gameRenderer->Render(gamestate);
 	}
 	std::random_shuffle(m_players.begin(), m_players.end());
 	for (auto player : m_players)
 	{
 		if (player->GetIsActive() == false)
 			break;
-
-		GameState gamestate = GetGameState();
+		
 		const auto chosenMove = player->GetNextAction(gamestate);
 		const auto snakeNumber = player->GetSnakeNumber();
 		SaveMove(helper, gamestate.GetFieldOfView(gamestate.GetSnake(snakeNumber),5,5), chosenMove);

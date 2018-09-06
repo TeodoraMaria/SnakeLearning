@@ -1,5 +1,6 @@
 #pragma once
 #include "GameUtils.h"
+#include "GameView/IGameRenderer.hpp"
 #include <cstddef>
 #include <functional>
 
@@ -12,6 +13,8 @@ struct GameOptions
 	size_t numFoods = 1;
 	
 	size_t initialSnakeSize = 3;
+
+	GameView::IGameRenderer* gameRenderer = nullptr;
 
 	bool playWithoutRenedring = false;
 	bool saveGameplay = false;
