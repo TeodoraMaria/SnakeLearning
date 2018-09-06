@@ -5,7 +5,6 @@
 #include "OpenGLRenderer.h"
 #include "TermRenderer.hpp"
 
-#include <SDL.h>
 #include <memory>
 
 namespace GameView
