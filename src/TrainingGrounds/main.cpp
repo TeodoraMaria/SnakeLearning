@@ -28,9 +28,9 @@ void MainSingleSnakeRelativeView()
 		gmOptions.boardWidth = 25;
 		gmOptions.numFoods = 10;
 		gmOptions.gameRenderer = new GameView::TermRenderer();
-//		gmOptions.gameRenderer = new GameView::OpenGLRenderer(
-//			500, 500,
-//			gmOptions.boardLength, gmOptions.boardWidth);
+		// gmOptions.gameRenderer = new GameView::OpenGLRenderer(
+		// 	500, 500,
+		// 	gmOptions.boardLength, gmOptions.boardWidth);
 	}
 	
 	auto baseModel = GymEnv::SingleSnakeEnvBaseModel();
@@ -46,18 +46,18 @@ void MainSingleSnakeRelativeView()
 	{
 		qoptions.maxNumSteps = [&](int episode)
 		{
-			return 50 + (double)episode / qoptions.numEpisodes * 5000;
+			return 50 + (double)episode / qoptions.numEpisodes * 10;
 		};
 		qoptions.qDiscountFactor = 0.99;
 		qoptions.actionQualityEps = 0.005;
 		
-		qoptions.numEpisodes = 10000;
+		qoptions.numEpisodes = 100;
 		qoptions.randActionDecayFactor = 1.0;// / (qoptions.numEpisodes * 9);
 		qoptions.learningRate = 0.1;
 		qoptions.minRandActionChance = 0;
 		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
 		{
-			return 50u + (double)episode / qoptions.numEpisodes * 500.0;
+			return 50u + (double)episode / qoptions.numEpisodes * 10.0;
 		};
 		
 		auto qInitDistrib = std::uniform_real_distribution<>(-1.0, 1.0);
@@ -66,7 +66,7 @@ void MainSingleSnakeRelativeView()
 			return qInitDistrib(merseneTwister);
 //			return 0.5;
 		};
-		qoptions.milsToSleepBetweenFrames = 5;
+		qoptions.milsToSleepBetweenFrames = 20;
 	}
 	
 	auto trainer = AI::QLearning::TabularTrainer(qoptions, env);
@@ -112,7 +112,7 @@ void MainSingleSnakeGridView()
 		qoptions.qDiscountFactor = 0.85;
 		qoptions.actionQualityEps = 0.005;
 		
-		qoptions.numEpisodes = 50000;
+		qoptions.numEpisodes = 10000;
 		qoptions.randActionDecayFactor = 1.0;// / (qoptions.numEpisodes * 9);
 		qoptions.learningRate = 0.1;
 		qoptions.minRandActionChance = 0;
