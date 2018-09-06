@@ -11,9 +11,7 @@ add_executable(${PROJECT_NAME} ${srcs} ${includes})
 
 target_include_directories(${PROJECT_NAME} PRIVATE
 	${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/
-	${CMAKE_SOURCE_DIR}/includes/
-	${CMAKE_SORUCE_DIR}/third_party/
-)
+	${CMAKE_SOURCE_DIR}/includes/)
 	
 target_link_libraries(${PROJECT_NAME}
 	GameLogic
