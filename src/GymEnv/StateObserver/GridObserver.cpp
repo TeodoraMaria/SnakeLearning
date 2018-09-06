@@ -34,6 +34,8 @@ void GridObserver::Observe(
 	assert(observationTab.size() >= NbOfObservations());
 	
 	const auto snake = gmState.GetSnake(snakeId);
+	assert(snake.IsAlive());
+	
 	const auto gmBoard = gmState.GetGameBoard();
 	
 	const auto forward = snake.GetOrientation();

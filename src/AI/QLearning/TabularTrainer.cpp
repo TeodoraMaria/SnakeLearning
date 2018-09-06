@@ -123,7 +123,6 @@ void TabularTrainer::RunEpisode(TrainSession& trainSession)
 			}
 		}
 		
-		// Track die states.
 		if (trainStepResult.isDone)
 		{
 			if (m_qoptions.printDieStates)
@@ -164,37 +163,44 @@ TabularTrainer::TrainStepResult TabularTrainer::RunStep(
 		trainSession.randomActionChance,
 		m_merseneTwister,
 		m_qoptions.actionQualityEps);
-
+	
+	std::vector<double> newRawState;
+	State newState = 0;
+	double reward;
+	
 	const auto stepResult = m_env->Step(m_env->actions[actionIndex]);
-	const auto newRawState = m_env->GetState();
-	const auto newState = GymEnv::Utils::StateExtractor::BinaryVectorToNumber(
-		newRawState,
-		m_env->GetCellInterpreter()->NbOfInterpretableParts());
+	if (!stepResult.isDone)
+	{
+		newRawState = m_env->GetState();
+		newState = GymEnv::Utils::StateExtractor::BinaryVectorToNumber(
+			newRawState,
+			m_env->GetCellInterpreter()->NbOfInterpretableParts());
+
+		reward = ComputeStepReward(
+			stepResult,
+			trainSession.episodeIndex);
+
+		UpdateActionQuality(
+			currentState,
+			newState,
+			actionIndex,
+			reward,
+			stepResult.isDone);
+	}
+	
+	auto trainStepResult = TrainStepResult();
+	trainStepResult.newState = newState;
+	trainStepResult.reward = stepResult.isDone ? 0 : reward;
+	trainStepResult.isDone = stepResult.isDone;
 
 	const auto renderGame = (trainSession.episodeIndex >=
 		m_qoptions.numEpisodes - m_qoptions.lastNGamesToRender);
 
-	if (renderGame)
+	if (renderGame && !stepResult.isDone)
 	{
 		::Utils::Print::PrintTable(newRawState);
 	}
-	
-	const auto reward = ComputeStepReward(
-		stepResult,
-		trainSession.episodeIndex);
 
-	UpdateActionQuality(
-		currentState,
-		newState,
-		actionIndex,
-		reward,
-		stepResult.isDone);
-
-	auto trainStepResult = TrainStepResult();
-	trainStepResult.newState = newState;
-	trainStepResult.reward = reward;
-	trainStepResult.isDone = stepResult.isDone;
-	
 	return trainStepResult;
 }
 
