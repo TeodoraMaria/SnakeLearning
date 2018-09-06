@@ -1,5 +1,8 @@
 #include "AI/QLearning/TabularTrainer.hpp"
 #include "AI/HardCoded/SingleBot.hpp"
+#include "AI/GeneticAlgorithm/GeneticTrainer.h"
+#include "AI/GeneticAlgorithm/GeneticOptions.h"
+
 
 #include "GymEnv/SingleSnakeRelativeView.hpp"
 #include "GymEnv/SingleSnakeGridView.hpp"
@@ -128,6 +131,32 @@ void MainSingleSnakeGridView()
 
 void GeneticSingleSnake()
 {
+    auto gmOptions = GameOptions();
+    {
+        gmOptions.boardLength = 25;
+        gmOptions.boardWidth = 25;
+        gmOptions.numFoods = 10;
+    }
+    auto gmRenderer = new GameView::TermRenderer();
+
+    auto baseModel = GymEnv::SingleSnakeEnvBaseModel();
+
+    baseModel.gmOptions = &gmOptions;
+    baseModel.gmRenderer = gmRenderer;
+    baseModel.celInterpreter = std::make_shared<CellInterpreter::WallFoodBody>();
+
+    auto env = new GymEnv::SingleSnakeRelativeView(baseModel);
+
+    AI::GeneticAlgorithm::GeneticOptions options;
+
+    options.crossoverProb = 0.4;
+    options.maxNumSteps = 100;
+    options.mutationProb = 0.04;
+    options.numEpisodes = 1000;
+    options.numOfNetworks = 50;
+
+    auto trainer = AI::GeneticAlgorithm::GeneticTrainer(options, env);
+    trainer.Train();
 
 }
 

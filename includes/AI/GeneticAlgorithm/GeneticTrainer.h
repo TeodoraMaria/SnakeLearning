@@ -17,7 +17,7 @@ namespace AI{namespace GeneticAlgorithm
 
     private:
         void runEpisode();
-        double runStep(const std::vector<int>& state, const GeneticNetwork& network);
+        double runStep(const std::vector<double>& state, const GeneticNetwork& network);
         void runBot(GeneticNetwork& network);
         void crossover();
         void selectNewNetworks();
@@ -28,7 +28,7 @@ namespace AI{namespace GeneticAlgorithm
         GymEnv::SingleSnakeEnvBase* m_env;
         GeneticOptions m_options;
         std::vector<GeneticNetwork> m_networks;
-        std::vector<double> m_networkProb;
+       // std::vector<double> m_networkProb;
 
 
     };

@@ -1,4 +1,5 @@
 #include "StateObserver/GridObserver.hpp"
+#include <assert.h>
 
 using namespace GymEnv::StateObserver;
 
