@@ -46,13 +46,13 @@ void MainSingleSnakeRelativeView()
 	{
 		qoptions.maxNumSteps = [&](int episode)
 		{
-			return 50 + (double)episode / qoptions.numEpisodes * 10;
+			return 5000 + (double)episode / qoptions.numEpisodes * 1000;
 		};
 		qoptions.qDiscountFactor = 0.99;
 		qoptions.actionQualityEps = 0.005;
 		
-		qoptions.numEpisodes = 100;
-		qoptions.randActionDecayFactor = 1.0;// / (qoptions.numEpisodes * 9);
+		qoptions.numEpisodes = 30000;
+		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes * 5);
 		qoptions.learningRate = 0.1;
 		qoptions.minRandActionChance = 0;
 		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
