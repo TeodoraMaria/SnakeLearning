@@ -2,10 +2,9 @@
 
 using namespace GymEnv;
 
-SingleSnakeEnvBase::SingleSnakeEnvBase(
-	GameView::IGameRenderer* const gmRenderer,
-	const GameOptions& gmOptions) :
-	SnakeEnvBase(gmRenderer),
+SingleSnakeEnvBase::SingleSnakeEnvBase(const SingleSnakeEnvBaseModel& model) :
+	SnakeEnvBase(model.gmRenderer),
+	m_celInterpreter(model.celInterpreter),
 	m_student(std::make_shared<SnakeStudent>())
 {
 	auto players = std::vector<IPlayerPtr>(
@@ -13,7 +12,12 @@ SingleSnakeEnvBase::SingleSnakeEnvBase(
 		IPlayerPtr(m_student)
 	});
 	
-	m_game = std::make_unique<Game>(Game(gmOptions, players));
+	m_game = std::make_unique<Game>(*model.gmOptions, players);
+}
+
+GameLogic::CellInterpreter::ICellInterpreterPtr SingleSnakeEnvBase::GetCellInterpreter()
+{
+	return m_celInterpreter;
 }
 
 void SingleSnakeEnvBase::Reset()

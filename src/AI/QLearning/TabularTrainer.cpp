@@ -11,12 +11,15 @@
 
 #include <assert.h>
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 using namespace AI::QLearning;
 
 TabularTrainer::TabularTrainer(
 	QOptions& qoptions,
-	GymEnv::SingleSnakeEnvBase* const env) :
+	GymEnv::SingleSnakeEnvBase* const env
+) :
 	m_merseneTwister(std::random_device()()),
 	m_qtable(),
 	m_qoptions(qoptions),
@@ -24,20 +27,20 @@ TabularTrainer::TabularTrainer(
 {
 }
 
+static void PrintDieStates(const std::unordered_map<int, int>& dieStates)
+{
+	std::cout << "Die states: " << std::endl;
+	for (const auto& pair : dieStates)
+		std::cout << pair.first << ") " << pair.second << std::endl;
+}
+
 IPlayer* TabularTrainer::Train()
 {
-	auto randomDistrib = std::uniform_real_distribution<double>(-1.0, 1.0);
-	m_qtable = ::Utils::Matrix::MakeMatrix(
-		m_env->GetNumbOfObservations(),
-		m_env->actions.size(),
-		[&]() { return randomDistrib(m_merseneTwister); }
-//		[&]() { return 0.5; }
-	);
-	
+	m_qtable.reserve(m_env->GetNumbOfObservations());
 	auto trainSession = TrainSession();
 	
 	trainSession.randomActionChance = m_qoptions.maxRandActionChance;
-	trainSession.dieStates = std::map<State, int>();
+	trainSession.dieStates = std::unordered_map<State, int>();
 	
 	// Train.
 	for (auto episode = 0; episode < m_qoptions.numEpisodes; episode++)
@@ -46,28 +49,15 @@ IPlayer* TabularTrainer::Train()
 		RunEpisode(trainSession);
 	}
 	
-//	::Utils::Print::PrintTable(m_qtable);
-//	for (auto i = 0u; i < m_qtable.size(); i++)
-//	{
-//		const auto& line = m_qtable[i];
-//		if (::Utils::Math::Approx(*std::min_element(line.cbegin(), line.cend()), 0))
-//			continue;
-//		
-//		std::cout << i << ") ";
-//		for (const auto& val : line)
-//		{
-//			std::cout << val << " ";
-//		}
-//		std::cout << std::endl;
-//	}
-	
-	std::cout << "Die states: " << std::endl;
-	for (const auto& pair : trainSession.dieStates)
-		std::cout << pair.first << ") " << pair.second << std::endl;
+	if (m_qoptions.printDieStates)
+		PrintDieStates(trainSession.dieStates);
 	
 	return new AI::QLearning::TrainedAgent::TrainedTabularAgent(
 		m_env->actions,
-		m_qtable);
+		m_env->GetCellInterpreter()->NbOfInterpretableParts(),
+		m_qtable,
+		std::shared_ptr<GymEnv::StateObserver::IStateObserver>(
+			m_env->GetObserver()->Clone()));
 }
 
 /*
@@ -77,8 +67,10 @@ IPlayer* TabularTrainer::Train()
 void TabularTrainer::RunEpisode(TrainSession& trainSession)
 {
 	m_env->Reset();
-	const auto& rawState = m_env->GetState();
-	auto state = GymEnv::Utils::StateExtractor::BinaryVectorToNumber(rawState);
+	const auto rawState = m_env->GetState();
+	auto state = GymEnv::Utils::StateExtractor::BinaryVectorToNumber(
+		rawState,
+		m_env->GetCellInterpreter()->NbOfInterpretableParts());
 	
 	auto episodeReward = 0.0;
 	auto prevState = 0;
@@ -106,22 +98,34 @@ void TabularTrainer::RunEpisode(TrainSession& trainSession)
 			break;
 		
 		// Render the env on the last episode.
-		if (trainSession.episodeIndex >= m_qoptions.numEpisodes - 10)
+		const auto renderGame = (trainSession.episodeIndex >=
+			m_qoptions.numEpisodes - m_qoptions.lastNGamesToRender);
+		
+		if (renderGame)
 		{
 			m_env->Render();
-//			std::cout << "PrevState: " << prevState << std::endl;
-//			std::cout << "CurrentState: " << state << std::endl;
-//			
-//			auto aux = std::vector<std::vector<int>>(1);
-//			aux[0] = rawState;
-//			::Utils::Print::PrintTable(aux);
+			std::cout << "PrevState: " << prevState << std::endl;
+			std::cout << "CurrentState: " << state << std::endl;
+			
+			if (m_qoptions.milsToSleepBetweenFrames != 0)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(
+					m_qoptions.milsToSleepBetweenFrames));
+			}
 		}
 		
 		// Track die states.
 		if (trainStepResult.isDone)
 		{
-			if (trainSession.episodeIndex > m_qoptions.numEpisodes * 0.95)
-				trainSession.dieStates[prevState]++;
+			if (m_qoptions.printDieStates)
+			{
+				const auto trackDieStateIndxStart =
+					m_qoptions.numEpisodes * (1 - m_qoptions.dieStatesGamePart);
+				
+				if (trainSession.episodeIndex > trackDieStateIndxStart)
+					trainSession.dieStates[prevState]++;
+			}
+			
 			break;
 		}
 		
@@ -145,8 +149,9 @@ TabularTrainer::TrainStepResult TabularTrainer::RunStep(
 	const TrainSession& trainSession)
 {
 	assert(currentState < m_qtable.size());
-	
+
 	// Get action with a random noise.
+	TryInitQField(currentState);
 	const auto actionIndex = QLearning::Utils::PickAction(
 		m_qtable[currentState],
 		trainSession.randomActionChance,
@@ -154,10 +159,19 @@ TabularTrainer::TrainStepResult TabularTrainer::RunStep(
 
 	const auto stepResult = m_env->Step(m_env->actions[actionIndex]);
 	const auto newRawState = m_env->GetState();
-	const auto newState =
-		GymEnv::Utils::StateExtractor::BinaryVectorToNumber(newRawState);
-	
+	const auto newState = GymEnv::Utils::StateExtractor::BinaryVectorToNumber(
+		newRawState,
+		m_env->GetCellInterpreter()->NbOfInterpretableParts());
+
 	assert(newState < m_qtable.size());
+	
+	const auto renderGame = (trainSession.episodeIndex >=
+		m_qoptions.numEpisodes - m_qoptions.lastNGamesToRender);
+
+	if (renderGame)
+	{
+		::Utils::Print::PrintTable(newRawState);
+	}
 	
 	const auto reward = ComputeStepReward(
 		stepResult,
@@ -205,6 +219,7 @@ double TabularTrainer::UpdateActionQuality(
 		bestNextQ = 0;
 	else
 	{
+		TryInitQField(newState);
 		bestNextQ = *std::max_element(
 			m_qtable[newState].begin(),
 			m_qtable[newState].end());
@@ -216,4 +231,14 @@ double TabularTrainer::UpdateActionQuality(
 		(reward + m_qoptions.qDiscountFactor * bestNextQ - currentActionQ);
 	
 	return m_qtable[currentState][actionIndex];
+}
+
+void TabularTrainer::TryInitQField(const int key)
+{
+	if (m_qtable.find(key) == m_qtable.end())
+	{
+		m_qtable[key] = ::Utils::Matrix::MakeVector(
+			m_env->actions.size(),
+			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); });
+	}
 }

@@ -7,4 +7,5 @@ namespace Utils { namespace Math
     double ruleOfThree(double value, double envMaxRange, double valueMaxRange);
     double randomDouble(double lwoerBound, double upperBound);
 
+	int DoubleToBinaryInt(double value, double eps = 0.00001);
 }}

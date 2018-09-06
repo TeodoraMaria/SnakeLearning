@@ -5,6 +5,7 @@
 #include "SnakeStudent.hpp"
 #include "StateExtractor.hpp"
 #include "GameView/IGameRenderer.hpp"
+#include "GymEnv/StateObserver/GridObserver.hpp"
 #include <cstddef>
 #include <vector>
 
@@ -14,21 +15,24 @@
 
 namespace GymEnv
 {
+	struct SingleSnakeGridViewModel
+	{
+		SingleSnakeEnvBaseModel baseModel;
+		size_t gridWidth = 3;
+		size_t gridHeight = 3;
+		Coordinate deltaCoord = Coordinate(0, 0);
+	};
+	
 	class SingleSnakeGridView : public SingleSnakeEnvBase
 	{
 	public:
-		SingleSnakeGridView(
-			size_t gridWidth,
-			size_t gridHeight,
-			GameView::IGameRenderer* gameRenderer,
-			const GameOptions& gmOptions);
+		SingleSnakeGridView(const SingleSnakeGridViewModel& model);
 		
+		const StateObserver::IStateObserver* GetObserver() const override;
 		size_t GetNumbOfObservations() const override;
-//		int GetState() const override;
-		std::vector<int> GetFieldOfView() const;
+		std::vector<double> GetState() const override;
 	
 	private:
-		const size_t m_gridWidth;
-		const size_t m_gridHeight;
+		StateObserver::GridObserverUPtr m_gridObserver;
 	};
 }
