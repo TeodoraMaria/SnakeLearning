@@ -1,5 +1,5 @@
 #include "AI/QLearning/TabularTrainer.hpp"
-#include "Ai/QLearning/TabularQJsonUtils.h"
+#include "AI/QLearning/TabularQJsonUtils.h"
 #include "AI/HardCoded/SingleBot.hpp"
 #include "AI/GeneticAlgorithm/GeneticTrainer.h"
 #include "AI/GeneticAlgorithm/GeneticOptions.h"

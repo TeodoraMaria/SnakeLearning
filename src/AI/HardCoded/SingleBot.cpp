@@ -1,5 +1,6 @@
 #include "SingleBot.hpp"
 #include <random>
+#include <cstddef>
 
 using namespace AI::HardCoded;
 

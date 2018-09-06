@@ -13,5 +13,5 @@ add_subdirectory(MultiplatformUtils)
 add_subdirectory(GameView)
 
 add_subdirectory(GameSandBox)
-add_subdirectory(OpenGlSandBox)
+add_subdirectory(OpenGlSandbox)
 add_subdirectory(TrainingGrounds)

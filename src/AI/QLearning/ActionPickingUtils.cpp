@@ -1,5 +1,6 @@
 #include "ActionPickingUtils.h"
 #include "Utils/MathUtils.h"
+#include <algorithm>
 
 typedef std::uniform_int_distribution<int> IntDistrib;
 

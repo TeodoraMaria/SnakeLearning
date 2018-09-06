@@ -1,4 +1,5 @@
 #include "Coordinate.h"
+#include <stdlib.h>
 
 const Coordinate Coordinate::UP(-1, 0);
 const Coordinate Coordinate::RIGHT(0, 1);

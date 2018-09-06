@@ -3,6 +3,7 @@
 #include "Coordinate.h"
 #include <vector>
 #include <list>
+#include <cstddef>
 
 static const int startOfSnakeIndexes = 10;
 
