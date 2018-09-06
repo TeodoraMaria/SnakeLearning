@@ -27,10 +27,10 @@ void MainSingleSnakeRelativeView()
 		gmOptions.boardLength = 25;
 		gmOptions.boardWidth = 25;
 		gmOptions.numFoods = 10;
-//		gmOptions.gameRenderer = new GameView::TermRenderer();
-		gmOptions.gameRenderer = new GameView::OpenGLRenderer(
-			500, 500,
-			gmOptions.boardLength, gmOptions.boardWidth);
+		gmOptions.gameRenderer = new GameView::TermRenderer();
+//		gmOptions.gameRenderer = new GameView::OpenGLRenderer(
+//			500, 500,
+//			gmOptions.boardLength, gmOptions.boardWidth);
 	}
 	
 	auto baseModel = GymEnv::SingleSnakeEnvBaseModel();
@@ -44,16 +44,29 @@ void MainSingleSnakeRelativeView()
 	auto env = new GymEnv::SingleSnakeRelativeView(baseModel);
 	auto qoptions = AI::QLearning::QOptions();
 	{
-		qoptions.maxNumSteps = [](int episode) { return episode + 100; };
+		qoptions.maxNumSteps = [&](int episode)
+		{
+			return 50 + (double)episode / qoptions.numEpisodes * 5000;
+		};
+		qoptions.qDiscountFactor = 0.99;
+		qoptions.actionQualityEps = 0.005;
+		
 		qoptions.numEpisodes = 10000;
-		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes * 9);
+		qoptions.randActionDecayFactor = 1.0;// / (qoptions.numEpisodes * 9);
 		qoptions.learningRate = 0.1;
 		qoptions.minRandActionChance = 0;
 		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
 		{
-			return 150u + (double)episode / qoptions.numEpisodes * 300.0;
+			return 50u + (double)episode / qoptions.numEpisodes * 500.0;
 		};
-		qoptions.milsToSleepBetweenFrames = 50;
+		
+		auto qInitDistrib = std::uniform_real_distribution<>(-1.0, 1.0);
+		qoptions.tabInitializer = [&](std::mt19937& merseneTwister)
+		{
+			return qInitDistrib(merseneTwister);
+//			return 0.5;
+		};
+		qoptions.milsToSleepBetweenFrames = 5;
 	}
 	
 	auto trainer = AI::QLearning::TabularTrainer(qoptions, env);
@@ -193,8 +206,8 @@ int main(int nargs, char** args)
 {
 	srand(time(nullptr));
 	
-//	MainSingleSnakeRelativeView();
-	MainSingleSnakeGridView();
+	MainSingleSnakeRelativeView();
+//	MainSingleSnakeGridView();
 
 //    GeneticSingleSnake();
 	
