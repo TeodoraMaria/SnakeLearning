@@ -1,8 +1,6 @@
 #pragma once
 #include "GameUtils.h"
 #include "GameView/IGameRenderer.hpp"
-#include <cstddef>
-#include <functional>
 
 struct GameOptions
 {

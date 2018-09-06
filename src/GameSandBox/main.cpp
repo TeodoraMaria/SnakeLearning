@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 		gameOptions.initialSnakeSize = 2;
 		//gameOptions.playWithoutRenedring = true;
 		gameOptions.saveGameplay = true;
-		gameOptions.gameRenderer = new GameView::OpenGLRenderer();
+		gameOptions.gameRenderer = new GameView::OpenGLRenderer(500,500,10,10);
 	}
 	Game game(gameOptions, players);
 	
