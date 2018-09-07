@@ -15,7 +15,7 @@ namespace Utils
         NeuralNetwork(const NetworkSettings& settings);
         ~NeuralNetwork();
 
-        const std::vector<float> feedForward(std::vector<float> input) const;
+        const std::vector<float> feedForward(const std::vector<float>& input) const;
 
 
 
@@ -24,7 +24,7 @@ namespace Utils
 
         std::vector<float> m_weights;
     private:
-        std::vector<float> singleForward(std::vector<float> input,size_t nextLayer)const;
+        std::vector<float> singleForward(const std::vector<float>& input,size_t nextLayer)const;
 
         void setWeightsSize();
         void initWieghts();
