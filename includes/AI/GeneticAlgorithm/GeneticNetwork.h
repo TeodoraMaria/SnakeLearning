@@ -2,10 +2,11 @@
 
 #include <vector>
 #include <GameLogic/GameBoard.h>
+#include "Utils/NeuralNetwork.h"
 
 namespace AI{namespace GeneticAlgorithm{
    
-    class GeneticNetwork
+    class GeneticNetwork:public Utils::NeuralNetwork<double>
     {
     public:
         GeneticNetwork();

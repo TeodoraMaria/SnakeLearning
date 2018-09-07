@@ -1,5 +1,6 @@
 #include "GeneticNetwork.h"
 
+
 using namespace AI::GeneticAlgorithm;
 
 GeneticNetwork::GeneticNetwork():m_fitness(0.0),m_selectionProb(0.0),m_selectedForCrossover(false)
@@ -10,6 +11,7 @@ GeneticNetwork::GeneticNetwork():m_fitness(0.0),m_selectionProb(0.0),m_selectedF
 SnakeMove GeneticNetwork::feedForward(const std::vector<double>& input) const
 {
     //TODO: implement get max value from matrix mult;
+
     return SnakeMove::FORWARD;
 }
 
