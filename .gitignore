@@ -36,3 +36,5 @@ bin
 .DS_*
 third_party/glew
 third_party/SDL2
+
+aux_files/
