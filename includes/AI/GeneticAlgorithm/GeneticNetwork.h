@@ -6,7 +6,7 @@
 
 namespace AI{namespace GeneticAlgorithm{
    
-    class GeneticNetwork:public Utils::NeuralNetwork<double>
+    class GeneticNetwork:public Utils::NeuralNetwork
     {
     public:
         GeneticNetwork();

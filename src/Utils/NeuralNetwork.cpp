@@ -4,37 +4,33 @@
 
 using namespace Utils;
 
-template<class T>
-NeuralNetwork<T>::NeuralNetwork(const NetworkSettings& settings):
+NeuralNetwork::NeuralNetwork(const NetworkSettings& settings):
     m_settings(settings),
     m_layerOffset(std::vector<size_t>(settings.m_hiddenLayersSizes.size()))
 {
     setWeightsSize();
-    initRandomWeights();
+    initWieghts();
 }
 
-template<class T>
-NeuralNetwork<T>::~NeuralNetwork()
+NeuralNetwork::~NeuralNetwork()
 {
 
 }
 
-template<class T>
-const std::vector<T> NeuralNetwork<T>::feedForward(const std::vector<T>& input) const
+const std::vector<float> NeuralNetwork::feedForward(const std::vector<float>& input) const
 {
-    std::vector<T> result = singleForward(input, 0);
+    auto& result = singleForward(input, 0);
 
-    for (size_t layer = 1; layer < m_settings.m_hiddenLayersSizes.size(); layer++) {
-        std::vector<T>& temp = singleForward(result, layer);
+    for (size_t i = 1; i < m_settings.m_hiddenLayersSizes.size(); i++) {
+        auto& temp = singleForward(result, i);
         result = temp;
     }
     return result;
 }
 
-template<class T>
-std::vector<T> NeuralNetwork<T>::singleForward(const std::vector<T>& input, size_t nextLayer) const
+std::vector<float> NeuralNetwork::singleForward(const std::vector<float>& input, size_t nextLayer) const
 {
-    std::vector<T> result(m_settings.m_hiddenLayersSizes[nextLayer]);
+    std::vector<float> result(m_settings.m_hiddenLayersSizes[nextLayer]);
 
     for (size_t nextLayerIndex = 0; nextLayerIndex < result.size(); nextLayerIndex++) {
         float prod = 0;
@@ -49,14 +45,12 @@ std::vector<T> NeuralNetwork<T>::singleForward(const std::vector<T>& input, size
     return result;
 }
 
-template<class T>
-T NeuralNetwork<T>::sigmoid(T x) const
+float NeuralNetwork::sigmoid(float x) const
 {
     return 1.0f / (1.0f + std::exp(-x));
 }
 
-template<class T>
-float NeuralNetwork<T>::getWeightAt(size_t layer, size_t inputIndex, size_t weightIndex) const
+float NeuralNetwork::getWeightAt(size_t layer, size_t inputIndex, size_t weightIndex) const
 {
     size_t layerSize=0;
     if (layer == 0) {
@@ -70,8 +64,7 @@ float NeuralNetwork<T>::getWeightAt(size_t layer, size_t inputIndex, size_t weig
     return m_weights[index];
 }
 
-template<class T>
-void NeuralNetwork<T>::setWeightsSize()
+void NeuralNetwork::setWeightsSize()
 {
     size_t totalWeights = 0;
 
@@ -88,14 +81,9 @@ void NeuralNetwork<T>::setWeightsSize()
     m_weights.resize(totalWeights);
 }
 
-template<class T>
-void NeuralNetwork<T>::initRandomWeights()
+void NeuralNetwork::initWieghts()
 {
     for (auto& weight : m_weights) {
-        weight = static_cast <T> (rand()) / static_cast <T> (RAND_MAX);
+        weight = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     }
 }
-
-
-template class NeuralNetwork<float>;
-template class NeuralNetwork<double>;

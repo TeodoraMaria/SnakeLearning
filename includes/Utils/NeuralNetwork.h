@@ -8,25 +8,25 @@ namespace Utils
         size_t m_inputs;
         std::vector<size_t> m_hiddenLayersSizes;
     };
-    template<typename T>
+
     class NeuralNetwork
     {
     public:
         NeuralNetwork(const NetworkSettings& settings);
         ~NeuralNetwork();
 
-        const std::vector<T> feedForward(const std::vector<T>& input) const;
+        const std::vector<float> feedForward(const std::vector<float>& input) const;
 
     protected:
         float getWeightAt(size_t layer, size_t weightIndex, size_t inputIndex)const;
 
-        std::vector<T> m_weights;
+        std::vector<float> m_weights;
     private:
-        std::vector<T> singleForward(const std::vector<T>& input,size_t nextLayer)const;
-        T sigmoid(T x) const;
+        std::vector<float> singleForward(const std::vector<float>& input,size_t nextLayer)const;
+        float sigmoid(float x) const;
 
         void setWeightsSize();
-        void initRandomWeights();
+        void initWieghts();
 
         const NetworkSettings& m_settings;
         std::vector<size_t> m_layerOffset;
