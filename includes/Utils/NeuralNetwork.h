@@ -18,11 +18,13 @@ namespace Utils
         const std::vector<float> feedForward(std::vector<float> input) const;
 
 
+
     protected:
         float getWeightAt(size_t layer, size_t weightIndex, size_t inputIndex)const;
 
         std::vector<float> m_weights;
     private:
+        std::vector<float> singleForward(std::vector<float> input,size_t nextLayer)const;
 
         void setWeightsSize();
         void initWieghts();

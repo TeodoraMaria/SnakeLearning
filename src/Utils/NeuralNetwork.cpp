@@ -17,15 +17,21 @@ NeuralNetwork::~NeuralNetwork()
 
 const std::vector<float> NeuralNetwork::feedForward(std::vector<float> input) const
 {
-    std::vector<float> result(m_settings.m_hiddenLayersSizes.back());
-    
+    auto result = singleForward(input, 0);
+    return result;
+}
+
+std::vector<float> NeuralNetwork::singleForward(std::vector<float> input, size_t nextLayer) const
+{
+    std::vector<float> result(m_settings.m_hiddenLayersSizes[nextLayer]);
+
     for (size_t nextLayerIndex = 0; nextLayerIndex < result.size(); nextLayerIndex++) {
-    size_t prod = 0;
-        for (size_t layerIndex = 0; layerIndex < m_settings.m_inputs; layerIndex++) {
-           
+        size_t prod = 0;
+        for (size_t layerIndex = 0; layerIndex < input.size(); layerIndex++) {
+
             prod += getWeightAt(0, nextLayerIndex, layerIndex)* input[layerIndex];
         }
-    result[nextLayerIndex] = prod;
+        result[nextLayerIndex] = prod;
     }
 
     return result;
