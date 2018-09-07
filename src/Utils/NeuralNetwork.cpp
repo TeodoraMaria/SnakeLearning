@@ -1,4 +1,5 @@
 #include "NeuralNetwork.h"
+#include "Utils/MathUtils.h"
 
 using namespace Utils;
 
@@ -23,8 +24,6 @@ const std::vector<float> NeuralNetwork::feedForward(const std::vector<float>& in
         auto temp = singleForward(result, i);
         result = temp;
     }
-
-
     return result;
 }
 
@@ -46,7 +45,13 @@ std::vector<float> NeuralNetwork::singleForward(const std::vector<float>& input,
 
 float NeuralNetwork::getWeightAt(size_t layer, size_t inputIndex, size_t weightIndex) const
 {
-    size_t layerSize = m_settings.m_hiddenLayersSizes[layer];
+    size_t layerSize=0;
+    if (layer == 0) {
+        layerSize = m_settings.m_inputs;
+    } else {
+        layerSize = m_settings.m_hiddenLayersSizes[layer - 1];
+    }
+
     //TODO: make it work for more layers;
     size_t index = m_layerOffset[layer] + inputIndex*layerSize + weightIndex;
     return m_weights[index];
@@ -72,6 +77,7 @@ void NeuralNetwork::setWeightsSize()
 void NeuralNetwork::initWieghts()
 {
     for (auto& weight : m_weights) {
+        //weight = Utils::Math::randomDouble(0, 1);
         weight = 1;
     }
 }

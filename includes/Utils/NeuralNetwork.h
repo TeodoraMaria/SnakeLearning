@@ -17,8 +17,6 @@ namespace Utils
 
         const std::vector<float> feedForward(const std::vector<float>& input) const;
 
-
-
     protected:
         float getWeightAt(size_t layer, size_t weightIndex, size_t inputIndex)const;
 
