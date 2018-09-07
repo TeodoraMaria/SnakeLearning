@@ -19,7 +19,7 @@ namespace Utils
 
 
     protected:
-        float getWeightAt(size_t layer,size_t line,size_t col)const;
+        float getWeightAt(size_t layer, size_t weightIndex, size_t inputIndex)const;
 
         std::vector<float> m_weights;
     private:
@@ -28,5 +28,6 @@ namespace Utils
         void initWieghts();
 
         const NetworkSettings& m_settings;
+        std::vector<size_t> m_layerOffset;
     };
 }
