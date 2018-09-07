@@ -11,7 +11,7 @@ endmacro()
 
 macro(SetFlagIfSupported flag flagStorage)
 	CHECK_CXX_COMPILER_FLAG(${flag} isSupported)
-
+	
 	if (${isSupported})
 		String(CONCAT ${flagStorage} ${${flagStorage}} " " "${flag}")
 	endif()
