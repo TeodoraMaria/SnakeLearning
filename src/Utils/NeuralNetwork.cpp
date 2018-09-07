@@ -6,6 +6,7 @@ NeuralNetwork::NeuralNetwork(const NetworkSettings& settings)
     :m_settings(settings)
 {
     setWeightsSize();
+    initWieghts();
 }
 
 NeuralNetwork::~NeuralNetwork()
@@ -15,17 +16,17 @@ NeuralNetwork::~NeuralNetwork()
 
 const std::vector<float> NeuralNetwork::feedForward(std::vector<float> input) const
 {
-    // TODO: insert return statement here
-
-    for (size_t i = 0; i < input.size(); i++) {
-
-        for (size_t j = 0; j < m_settings.m_hiddenLayersSizes[0]; i++) {
-
+    std::vector<float> result(m_settings.m_hiddenLayersSizes.back());
+    
+    for (size_t j = 0; j < result.size(); j++) {
+    size_t prod = 0;
+        for (size_t k = 0; k < m_settings.m_inputs; k++) {
+            prod += m_weights[j*result.size() + k] * input[k];
         }
+    result[j] = prod;
     }
 
-    return std::vector<float>();
-
+    return result;
 }
 
 float NeuralNetwork::getWeightAt(size_t layer, size_t line, size_t col) const
@@ -48,4 +49,11 @@ void NeuralNetwork::setWeightsSize()
     }
 
     m_weights.resize(totalWeights);
+}
+
+void NeuralNetwork::initWieghts()
+{
+    for (auto& weight : m_weights) {
+        weight = 1;
+    }
 }

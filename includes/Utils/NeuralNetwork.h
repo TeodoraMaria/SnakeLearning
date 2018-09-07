@@ -17,14 +17,15 @@ namespace Utils
 
         const std::vector<float> feedForward(std::vector<float> input) const;
 
-        float getWeightAt(size_t layer,size_t line,size_t col)const;
 
     protected:
+        float getWeightAt(size_t layer,size_t line,size_t col)const;
 
         std::vector<float> m_weights;
     private:
 
         void setWeightsSize();
+        void initWieghts();
 
         const NetworkSettings& m_settings;
     };
