@@ -29,7 +29,6 @@ IPlayer *GeneticTrainer::Train()
 
         std::cout << i << std::endl;
     }
-
     return nullptr;
 }
 
@@ -39,10 +38,6 @@ void GeneticTrainer::runEpisode()
         
         runBot(network);
         //run game for each bot;
-
-        
-
-
     }
 
 }
@@ -53,18 +48,18 @@ double GeneticTrainer::runStep(const std::vector<double>& state, const GeneticNe
     GymEnv::StepResult result=m_env->Step(move);
 
     double reward = 0.0;
-
+    // change to enum
     switch (result.reward) {
         case -1: {
             reward = -1000.0;
             break;
         }
         case 0: {
-            reward = 1.0;
+           // reward = 0.0;
             break;
         }
         case 1: {
-            reward = 10.0;
+            reward = 1.0;
             break;
         }
         default: {
@@ -82,15 +77,14 @@ void GeneticTrainer::runBot(GeneticNetwork& network)
     for (size_t i = 0; i < m_options.maxNumSteps; i++) {
 
        double reward=runStep(state,network);
-           //dead
-       network.updateFitness(reward);
        if (reward == -1000.0) {
            break;
        }
-
+       
+       //dead change to snake lenght
+       network.updateFitness(reward);
+       state= m_env->GetState();
     }
-
-    
 }
 
 void GeneticTrainer::crossover()
@@ -108,20 +102,21 @@ void GeneticTrainer::crossover()
 }
 void GeneticTrainer::selectNewNetworks()
 {
+    //get the total fitness
     double fitnessSum = 0.0;
     for (const auto& network : m_networks) {
         fitnessSum += network.getFitness();
     }
-
+    
+    //compute the probabilitly for each network to be selected
     double selectionProb = m_networks[0].getFitness() / fitnessSum;
     m_networks[0].setSelectionProb(selectionProb);
-
 
     double cumulativeProb = 0.0;
     for (size_t i = 1; i < m_options.numOfNetworks; i++) {
         selectionProb = m_networks[i].getFitness() / fitnessSum;
 
-        //ci = ci-1 + si;
+        //Pci = Pci-1 + Psi;
         cumulativeProb = m_networks[i - 1].getSelectionProb() + selectionProb;
         m_networks[i].setSelectionProb(cumulativeProb);
     }
@@ -131,11 +126,9 @@ void GeneticTrainer::selectNewNetworks()
     for (size_t i = 0; i < m_options.numOfNetworks; i++) {
         selectionValue = Utils::Math::randomDouble(0.00000001, 1.0);
 
-        GeneticNetwork selectedNetwork;
-
-        for (size_t j = 0; j < m_options.numOfNetworks; j++) {
-            if (selectionValue > m_networks[i].getSelectionProb()) {
-                m_networks[i].selectForCrossOver(true);
+        for (size_t j = 0; j < m_options.numOfNetworks-1; j++) {
+            if (selectionValue > m_networks[j+1].getSelectionProb()) {
+                m_networks[j].selectForCrossOver(true);
                 break;
             }
         }

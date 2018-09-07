@@ -13,17 +13,26 @@ NeuralNetwork::~NeuralNetwork()
 
 }
 
-const std::vector<float>& NeuralNetwork::feedForward(std::vector<float> input) const
+const std::vector<float> NeuralNetwork::feedForward(std::vector<float> input) const
 {
     // TODO: insert return statement here
+
+    for (size_t i = 0; i < input.size(); i++) {
+
+        for (size_t j = 0; j < m_settings.m_hiddenLayersSizes[0]; i++) {
+
+        }
+    }
 
     return std::vector<float>();
 
 }
 
-float NeuralNetwork::getWeightAt(size_t layer) const
+float NeuralNetwork::getWeightAt(size_t layer, size_t line, size_t col) const
 {
-    return 0.0f;
+    size_t layerSize = m_settings.m_hiddenLayersSizes[layer];
+    //TODO: make it work for more layers;
+    return line*layerSize + col;
 }
 
 void NeuralNetwork::setWeightsSize()
@@ -37,8 +46,6 @@ void NeuralNetwork::setWeightsSize()
     for (size_t i = 0; i < numOfLayers - 1; ++i) {
         totalWeights += m_settings.m_hiddenLayersSizes[i] * m_settings.m_hiddenLayersSizes[i + 1];
     }
-
-    totalWeights += m_settings.m_hiddenLayersSizes[numOfLayers - 1] * m_settings.m_outputs;
 
     m_weights.resize(totalWeights);
 }
