@@ -6,6 +6,8 @@
 #include <tuple>
 #include <iostream>
 #include <iomanip>
+#include <chrono>
+#include <thread>
 
 #ifdef _WIN32
 	#include <windows.h>
@@ -278,6 +280,11 @@ void Game::Play()
 	}
 
 	DisplayScoreBoard();
+	if (m_gameOptions.milsToWaitBetweenPrintFrames != 0)
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(
+			m_gameOptions.milsToWaitBetweenPrintFrames));
+	}
 }
 
 std::string Game::GenerateFileName()

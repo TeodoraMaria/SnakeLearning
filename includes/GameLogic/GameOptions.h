@@ -16,4 +16,6 @@ struct GameOptions
 
 	bool playWithoutRenedring = false;
 	bool saveGameplay = false;
+	
+	size_t milsToWaitBetweenPrintFrames = 0;
 };

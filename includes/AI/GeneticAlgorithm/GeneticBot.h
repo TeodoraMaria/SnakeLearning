@@ -10,7 +10,7 @@ namespace AI{ namespace GeneticAlgorithm
     public:
 
         GeneticBot();
-        SnakeMove GetNextAction(const GameState& gameState) const override;
+        SnakeMove GetNextAction(const GameState& gameState) override;
 
         void setNetwork(const GeneticNetwork& network);
 

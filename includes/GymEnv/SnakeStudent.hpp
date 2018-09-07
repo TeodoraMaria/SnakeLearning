@@ -8,7 +8,7 @@ namespace GymEnv
 	class SnakeStudent : public IPlayer
 	{
 	public:
-		SnakeMove GetNextAction(const GameState& gameState) const override;
+		SnakeMove GetNextAction(const GameState& gameState) override;
 		void SetNextAction(SnakeMove nextMove);
 	
 	private:

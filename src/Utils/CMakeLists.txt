@@ -15,4 +15,4 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 SetDefaultTargetProperties()
-SetCompileFlags()
+SetCompileFlags_IfParentRequiresIt()

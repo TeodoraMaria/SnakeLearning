@@ -1,5 +1,12 @@
 #include "IPlayer.h"
 
+std::vector<SnakeMove> IPlayer::possibleMoves =
+{
+	SnakeMove::LEFT,
+	SnakeMove::FORWARD,
+	SnakeMove::RIGHT
+};
+
 int IPlayer::GetSnakeNumber() const
 {
 	return m_snakeNumber;

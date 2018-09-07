@@ -17,7 +17,7 @@ HumanPlayer::~HumanPlayer()
 #define KEY_RIGHT	'd'
 #define KEY_DOWN	's'
 
-SnakeMove HumanPlayer::GetNextAction(const GameState& gameState) const
+SnakeMove HumanPlayer::GetNextAction(const GameState& gameState)
 {
 	SnakeMove move = GetUserInput();
 

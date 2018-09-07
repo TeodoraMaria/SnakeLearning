@@ -1,12 +1,19 @@
 #include "AI/QLearning/TabularTrainer.hpp"
 #include "AI/QLearning/TabularQJsonUtils.h"
+#include "AI/QLearning/TabularAgent.hpp"
+#include "AI/QLearning/TabularActionPicker.hpp"
+#include "AI/QLearning/MultiSnakeTabularTrainer.hpp"
+
 #include "AI/HardCoded/SingleBot.hpp"
+
+
 #include "AI/GeneticAlgorithm/GeneticTrainer.h"
 #include "AI/GeneticAlgorithm/GeneticOptions.h"
 
 
 #include "GymEnv/SingleSnakeRelativeView.hpp"
 #include "GymEnv/SingleSnakeGridView.hpp"
+#include "GymEnv/MultiSnakeEnv.hpp"
 #include "GameView/OpenGLRenderer.h"
 
 #include "GameLogic/CellInterpreter/Basic3CellInterpreter.hpp"
@@ -19,6 +26,11 @@
 #include <iostream>
 
 using namespace GameLogic;
+using namespace AI::QLearning;
+
+size_t g_numEpisodes = 0;
+double g_randomDecayEpisodeMult = 1;
+
 
 void MainSingleSnakeRelativeView()
 {
@@ -102,8 +114,8 @@ void MainSingleSnakeGridView()
 {
 	auto gmOptions = GameOptions();
 	{
-		gmOptions.boardLength = 25;
-		gmOptions.boardWidth = 25;
+		gmOptions.boardLength = 20;
+		gmOptions.boardWidth = 20;
 		gmOptions.numFoods = 10;
 		gmOptions.initialSnakeSize = 5;
 //		gmOptions.gameRenderer = new GameView::TermRenderer();
@@ -133,23 +145,28 @@ void MainSingleSnakeGridView()
 	{
 		qoptions.maxNumSteps = [&](int episode)
 		{
-			return 50 + (double)episode / qoptions.numEpisodes * 1000;
+			return 500 + (double)episode / qoptions.numEpisodes * 1000;
 		};
 		qoptions.qDiscountFactor = 0.8;
 		qoptions.actionQualityEps = 0.005;
 		
-		qoptions.numEpisodes = 20000;
-		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes);
+		if (g_numEpisodes != 0)
+			qoptions.numEpisodes = g_numEpisodes;
+		else
+			qoptions.numEpisodes = 20000;
+
+		qoptions.randActionDecayFactor =
+			1.0 / (qoptions.numEpisodes * 5 * g_randomDecayEpisodeMult);
 		qoptions.learningRate = 0.01;
 		qoptions.minRandActionChance = 0;
 		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
 		{
-			return 50u + (double)episode / qoptions.numEpisodes * 100.0;
+			return 300u + (double)episode / qoptions.numEpisodes * 100.0;
 		};
 		
 		qoptions.foodReward = [](int episode) { return 1.0; };
 		qoptions.dieReward = [](int episode) { return 0; };
-		qoptions.stepReward = [](int episode) { return -0.0001; };
+		qoptions.stepReward = [](int episode) { return 0; };
 		
 //		auto qInitDistrib = std::uniform_real_distribution<>(-1.0, 1.0);
 		qoptions.tabInitializer = [&](std::mt19937& merseneTwister)
@@ -158,6 +175,7 @@ void MainSingleSnakeGridView()
 //			return qInitDistrib(merseneTwister);
 		};
 		qoptions.milsToSleepBetweenFrames = 10;
+		qoptions.printDieStates = false;
 	}
 	
 	auto trainer = AI::QLearning::TabularTrainer(qoptions, env);
@@ -201,6 +219,104 @@ void MainSingleSnakeGridView()
 //		game.Play();
 }
 
+void MainMultiSnake()
+{
+	auto gmOptions = GameOptions();
+	{
+		gmOptions.boardLength = 25;
+		gmOptions.boardWidth = 25;
+		gmOptions.numFoods = 10;
+		gmOptions.initialSnakeSize = 2;
+		gmOptions.milsToWaitBetweenPrintFrames = 100;
+//		gmOptions.gameRenderer = new GameView::TermRenderer();
+		gmOptions.gameRenderer = new GameView::OpenGLRenderer(
+			500, 500,
+			gmOptions.boardLength, gmOptions.boardWidth);
+	}
+	
+	auto qoptions = AI::QLearning::QOptions();
+	{
+		qoptions.maxNumSteps = [&](int episode)
+		{
+			return 500 + (double)episode / qoptions.numEpisodes * 1000;
+		};
+		qoptions.qDiscountFactor = 0.8;
+		qoptions.actionQualityEps = 0.005;
+		
+		if (g_numEpisodes != 0)
+			qoptions.numEpisodes = g_numEpisodes;
+		else
+			qoptions.numEpisodes = 20000;
+
+		qoptions.randActionDecayFactor =
+			1.0 / (qoptions.numEpisodes * 1 * g_randomDecayEpisodeMult);
+		qoptions.learningRate = 0.01;
+		qoptions.minRandActionChance = 0;
+		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
+		{
+			return 300u + (double)episode / qoptions.numEpisodes * 100.0;
+		};
+		
+		qoptions.foodReward = [](int episode) { return 1.0; };
+		qoptions.dieReward = [](int episode) { return 0; };
+		qoptions.stepReward = [](int episode) { return 0; };
+		
+//		auto qInitDistrib = std::uniform_real_distribution<>(-1.0, 1.0);
+		qoptions.tabInitializer = [&](std::mt19937& merseneTwister)
+		{
+			return 0;
+//			return qInitDistrib(merseneTwister);
+		};
+		qoptions.printDieStates = false;
+	}
+	
+	auto merseneTwister = std::mt19937(std::random_device()());
+	auto agents = std::vector<std::shared_ptr<TabularAgent>>();
+	for (auto i = 0u; i < 2; i++)
+	{
+		auto qbrains = std::make_shared<QTabularBrains>(
+			qoptions.learningRate,
+			qoptions.qDiscountFactor,
+			IPlayer::possibleMoves.size(),
+			[&]() { return qoptions.tabInitializer(merseneTwister); });
+		
+		auto cellInterpreter = std::make_shared<CellInterpreter::Basic3CellInterpreter>();
+		auto actionPicker = std::make_shared<TabularActionPicker>(
+			cellInterpreter->NbOfInterpretableParts(),
+			qoptions.actionQualityEps,
+			qbrains);
+		auto observer = std::make_shared<GymEnv::StateObserver::GridObserver>(cellInterpreter, 5, 5);
+		
+		agents.push_back(std::make_shared<TabularAgent>(qbrains, cellInterpreter, actionPicker, observer));
+	}
+	
+	auto envModel = GymEnv::MultiSnakeEnvModel();
+	{
+		for (auto agent : agents)
+			envModel.agents.push_back(std::static_pointer_cast<GymEnv::SnakeAgent>(agent));
+		
+		envModel.gameRenderer = gmOptions.gameRenderer;
+		envModel.gmOptions = &gmOptions;
+	}
+	
+	auto env = std::make_shared<GymEnv::MultiSnakeEnv>(envModel);
+	auto trainer = MultiSnakeTabularTrainer(qoptions, agents, env);
+	
+	trainer.Train();
+	
+	auto players = std::vector<IPlayerPtr>();
+	for (auto agent : agents)
+			players.push_back(std::static_pointer_cast<IPlayer>(agent));
+	
+	Game game(gmOptions, players);
+
+	for (auto i = 0; i < 50; i++)
+	{
+		game.InitGame();
+		game.Play();
+	}
+}
+
 void GeneticSingleSnake()
 {
     auto gmOptions = GameOptions();
@@ -236,8 +352,19 @@ int main(int nargs, char** args)
 {
 	srand(time(nullptr));
 	
+	if (nargs > 1)
+	{
+		g_numEpisodes = std::atoi(args[1]);
+	}
+	
+	if (nargs > 2)
+	{
+		g_randomDecayEpisodeMult = std::atof(args[2]);
+	}
+	
 //	MainSingleSnakeRelativeView();
-	MainSingleSnakeGridView();
+//	MainSingleSnakeGridView();
+	MainMultiSnake();
 
 //    GeneticSingleSnake();
 	
