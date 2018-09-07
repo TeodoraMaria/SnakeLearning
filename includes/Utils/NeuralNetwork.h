@@ -23,9 +23,10 @@ namespace Utils
         std::vector<float> m_weights;
     private:
         std::vector<float> singleForward(const std::vector<float>& input,size_t nextLayer)const;
+        float sigmoid(float x) const;
 
         void setWeightsSize();
-        void initWieghts();
+        void initRandomWeights();
 
         const NetworkSettings& m_settings;
         std::vector<size_t> m_layerOffset;
