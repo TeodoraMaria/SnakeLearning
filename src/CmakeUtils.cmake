@@ -18,14 +18,16 @@ macro(SetFlagIfSupported flag flagStorage)
 endmacro()
 
 macro(SetCompileFlags)
-	set(Flags "")
+	if (NOT WIN32)
+		set(Flags "")
 
-	SetFlagIfSupported("-Wall" Flags)
-	SetFlagIfSupported("-Wextra" Flags)
-	SetFlagIfSupported("-Werror" Flags)
-	SetFlagIfSupported("-Waddress" Flags)
-	
-	set(CMAKE_CXX_FLAGS "${Flags}")
+		SetFlagIfSupported("-Wall" Flags)
+		SetFlagIfSupported("-Wextra" Flags)
+		SetFlagIfSupported("-Werror" Flags)
+		SetFlagIfSupported("-Waddress" Flags)
+		
+		set(CMAKE_CXX_FLAGS "${Flags}")
+	endif()
 endmacro()
 
 macro(SetCompileFlags_IfParentRequiresIt)
