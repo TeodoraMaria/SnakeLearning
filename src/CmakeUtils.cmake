@@ -1,3 +1,5 @@
+include(CheckCXXCompilerFlag)
+
 macro(SetDefaultTargetProperties)
 	set_target_properties(${PROJECT_NAME} PROPERTIES
 		ARCHIVE_OUTPUT_DIRECTORY	"${CMAKE_SOURCE_DIR}/bin"
@@ -7,12 +9,23 @@ macro(SetDefaultTargetProperties)
 	)
 endmacro()
 
+macro(SetFlagIfSupported flag flagStorage)
+	CHECK_CXX_COMPILER_FLAG(${flag} isSupported)
+
+	if (${isSupported})
+		String(CONCAT ${flagStorage} ${${flagStorage}} " " "${flag}")
+	endif()
+endmacro()
+
 macro(SetCompileFlags)
-	String(CONCAT Flags ${Flags} " " "-Wall")
-	String(CONCAT Flags ${Flags} " " "-Wextra")
-	String(CONCAT Flags ${Flags} " " "-Werror")
-	String(CONCAT Flags ${Flags} " " "-Waddress")
-	Set(CMAKE_CXX_FLAGS "${Flags}")
+	set(Flags "")
+
+	SetFlagIfSupported("-Wall" Flags)
+	SetFlagIfSupported("-Wextra" Flags)
+	SetFlagIfSupported("-Werror" Flags)
+	SetFlagIfSupported("-Waddress" Flags)
+	
+	set(CMAKE_CXX_FLAGS "${Flags}")
 endmacro()
 
 macro(SetCompileFlags_IfParentRequiresIt)
