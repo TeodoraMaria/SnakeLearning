@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 add_subdirectory(QLearning)
 add_subdirectory(HardCoded)
-add_subdirectory(GeneticAlgorithm)
+# add_subdirectory(GeneticAlgorithm)
 add_subdirectory(Supervised)
