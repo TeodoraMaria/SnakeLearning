@@ -17,7 +17,7 @@ Game::Game(
 	m_gameOptions(gameOptions),
 	m_players(players)
 {
-	m_players.resize(gameOptions.numberOfPlayers);
+	m_players.resize(players.size());
 	m_gameBoard = GameBoard(
 		gameOptions.gameBoardType,
 		gameOptions.boardLength,
