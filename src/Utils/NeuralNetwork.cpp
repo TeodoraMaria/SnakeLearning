@@ -1,6 +1,7 @@
 #include "NeuralNetwork.h"
 #include "Utils/MathUtils.h"
 #include <iostream>
+#include <cmath>
 
 using namespace Utils;
 
@@ -24,10 +25,10 @@ NeuralNetwork::~NeuralNetwork()
 
 const std::vector<float> NeuralNetwork::feedForward(const std::vector<float>& input) const
 {
-    auto& result = singleForward(input, 0);
+    auto result = singleForward(input, 0);
 
     for (size_t i = 1; i < m_settings.m_hiddenLayersSizes.size(); i++) {
-        auto& temp = singleForward(result, i);
+        auto temp = singleForward(result, i);
         result = temp;
     }
     return result;
