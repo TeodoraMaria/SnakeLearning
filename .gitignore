@@ -36,3 +36,4 @@ bin
 .DS_*
 third_party/glew
 third_party/SDL2
+.SublProj.sublime-workspace
