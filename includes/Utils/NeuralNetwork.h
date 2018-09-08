@@ -13,9 +13,11 @@ namespace Utils
     {
     public:
         NeuralNetwork(const NetworkSettings& settings);
+        NeuralNetwork();
         ~NeuralNetwork();
 
         const std::vector<float> feedForward(const std::vector<float>& input) const;
+        void initWeights();
 
     protected:
         float getWeightAt(size_t layer, size_t weightIndex, size_t inputIndex)const;
@@ -26,9 +28,8 @@ namespace Utils
         float sigmoid(float x) const;
 
         void setWeightsSize();
-        void initWieghts();
 
-        const NetworkSettings& m_settings;
+        NetworkSettings m_settings;
         std::vector<size_t> m_layerOffset;
     };
 }

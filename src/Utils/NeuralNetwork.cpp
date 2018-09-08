@@ -9,7 +9,12 @@ NeuralNetwork::NeuralNetwork(const NetworkSettings& settings):
     m_layerOffset(std::vector<size_t>(settings.m_hiddenLayersSizes.size()))
 {
     setWeightsSize();
-    initWieghts();
+    initWeights();
+}
+
+NeuralNetwork::NeuralNetwork()
+{
+    
 }
 
 NeuralNetwork::~NeuralNetwork()
@@ -38,7 +43,7 @@ std::vector<float> NeuralNetwork::singleForward(const std::vector<float>& input,
 
             prod += getWeightAt(nextLayer, nextLayerIndex, layerIndex)* input[layerIndex];
         }
-        result[nextLayerIndex] = sigmoid(prod);
+        result[nextLayerIndex] = prod;
         std::cout << result[nextLayerIndex]<<" ";
     }
     std::cout << std::endl;
@@ -59,7 +64,7 @@ float NeuralNetwork::getWeightAt(size_t layer, size_t inputIndex, size_t weightI
         layerSize = m_settings.m_hiddenLayersSizes[layer - 1];
     }
 
-    //TODO: make it work for more layers;
+    
     size_t index = m_layerOffset[layer] + inputIndex*layerSize + weightIndex;
     return m_weights[index];
 }
@@ -81,7 +86,7 @@ void NeuralNetwork::setWeightsSize()
     m_weights.resize(totalWeights);
 }
 
-void NeuralNetwork::initWieghts()
+void NeuralNetwork::initWeights()
 {
     for (auto& weight : m_weights) {
         weight = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);

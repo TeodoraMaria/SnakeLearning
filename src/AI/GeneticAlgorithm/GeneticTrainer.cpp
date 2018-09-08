@@ -16,7 +16,7 @@ IPlayer *GeneticTrainer::Train()
 {
     //on each train reset the networks;
     for (auto& network : m_networks) {
-        network.initWithRandomValues();
+        network.initWeights();
     }
 
     for (size_t i = 0; i < m_options.numEpisodes; i++) {
@@ -81,7 +81,7 @@ void GeneticTrainer::runBot(GeneticNetwork& network)
            break;
        }
        
-       //dead change to snake lenght
+       //change to snake lenght
        network.updateFitness(reward);
        state= m_env->GetState();
     }
@@ -97,6 +97,7 @@ void GeneticTrainer::crossover()
         if (crossoverValue < m_options.crossoverProb) {
             //TODO:crossover
             //something.crossover(m_networks[i],m_networks[i+1]);
+            m_networks[i].crossOver(m_networks[i + 1]);
         }
     }
 }
@@ -120,19 +121,25 @@ void GeneticTrainer::selectNewNetworks()
         cumulativeProb = m_networks[i - 1].getSelectionProb() + selectionProb;
         m_networks[i].setSelectionProb(cumulativeProb);
     }
+    std::vector<GeneticNetwork> newNetworks;
 
+    newNetworks.resize(m_networks.size());
     //generate numbers between (0,1]
     double selectionValue = 0.0;
     for (size_t i = 0; i < m_options.numOfNetworks; i++) {
         selectionValue = Utils::Math::randomDouble(0.00000001, 1.0);
 
+        GeneticNetwork selectedNetwork;
         for (size_t j = 0; j < m_options.numOfNetworks-1; j++) {
             if (selectionValue > m_networks[j+1].getSelectionProb()) {
-                m_networks[j].selectForCrossOver(true);
+                
+                selectedNetwork = m_networks[j];
                 break;
             }
         }
+        newNetworks[i] = selectedNetwork;
     }
+    m_networks = newNetworks;
 }
 
 
@@ -142,10 +149,7 @@ void GeneticTrainer::mutate()
     for (auto& network : m_networks) {
             //TODO:mutation;
             //network.mutate?
-
-        mutationValue = Utils::Math::randomDouble(0.00000001, 1.0);
-        if (mutationValue < m_options.mutationProb) {
-        }
+        network.mutateWeights(m_options.mutationProb);
     }
 
 }
