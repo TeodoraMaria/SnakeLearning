@@ -21,10 +21,17 @@ double Utils::Math::ruleOfThree(double value, double envMaxRange, double valueMa
 
 double Utils::Math::randomDouble(double lowerBound, double upperBound)
 {
-    std::uniform_real_distribution<double> unif(lowerBound, upperBound);
-    std::default_random_engine engine;
-    return unif(engine);
+    double f = (double)rand() / RAND_MAX;
+    return lowerBound + f * (upperBound - lowerBound);
 }
+
+template<typename T>
+T Utils::Math::randomNumber(T lowerBound, T upperBound)
+{
+    T f = (T)rand() / RAND_MAX;
+    return lowerBound + f * (upperBound - lowerBound);
+}
+
 
 /*
 ** Convert the given value to a binary int by approximating.

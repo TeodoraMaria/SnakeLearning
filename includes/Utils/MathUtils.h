@@ -7,5 +7,8 @@ namespace Utils { namespace Math
     double ruleOfThree(double value, double envMaxRange, double valueMaxRange);
     double randomDouble(double lwoerBound, double upperBound);
 
+    template<typename T>
+    T randomNumber(T lowerBound, T upperBound);
+    
 	int DoubleToBinaryInt(double value, double eps = 0.00001);
 }}
