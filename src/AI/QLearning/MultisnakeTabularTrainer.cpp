@@ -51,24 +51,25 @@ void MultisnakeTabularTrainer::TryInitQField(QTable& qtable, const State key)
 
 IPlayer* MultisnakeTabularTrainer::Train()
 {
-	auto cellInterpreter1 = std::make_shared<WallFoodBody>();
+	//auto cellInterpreter1 = std::make_shared<WallFoodBody>();
+	auto cellInterpreter1 = std::make_shared<Basic3CellInterpreter>();
 	auto agent1 = std::make_shared<QTabStudent>(
 		cellInterpreter1,
 		new GridObserver(cellInterpreter1, 5, 5),
 		[&]() { return m_qoptions.tabInitializer(m_merseneTwister); }
 	);
 	
-	auto cellInterpreter2 = std::make_shared<WallFoodBody>();
-	auto agent2 = std::make_shared<QTabStudent>(
-		cellInterpreter2,
-		new GridObserver(cellInterpreter2, 5, 5),
-		[&]() { return m_qoptions.tabInitializer(m_merseneTwister); }
-	);
+	// auto cellInterpreter2 = std::make_shared<WallFoodBody>();
+	// auto agent2 = std::make_shared<QTabStudent>(
+	// 	cellInterpreter2,
+	// 	new GridObserver(cellInterpreter2, 3, 3),
+	// 	[&]() { return m_qoptions.tabInitializer(m_merseneTwister); }
+	// );
 
 	auto agents = std::vector<std::shared_ptr<QTabStudent>>(
 	{
 		agent1,
-		agent2
+		// agent2
 	});
 	
 	auto players = std::vector<std::shared_ptr<IPlayer>>();

@@ -258,18 +258,18 @@ void MultisnakeMain()
 	{
 		qoptions.maxNumSteps = [&](int episode)
 		{
-			return 50 + (double)episode / qoptions.numEpisodes * 3000;
+			return 50000;// + (double)episode / qoptions.numEpisodes * 3000;
 		};
 		qoptions.qDiscountFactor = 0.8;
-		qoptions.actionQualityEps = 0.005;
+		qoptions.actionQualityEps = 0.01;
 		
-		qoptions.numEpisodes = 100000;
+		qoptions.numEpisodes = 15000;
 		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes);
 		qoptions.learningRate = 0.01;
 		qoptions.minRandActionChance = 0;
 		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
 		{
-			return 20u + (double)episode / qoptions.numEpisodes * 50.0;
+			return 100u + (double)episode / qoptions.numEpisodes * 300.0;
 		};
 		
 		qoptions.foodReward = [](int episode) { return 1.0; };
