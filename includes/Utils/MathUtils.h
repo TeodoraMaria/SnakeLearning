@@ -8,7 +8,11 @@ namespace Utils { namespace Math
     double randomDouble(double lwoerBound, double upperBound);
 
     template<typename T>
-    T randomNumber(T lowerBound, T upperBound);
+    T randomNumber(T lowerBound, T upperBound)
+    {
+        T f = (T)rand() / RAND_MAX;
+        return lowerBound + f * (upperBound - lowerBound);
+    }
     
 	int DoubleToBinaryInt(double value, double eps = 0.00001);
 }}
