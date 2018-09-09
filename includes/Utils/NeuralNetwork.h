@@ -5,8 +5,8 @@ namespace Utils
 {
     struct NetworkSettings
     {
-        size_t m_inputs;
-        std::vector<size_t> m_hiddenLayersSizes;
+        size_t m_inputs=0;
+        std::vector<size_t> m_hiddenLayersSizes = {0};
     };
 
     class NeuralNetwork
@@ -33,9 +33,7 @@ namespace Utils
         float sigmoid(float x) const;
         void setWeightsSize();
 
-
         NetworkSettings m_settings;
-        std::vector<size_t> m_layerOffset;
-        
+        std::vector<size_t> m_layerOffset;        
     };
 }

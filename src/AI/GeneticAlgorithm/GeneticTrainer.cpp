@@ -1,4 +1,5 @@
 #include "AI/GeneticAlgorithm/GeneticTrainer.h"
+#include "AI/GeneticAlgorithm/GeneticJsonUtils.h"
 #include "Utils/MathUtils.h"
 #include <iostream>
 
@@ -33,15 +34,29 @@ IPlayer *GeneticTrainer::Train()
         std::cout << i << " ";
         printMaxFitness();
 
+        if (i < m_options.numEpisodes - 1) {
         resetFitness();
+        }
     }
-    return nullptr;
+
+    const GeneticNetwork* bestNetwork;
+    double maxFitness=0.0;
+    for (const auto& network : m_networks) {
+        if (maxFitness < network.getFitness()) {
+            maxFitness = network.getFitness();
+            bestNetwork = &network;
+        }
+    }
+
+   // SaveWeights(bestNetwork->getWeights(), "aux_files/genetic/TrainedGenetic.json");
+    
+    return new GeneticBot(*bestNetwork);
 }
 
 void GeneticTrainer::runEpisode()
 {
     for (auto& network : m_networks) {     
-        runBot(network);
+        runNetwork(network);
         //run game for each bot;
     }
 }
@@ -73,7 +88,7 @@ double GeneticTrainer::runStep(const std::vector<double>& state, const GeneticNe
     return reward;
 }
 
-void GeneticTrainer::runBot(GeneticNetwork& network)
+void GeneticTrainer::runNetwork(GeneticNetwork& network)
 {
     m_env->Reset();
     std::vector<double> state=m_env->GetState();

@@ -9,15 +9,17 @@ using namespace AI::GeneticAlgorithm;
 GeneticNetwork::GeneticNetwork(const Utils::NetworkSettings& settings):
     m_fitness(0.0),
     m_selectionProb(0.0),
-    m_selectedForCrossover(false),
     NeuralNetwork(settings)
 {
  
 }
 
-GeneticNetwork::GeneticNetwork()
+GeneticNetwork::GeneticNetwork():
+    m_fitness(0.0),
+    m_selectionProb(0.0),
+    NeuralNetwork(Utils::NetworkSettings())
 {
-
+    
 }
 
 SnakeMove GeneticNetwork::feedForward(const std::vector<double>& input) const
