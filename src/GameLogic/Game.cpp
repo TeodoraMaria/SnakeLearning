@@ -69,6 +69,24 @@ std::vector<Snake> Game::GetAllSnakes() const
 	return m_snakes;
 }
 
+bool Game::EveryoneIsDead() const
+{
+	CheckIfGameOver();
+	return m_isGameOver;
+}
+
+void Game::ForcefullyKillPlayer(int snakeId)
+{
+	auto& snake = *std::find_if(m_snakes.begin(), m_snakes.end(),
+		[&](const auto& snake)
+		{
+			return snake.GetSnakeNumber() == snakeId;
+		});
+	
+	m_gameBoard.KillSnake(snake.GetSnakeBody());
+	snake.Die();
+	DisablePlayer(snakeId);
+}
 
 void Game::InitSnakes()
 {
@@ -101,7 +119,7 @@ void Game::SaveMove(FileHelper& helper, const std::vector<int> view, const Snake
 	helper.WriteToFile(view, move, snakeNumber);
 }
 
-void Game::CheckIfGameOver()
+void Game::CheckIfGameOver() const
 {
 	m_isGameOver = (GetLivingSnakes().size() == 0);
 }

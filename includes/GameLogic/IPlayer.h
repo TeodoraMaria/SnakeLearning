@@ -7,6 +7,8 @@
 class IPlayer
 {
 public:
+	static std::vector<SnakeMove> possibleMoves;
+
 	int GetSnakeNumber() const;
 	void SetSnakeNumber(int snakeNumber);
 	bool GetIsActive() const;

@@ -17,6 +17,7 @@ public:
 	std::vector<Snake> GetAllSnakes() const;
 	std::vector<Snake> GetLivingSnakes() const;
 	GameState GetGameState() const;
+	bool EveryoneIsDead() const;
 
 	void InitGame();
 	void RunRoundAndSave(FileHelper& helper);
@@ -27,10 +28,12 @@ public:
 	void DisplayScoreBoard();
 	int MoveSnake(const size_t& snakeNumber, const SnakeMove& move);
 	void RestockFood();
+	
+	void ForcefullyKillPlayer(int snakeId);
 
 private:
 	void InitSnakes();
-	void CheckIfGameOver();
+	void CheckIfGameOver() const;
 	void InitFood();
 	void AddSnakeToGame(const int snakeNumber);
 	void DisablePlayer(const int snakeNumber);
@@ -45,5 +48,5 @@ private:
 	GameView::IGameRenderer* m_gameRenderer;
 	std::vector<IPlayerPtr> m_players;
 	std::vector<Snake> m_snakes;
-	bool m_isGameOver = false;
+	mutable bool m_isGameOver = false;
 };

@@ -258,23 +258,23 @@ void MultisnakeMain()
 	{
 		qoptions.maxNumSteps = [&](int episode)
 		{
-			return 50 + (double)episode / qoptions.numEpisodes * 1000;
+			return 50 + (double)episode / qoptions.numEpisodes * 3000;
 		};
 		qoptions.qDiscountFactor = 0.8;
 		qoptions.actionQualityEps = 0.005;
 		
-		qoptions.numEpisodes = 20000;
+		qoptions.numEpisodes = 100000;
 		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes);
 		qoptions.learningRate = 0.01;
 		qoptions.minRandActionChance = 0;
 		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
 		{
-			return 50u + (double)episode / qoptions.numEpisodes * 100.0;
+			return 20u + (double)episode / qoptions.numEpisodes * 50.0;
 		};
 		
 		qoptions.foodReward = [](int episode) { return 1.0; };
 		qoptions.dieReward = [](int episode) { return 0; };
-		qoptions.stepReward = [](int episode) { return -0.0001; };
+		qoptions.stepReward = [](int episode) { return 0; };
 		
 //		auto qInitDistrib = std::uniform_real_distribution<>(-1.0, 1.0);
 		qoptions.tabInitializer = [&](std::mt19937& merseneTwister)
