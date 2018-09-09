@@ -34,8 +34,6 @@ IPlayer *GeneticTrainer::Train()
         printMaxFitness();
 
         resetFitness();
-
-
     }
     return nullptr;
 }
@@ -83,11 +81,14 @@ void GeneticTrainer::runBot(GeneticNetwork& network)
     for (size_t i = 0; i < m_options.maxNumSteps; i++) {
 
        double reward=runStep(state,network);
+       if (reward == 1) {
+           i = 0;
+       }
        if (reward == -1000.0) {
            break;
        }
        
-       //change to snake lenght
+       //change to snake length
        network.updateFitness(reward);
        state= m_env->GetState();
     }
@@ -135,7 +136,7 @@ void GeneticTrainer::selectNewNetworks()
         selectionValue = Utils::Math::randomDouble(0.00000001, 1.0);
 
         GeneticNetwork selectedNetwork;
-
+        //TODO: fix double comps
         if (selectionValue <= m_networks[0].getSelectionProb()) {
             selectedNetwork = m_networks[0];
         }
@@ -157,7 +158,6 @@ void GeneticTrainer::mutate()
     for (auto& network : m_networks) {
         network.mutateWeights(m_options.mutationProb);
     }
-
 }
 
 void GeneticTrainer::printMaxFitness()

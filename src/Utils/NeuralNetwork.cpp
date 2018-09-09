@@ -43,7 +43,7 @@ std::vector<float> NeuralNetwork::singleForward(const std::vector<float>& input,
 
             prod += getWeightAt(nextLayer, nextLayerIndex, layerIndex)* input[layerIndex];
         }
-        result[nextLayerIndex] = prod;
+        result[nextLayerIndex] = sigmoid(prod);
     }
     return result;
 }

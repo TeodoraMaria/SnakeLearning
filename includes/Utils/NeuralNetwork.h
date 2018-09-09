@@ -25,6 +25,7 @@ namespace Utils
         float getWeightAt(size_t layer, size_t weightIndex, size_t inputIndex)const;
 
         std::vector<float> m_weights;
+        std::vector<float> m_biases;
     private:
         std::vector<float> singleForward(const std::vector<float>& input,size_t nextLayer)const;
         float sigmoid(float x) const;
@@ -33,5 +34,6 @@ namespace Utils
 
         NetworkSettings m_settings;
         std::vector<size_t> m_layerOffset;
+        
     };
 }
