@@ -21,6 +21,8 @@ namespace Utils
 
         void setSettings(const NetworkSettings& settings);
 
+        std::vector<float> getWeights() const;
+
     protected:
         float getWeightAt(size_t layer, size_t weightIndex, size_t inputIndex)const;
 

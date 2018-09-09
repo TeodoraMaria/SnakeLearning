@@ -95,3 +95,8 @@ void NeuralNetwork::setSettings(const NetworkSettings & settings)
 {
     m_settings = settings;
 }
+
+std::vector<float> Utils::NeuralNetwork::getWeights() const
+{
+    return m_weights;
+}
