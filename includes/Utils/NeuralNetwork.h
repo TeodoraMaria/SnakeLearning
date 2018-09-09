@@ -19,6 +19,8 @@ namespace Utils
         const std::vector<float> feedForward(const std::vector<float>& input) const;
         void initWeights();
 
+        void setSettings(const NetworkSettings& settings);
+
     protected:
         float getWeightAt(size_t layer, size_t weightIndex, size_t inputIndex)const;
 
@@ -26,8 +28,8 @@ namespace Utils
     private:
         std::vector<float> singleForward(const std::vector<float>& input,size_t nextLayer)const;
         float sigmoid(float x) const;
-
         void setWeightsSize();
+
 
         NetworkSettings m_settings;
         std::vector<size_t> m_layerOffset;

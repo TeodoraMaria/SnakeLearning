@@ -5,10 +5,14 @@
 
 using namespace AI::GeneticAlgorithm;
 
-GeneticTrainer::GeneticTrainer(GeneticOptions options, GymEnv::SingleSnakeEnvBase* env):
+GeneticTrainer::GeneticTrainer(Utils::NetworkSettings networkSettings,GeneticOptions options, GymEnv::SingleSnakeEnvBase* env):
     m_options(options),m_env(env)
 {
     m_networks.resize(m_options.numOfNetworks);
+
+    for (auto& network : m_networks) {
+        network = GeneticNetwork(networkSettings);
+    }
     
 }
 
@@ -26,20 +30,22 @@ IPlayer *GeneticTrainer::Train()
         crossover();
         mutate();
 
+        std::cout << i << " ";
+        printMaxFitness();
 
-        std::cout << i << std::endl;
+        resetFitness();
+
+
     }
     return nullptr;
 }
 
 void GeneticTrainer::runEpisode()
 {
-    for (auto& network : m_networks) {
-        
+    for (auto& network : m_networks) {     
         runBot(network);
         //run game for each bot;
     }
-
 }
 
 double GeneticTrainer::runStep(const std::vector<double>& state, const GeneticNetwork& network)
@@ -95,9 +101,8 @@ void GeneticTrainer::crossover()
 
         crossoverValue = Utils::Math::randomDouble(0.00000001, 1.0);
         if (crossoverValue < m_options.crossoverProb) {
-            //TODO:crossover
-            //something.crossover(m_networks[i],m_networks[i+1]);
-            m_networks[i].crossOver(m_networks[i + 1]);
+
+            m_networks[i].crossover(m_networks[i + 1]);
         }
     }
 }
@@ -130,11 +135,14 @@ void GeneticTrainer::selectNewNetworks()
         selectionValue = Utils::Math::randomDouble(0.00000001, 1.0);
 
         GeneticNetwork selectedNetwork;
+
+        if (selectionValue <= m_networks[0].getSelectionProb()) {
+            selectedNetwork = m_networks[0];
+        }
+
         for (size_t j = 0; j < m_options.numOfNetworks-1; j++) {
-            if (selectionValue > m_networks[j+1].getSelectionProb()) {
-                
-                selectedNetwork = m_networks[j];
-                break;
+            if (selectionValue > m_networks[j].getSelectionProb() && selectionValue <= m_networks[j+1].getSelectionProb()) {            
+                selectedNetwork = m_networks[j+1];
             }
         }
         newNetworks[i] = selectedNetwork;
@@ -147,11 +155,27 @@ void GeneticTrainer::mutate()
 {
     double mutationValue;
     for (auto& network : m_networks) {
-            //TODO:mutation;
-            //network.mutate?
         network.mutateWeights(m_options.mutationProb);
     }
 
+}
+
+void GeneticTrainer::printMaxFitness()
+{
+    size_t maxFitness=0;
+    for (const auto& network: m_networks) {
+        if (maxFitness < network.getFitness()) {
+            maxFitness = network.getFitness();
+        }
+    }
+    std::cout << maxFitness << std::endl;
+}
+
+void AI::GeneticAlgorithm::GeneticTrainer::resetFitness()
+{
+    for (auto& network : m_networks) {
+        network.setFitness(0);
+    }
 }
 
 
