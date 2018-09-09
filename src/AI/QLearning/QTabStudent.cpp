@@ -6,6 +6,8 @@
 #include "Utils/PrintUtils.h"
 #include "Utils/MatrixUtils.h"
 
+#include <algorithm>
+
 using namespace AI::QLearning;
 using namespace GameLogic::CellInterpreter;
 using namespace GymEnv::StateObserver;

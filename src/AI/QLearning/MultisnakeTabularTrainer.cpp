@@ -22,6 +22,7 @@
 #include <thread>
 #include <algorithm>
 #include <iostream>
+#include <assert.h>
 
 using namespace AI::QLearning;
 using namespace GameLogic::CellInterpreter;
