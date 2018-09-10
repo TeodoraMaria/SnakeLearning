@@ -44,10 +44,8 @@ std::vector<float> NeuralNetwork::singleForward(const std::vector<float>& input,
 
             prod += getWeightAt(nextLayer, nextLayerIndex, layerIndex)* input[layerIndex];
         }
-        result[nextLayerIndex] = prod;
-        std::cout << result[nextLayerIndex]<<" ";
+        result[nextLayerIndex] = sigmoid(prod);
     }
-    std::cout << std::endl;
     return result;
 }
 
@@ -92,4 +90,14 @@ void NeuralNetwork::initWeights()
     for (auto& weight : m_weights) {
         weight = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     }
+}
+
+void NeuralNetwork::setSettings(const NetworkSettings & settings)
+{
+    m_settings = settings;
+}
+
+std::vector<float> Utils::NeuralNetwork::getWeights() const
+{
+    return m_weights;
 }

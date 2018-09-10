@@ -12,24 +12,23 @@ namespace AI{namespace GeneticAlgorithm
     class GeneticTrainer :public AI::ITrainer
     {
     public:
-        GeneticTrainer(GeneticOptions options,GymEnv::SingleSnakeEnvBase* env);
+        GeneticTrainer(Utils::NetworkSettings networkSettings, GeneticOptions options, GymEnv::SingleSnakeEnvBase* env);
         virtual IPlayer * Train() override;
 
     private:
         void runEpisode();
         double runStep(const std::vector<double>& state, const GeneticNetwork& network);
-        void runBot(GeneticNetwork& network);
+        void runNetwork(GeneticNetwork& network);
         void crossover();
         void selectNewNetworks();
         void mutate();
+        void printMaxFitness();
+        void resetFitness();
         
 
 
         GymEnv::SingleSnakeEnvBase* m_env;
         GeneticOptions m_options;
         std::vector<GeneticNetwork> m_networks;
-       // std::vector<double> m_networkProb;
-
-
     };
 }}

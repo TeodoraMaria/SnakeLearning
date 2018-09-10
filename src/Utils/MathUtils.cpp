@@ -25,12 +25,6 @@ double Utils::Math::randomDouble(double lowerBound, double upperBound)
     return lowerBound + f * (upperBound - lowerBound);
 }
 
-template<typename T>
-T Utils::Math::randomNumber(T lowerBound, T upperBound)
-{
-    T f = (T)rand() / RAND_MAX;
-    return lowerBound + f * (upperBound - lowerBound);
-}
 
 
 /*

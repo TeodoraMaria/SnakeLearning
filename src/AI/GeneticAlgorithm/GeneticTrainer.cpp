@@ -1,14 +1,19 @@
 #include "AI/GeneticAlgorithm/GeneticTrainer.h"
+#include "AI/GeneticAlgorithm/GeneticJsonUtils.h"
 #include "Utils/MathUtils.h"
 #include <iostream>
 
 
 using namespace AI::GeneticAlgorithm;
 
-GeneticTrainer::GeneticTrainer(GeneticOptions options, GymEnv::SingleSnakeEnvBase* env):
+GeneticTrainer::GeneticTrainer(Utils::NetworkSettings networkSettings,GeneticOptions options, GymEnv::SingleSnakeEnvBase* env):
     m_options(options),m_env(env)
 {
     m_networks.resize(m_options.numOfNetworks);
+
+    for (auto& network : m_networks) {
+        network = GeneticNetwork(networkSettings);
+    }
     
 }
 
@@ -26,20 +31,34 @@ IPlayer *GeneticTrainer::Train()
         crossover();
         mutate();
 
+        std::cout << i << " ";
+        printMaxFitness();
 
-        std::cout << i << std::endl;
+        if (i < m_options.numEpisodes - 1) {
+        resetFitness();
+        }
     }
-    return nullptr;
+
+    const GeneticNetwork* bestNetwork;
+    double maxFitness=0.0;
+    for (const auto& network : m_networks) {
+        if (maxFitness < network.getFitness()) {
+            maxFitness = network.getFitness();
+            bestNetwork = &network;
+        }
+    }
+
+   // SaveWeights(bestNetwork->getWeights(), "aux_files/genetic/TrainedGenetic.json");
+    
+    return new GeneticBot(*bestNetwork);
 }
 
 void GeneticTrainer::runEpisode()
 {
-    for (auto& network : m_networks) {
-        
-        runBot(network);
+    for (auto& network : m_networks) {     
+        runNetwork(network);
         //run game for each bot;
     }
-
 }
 
 double GeneticTrainer::runStep(const std::vector<double>& state, const GeneticNetwork& network)
@@ -69,7 +88,7 @@ double GeneticTrainer::runStep(const std::vector<double>& state, const GeneticNe
     return reward;
 }
 
-void GeneticTrainer::runBot(GeneticNetwork& network)
+void GeneticTrainer::runNetwork(GeneticNetwork& network)
 {
     m_env->Reset();
     std::vector<double> state=m_env->GetState();
@@ -77,11 +96,14 @@ void GeneticTrainer::runBot(GeneticNetwork& network)
     for (size_t i = 0; i < m_options.maxNumSteps; i++) {
 
        double reward=runStep(state,network);
+       if (reward == 1) {
+           i = 0;
+       }
        if (reward == -1000.0) {
            break;
        }
        
-       //change to snake lenght
+       //change to snake length
        network.updateFitness(reward);
        state= m_env->GetState();
     }
@@ -95,9 +117,8 @@ void GeneticTrainer::crossover()
 
         crossoverValue = Utils::Math::randomDouble(0.00000001, 1.0);
         if (crossoverValue < m_options.crossoverProb) {
-            //TODO:crossover
-            //something.crossover(m_networks[i],m_networks[i+1]);
-            m_networks[i].crossOver(m_networks[i + 1]);
+
+            m_networks[i].crossover(m_networks[i + 1]);
         }
     }
 }
@@ -130,11 +151,14 @@ void GeneticTrainer::selectNewNetworks()
         selectionValue = Utils::Math::randomDouble(0.00000001, 1.0);
 
         GeneticNetwork selectedNetwork;
+        //TODO: fix double comps
+        if (selectionValue <= m_networks[0].getSelectionProb()) {
+            selectedNetwork = m_networks[0];
+        }
+
         for (size_t j = 0; j < m_options.numOfNetworks-1; j++) {
-            if (selectionValue > m_networks[j+1].getSelectionProb()) {
-                
-                selectedNetwork = m_networks[j];
-                break;
+            if (selectionValue > m_networks[j].getSelectionProb() && selectionValue <= m_networks[j+1].getSelectionProb()) {            
+                selectedNetwork = m_networks[j+1];
             }
         }
         newNetworks[i] = selectedNetwork;
@@ -147,11 +171,26 @@ void GeneticTrainer::mutate()
 {
     double mutationValue;
     for (auto& network : m_networks) {
-            //TODO:mutation;
-            //network.mutate?
         network.mutateWeights(m_options.mutationProb);
     }
+}
 
+void GeneticTrainer::printMaxFitness()
+{
+    size_t maxFitness=0;
+    for (const auto& network: m_networks) {
+        if (maxFitness < network.getFitness()) {
+            maxFitness = network.getFitness();
+        }
+    }
+    std::cout << maxFitness << std::endl;
+}
+
+void AI::GeneticAlgorithm::GeneticTrainer::resetFitness()
+{
+    for (auto& network : m_networks) {
+        network.setFitness(0);
+    }
 }
 
 

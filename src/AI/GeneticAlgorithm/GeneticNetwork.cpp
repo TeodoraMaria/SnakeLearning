@@ -1,6 +1,7 @@
 #include "GeneticNetwork.h"
 #include "Utils/MathUtils.h"
 #include <algorithm>
+#include <iostream>
 
 
 using namespace AI::GeneticAlgorithm;
@@ -8,15 +9,17 @@ using namespace AI::GeneticAlgorithm;
 GeneticNetwork::GeneticNetwork(const Utils::NetworkSettings& settings):
     m_fitness(0.0),
     m_selectionProb(0.0),
-    m_selectedForCrossover(false),
     NeuralNetwork(settings)
 {
  
 }
 
-GeneticNetwork::GeneticNetwork()
+GeneticNetwork::GeneticNetwork():
+    m_fitness(0.0),
+    m_selectionProb(0.0),
+    NeuralNetwork(Utils::NetworkSettings())
 {
-
+    
 }
 
 SnakeMove GeneticNetwork::feedForward(const std::vector<double>& input) const
@@ -52,6 +55,11 @@ SnakeMove GeneticNetwork::feedForward(const std::vector<double>& input) const
     }
 
     return bestMove;
+}
+
+void AI::GeneticAlgorithm::GeneticNetwork::setFitness(double value)
+{
+    m_fitness = value;
 }
 
 void GeneticNetwork::updateFitness( double value)
@@ -95,9 +103,8 @@ void GeneticNetwork::mutateWeights(float mutateProb)
     }
 }
 
-void GeneticNetwork::crossOver(GeneticNetwork & otherNetwork)
+void GeneticNetwork::crossover(GeneticNetwork & otherNetwork)
 {
     size_t numOfWeights = Utils::Math::randomNumber<size_t>(0, m_weights.size());
-    
     std::swap_ranges(m_weights.begin(), m_weights.begin() + numOfWeights, otherNetwork.m_weights.begin());
 }
