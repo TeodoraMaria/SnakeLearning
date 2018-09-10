@@ -1,10 +1,10 @@
 #include "TermRenderer.hpp"
 #include "Board.h"
-#include <SDL.h>
+
+struct SDL_Window;
 
 namespace GameView
-{   
-
+{
    class OpenGLRenderer :public IGameRenderer
    {
    public:

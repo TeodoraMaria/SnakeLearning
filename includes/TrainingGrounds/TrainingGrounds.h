@@ -1,4 +1,3 @@
 #pragma once
 
-void MainSingleSnakeRelativeView();
-void MainSingleSnakeGridView();
+void MultisnakeMain();
