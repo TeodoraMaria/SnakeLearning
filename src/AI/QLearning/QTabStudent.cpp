@@ -15,7 +15,7 @@ using namespace GymEnv::Utils;
 
 QTabStudent::QTabStudent(
 	std::shared_ptr<ICellInterpreter> cellInterpreter,
-	IStateObserver* observer,
+	std::shared_ptr<IStateObserver> observer,
 	std::function<double ()> qtabInitializer
 ) :
 	m_cellIntepreter(cellInterpreter),
@@ -37,6 +37,11 @@ void QTabStudent::SetStepsWithoutFood(size_t newVal) { m_stepsWithoutFood = newV
 
 double QTabStudent::GetNoise() const { return m_noise; }
 void QTabStudent::SetNoise(double newValue) { m_noise = newValue; }
+
+const QTable& QTabStudent::GetQTab() const { return m_qtable; }
+void QTabStudent::SetQTab(const QTable& newQTab) { m_qtable = newQTab; }
+
+const GymEnv::StateObserver::IStateObserver* QTabStudent::GetObserver() const { return m_observer.get(); }
 
 /*
 ** Public methods.
@@ -62,13 +67,15 @@ State QTabStudent::ObserveState(const GameState& gmState)
 
 unsigned int QTabStudent::PickAction(
 	State fromState,
-	std::mt19937& merseneTwister)
+	std::mt19937& merseneTwister,
+	double actionQualityEps)
 {
 	TryInitQField(fromState);
-	return QLearning::Utils::PickAction(
+	return QLearning::Utils::PickActionAdditiveNoise(
 		m_qtable[fromState],
 		m_noise,
-		merseneTwister);
+		merseneTwister,
+		actionQualityEps);
 }
 
 double QTabStudent::GetBestQualityFromState(State state)

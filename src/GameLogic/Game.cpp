@@ -59,6 +59,12 @@ std::vector<Snake> Game::GetLivingSnakes() const
 	return livingSnakes;
 }
 
+size_t Game::CountLivingSnakes() const
+{
+	return std::count_if(m_snakes.cbegin(), m_snakes.cend(),
+		[](const auto& snake) { return snake.IsAlive(); });
+}
+
 GameState Game::GetGameState() const
 {
 	return GameState(m_gameBoard, m_snakes);
@@ -121,7 +127,7 @@ void Game::SaveMove(FileHelper& helper, const std::vector<int> view, const Snake
 
 void Game::CheckIfGameOver() const
 {
-	m_isGameOver = (GetLivingSnakes().size() == 0);
+	m_isGameOver = (CountLivingSnakes() == 0);
 }
 
 #ifdef _WIN32

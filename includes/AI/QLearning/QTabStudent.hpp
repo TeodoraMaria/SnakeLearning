@@ -18,7 +18,7 @@ namespace AI { namespace QLearning
 	public:
 		QTabStudent(
 			std::shared_ptr<GameLogic::CellInterpreter::ICellInterpreter> cellInterpreter,
-			GymEnv::StateObserver::IStateObserver* observer,
+			std::shared_ptr<GymEnv::StateObserver::IStateObserver> observer,
 			std::function<double ()> qtabInitializer = []() { return 0.0; });
 	
 		double GetReward() const;
@@ -30,9 +30,14 @@ namespace AI { namespace QLearning
 		double GetNoise() const;
 		void SetNoise(double newValue);
 		
+		const QTable& GetQTab() const;
+		void SetQTab(const QTable& newQTab);
+		
+		const GymEnv::StateObserver::IStateObserver* GetObserver() const;
+		
 		void PrepareForNewEpisode();
 		State ObserveState(const GameState& gmState);
-		unsigned int PickAction(State fromState, std::mt19937& merseneTwister);
+		unsigned int PickAction(State fromState, std::mt19937& merseneTwister, double actionQualityEps);
 		double GetBestQualityFromState(State state);
 		
 		void UpdateQTab(
@@ -43,11 +48,13 @@ namespace AI { namespace QLearning
 			double learningRate,
 			double qDiscountFactor);
 		
+		double m_totalReward = 0;
+		
 	private:
 		void TryInitQField(State state);
 	
 		std::shared_ptr<GameLogic::CellInterpreter::ICellInterpreter> m_cellIntepreter;
-		std::unique_ptr<GymEnv::StateObserver::IStateObserver> m_observer;
+		std::shared_ptr<GymEnv::StateObserver::IStateObserver> m_observer;
 		
 		AI::QLearning::QTable m_qtable;
 		double m_reward = 0;

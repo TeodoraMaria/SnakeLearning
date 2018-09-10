@@ -240,18 +240,10 @@ void MultisnakeMain()
 		gmOptions.boardWidth = 25;
 		gmOptions.numFoods = 10;
 		gmOptions.initialSnakeSize = 3;
-//		gmOptions.gameRenderer = new GameView::TermRenderer();
-		gmOptions.gameRenderer = new GameView::OpenGLRenderer(
-			500, 500,
-			gmOptions.boardLength, gmOptions.boardWidth);
-	}
-	
-	auto baseModel = GymEnv::SingleSnakeEnvBaseModel();
-	{
-		baseModel.gmRenderer = gmOptions.gameRenderer;
-		baseModel.gmOptions = &gmOptions;
-		baseModel.celInterpreter = std::make_shared<CellInterpreter::Basic3CellInterpreter>();
-//		baseModel.celInterpreter = std::make_shared<CellInterpreter::WallFoodBody>();
+		gmOptions.gameRenderer = new GameView::TermRenderer();
+//		gmOptions.gameRenderer = new GameView::OpenGLRenderer(
+//			500, 500,
+//			gmOptions.boardLength, gmOptions.boardWidth);
 	}
 	
 	auto qoptions = AI::QLearning::QOptions();
@@ -260,29 +252,30 @@ void MultisnakeMain()
 		{
 			return 50000;// + (double)episode / qoptions.numEpisodes * 3000;
 		};
-		qoptions.qDiscountFactor = 0.8;
-		qoptions.actionQualityEps = 0.01;
+		qoptions.qDiscountFactor = 0.9;
+		qoptions.actionQualityEps = 0.005;
 		
-		qoptions.numEpisodes = 15000;
-		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes);
-		qoptions.learningRate = 0.01;
-		qoptions.minRandActionChance = 0;
+		qoptions.numEpisodes = 10000;
+		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes * 10);
+		qoptions.learningRate = 0.1;
+		qoptions.minRandActionChance = 0.001;
 		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
 		{
-			return 100u + (double)episode / qoptions.numEpisodes * 300.0;
+			return 300u + (double)episode / qoptions.numEpisodes * 300.0;
 		};
 		
 		qoptions.foodReward = [](int episode) { return 1.0; };
-		qoptions.dieReward = [](int episode) { return 0; };
+		qoptions.dieReward = [&](int episode) { return -1.0 + (double)episode / qoptions.numEpisodes * (-100.0); };
 		qoptions.stepReward = [](int episode) { return 0; };
 		
 //		auto qInitDistrib = std::uniform_real_distribution<>(-1.0, 1.0);
 		qoptions.tabInitializer = [&](std::mt19937& merseneTwister)
 		{
-			return 0;
+//			return 0;
+			return 0.5;
 //			return qInitDistrib(merseneTwister);
 		};
-		qoptions.milsToSleepBetweenFrames = 10;
+		qoptions.milsToSleepBetweenFrames = 25;
 	}
 	
 	auto trainer = AI::QLearning::MultisnakeTabularTrainer(gmOptions, qoptions);

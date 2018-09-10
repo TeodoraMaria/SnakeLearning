@@ -1,6 +1,7 @@
 #include "ActionPickingUtils.h"
 #include "Utils/MathUtils.h"
 #include <algorithm>
+#include <iostream>
 
 typedef std::uniform_int_distribution<int> IntDistrib;
 
@@ -88,8 +89,28 @@ int AI::QLearning::Utils::PickAction(
 		actionsQ.cbegin(),
 		actionsQ.cend());
 
-	auto maxActionIndex = (!shuffleEquals) ? 0 :
+	const auto maxActionIndex = (!shuffleEquals) ? 0 :
 		GetIndexOfOneMax(actionsQ, maxActionQ, merseneTwister, eps);
+	
+	const auto resultIndex = GetIndexOfNthMaxElement(
+		actionsQ,
+		maxActionQ,
+		maxActionIndex,
+		eps);
+	
+	assert(::Utils::Math::Approx(actionsQ[resultIndex], maxActionQ, eps));
+	return resultIndex;
+}
 
-	return GetIndexOfNthMaxElement(actionsQ, maxActionQ, maxActionIndex, eps);
+int AI::QLearning::Utils::PickActionAdditiveNoise(
+	std::vector<double> actionsQ,
+	double noise,
+	std::mt19937& merseneTwister,
+	double eps)
+{
+	auto additionDistrib = std::uniform_real_distribution<double>(-noise, noise);
+	for (auto& val : actionsQ)
+		val += additionDistrib(merseneTwister);
+	
+	return PickAction(actionsQ, 0, merseneTwister, true, eps);
 }

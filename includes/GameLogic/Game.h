@@ -17,6 +17,7 @@ public:
 	std::vector<Snake> GetAllSnakes() const;
 	std::vector<Snake> GetLivingSnakes() const;
 	GameState GetGameState() const;
+	size_t CountLivingSnakes() const;
 	bool EveryoneIsDead() const;
 
 	void InitGame();
