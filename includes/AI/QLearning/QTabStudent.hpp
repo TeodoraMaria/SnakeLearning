@@ -13,13 +13,14 @@
 
 namespace AI { namespace QLearning
 {
-	class QTabStudent : public GymEnv::SnakeStudent
+	class QTabStudent : public IPlayer
 	{
 	public:
 		QTabStudent(
 			std::shared_ptr<GameLogic::CellInterpreter::ICellInterpreter> cellInterpreter,
 			std::shared_ptr<GymEnv::StateObserver::IStateObserver> observer,
-			std::function<double ()> qtabInitializer = []() { return 0.0; });
+			std::function<double ()> qtabInitializer = []() { return 0.0; },
+			double actionQulityCompareEps = 0.0);
 	
 		double GetReward() const;
 		void SetReward(double newValue);
@@ -35,9 +36,11 @@ namespace AI { namespace QLearning
 		
 		const GymEnv::StateObserver::IStateObserver* GetObserver() const;
 		
+		SnakeMove GetNextAction(const GameState& gameState) override;
+		
 		void PrepareForNewEpisode();
 		State ObserveState(const GameState& gmState);
-		unsigned int PickAction(State fromState, std::mt19937& merseneTwister, double actionQualityEps);
+		unsigned int PickAction(State fromState);
 		double GetBestQualityFromState(State state);
 		
 		void UpdateQTab(
@@ -57,6 +60,8 @@ namespace AI { namespace QLearning
 		std::shared_ptr<GymEnv::StateObserver::IStateObserver> m_observer;
 		
 		AI::QLearning::QTable m_qtable;
+		std::mt19937 m_merseneTwister;
+		double m_actionQulityCompareEps;
 		double m_reward = 0;
 		size_t m_stepsWithoutFood = 0;
 		

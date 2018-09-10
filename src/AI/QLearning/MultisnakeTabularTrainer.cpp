@@ -103,7 +103,8 @@ IPlayer* MultisnakeTabularTrainer::Train()
 		auto agent = std::make_shared<QTabStudent>(
 			cellInterpreter,
 			observer,
-			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); }
+			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); },
+			m_qoptions.actionQualityEps
 		);
 		cellInterpreter->SetPlayer(agent);
 		agent->SetQTab(TryLoadQTab(*observer));
@@ -118,7 +119,8 @@ IPlayer* MultisnakeTabularTrainer::Train()
 		auto agent = std::make_shared<QTabStudent>(
 			cellInterpreter,
 			observer,
-			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); }
+			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); },
+			m_qoptions.actionQualityEps
 		);
 		cellInterpreter->SetPlayer(agent);
 		agent->SetQTab(TryLoadQTab(*observer));
@@ -129,7 +131,6 @@ IPlayer* MultisnakeTabularTrainer::Train()
 	for (auto agent : agents)
 	{
 		players.push_back(std::static_pointer_cast<IPlayer>(agent));
-		agent->SetNextAction(SnakeMove::LEFT);
 	}
 
 	auto game = Game(m_gmoptions, players);
@@ -162,10 +163,7 @@ IPlayer* MultisnakeTabularTrainer::Train()
 					continue;
 				
 				const State state = agent->ObserveState(gmState);
-				const auto actionIndx = agent->PickAction(
-					state,
-					m_merseneTwister,
-					m_qoptions.actionQualityEps);
+				const auto actionIndx = agent->PickAction(state);
 
 				assert(actionIndx < IPlayer::possibleMoves.size());
 				const auto rawReward = game.MoveSnake(
@@ -256,7 +254,7 @@ IPlayer* MultisnakeTabularTrainer::Train()
 		}
 	}
 	
-	const auto bestAgent = *std::max_element(agents.begin(), agents.end(),
+	auto bestAgent = *std::max_element(agents.begin(), agents.end(),
 		[](const auto agent1, const auto agent2)
 		{
 			return agent1->m_totalReward < agent2->m_totalReward;
@@ -268,5 +266,9 @@ IPlayer* MultisnakeTabularTrainer::Train()
 			*dynamic_cast<const GridObserver*>(bestAgent->GetObserver()),
 			bestAgent->GetQTab());
 	}
-	return nullptr;
+	
+	auto rawAgentPtr = bestAgent.get();
+	bestAgent.reset();
+	
+	return rawAgentPtr;
 }

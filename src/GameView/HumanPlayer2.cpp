@@ -11,7 +11,7 @@ HumanPlayer2::HumanPlayer2()
 HumanPlayer2::~HumanPlayer2()
 {}
 
-SnakeMove HumanPlayer2::GetNextAction(const GameState & gameState) const
+SnakeMove HumanPlayer2::GetNextAction(const GameState & gameState)
 {
    SnakeMove move = GetUserInput();
    

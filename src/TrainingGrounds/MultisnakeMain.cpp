@@ -41,8 +41,8 @@ void MultisnakeMain()
 		qoptions.qDiscountFactor = 0.9;
 		qoptions.actionQualityEps = 0.005;
 		
-		qoptions.numEpisodes = 10000;
-		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes * 10);
+		qoptions.numEpisodes = 1000;
+		qoptions.randActionDecayFactor = 1.0;// / (qoptions.numEpisodes * 10);
 		qoptions.learningRate = 0.1;
 		qoptions.minRandActionChance = 0.001;
 		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
@@ -65,5 +65,14 @@ void MultisnakeMain()
 	}
 	
 	auto trainer = AI::QLearning::MultisnakeTabularTrainer(gmOptions, qoptions);
-	trainer.Train();
+	auto trainedAgent = trainer.Train();
+	
+	std::vector<IPlayerPtr> players(
+	{
+		IPlayerPtr(trainedAgent)
+	});
+	
+	Game game(gmOptions, players);
+	game.InitGame();
+	game.Play();
 }

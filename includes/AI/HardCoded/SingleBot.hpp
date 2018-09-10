@@ -7,6 +7,6 @@ namespace AI { namespace HardCoded
 	class SingleBot : public IPlayer
 	{
 	public:
-		SnakeMove GetNextAction(const GameState& gameState) const override;
+		SnakeMove GetNextAction(const GameState& gameState) override;
 	};
 }}

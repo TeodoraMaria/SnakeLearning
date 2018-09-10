@@ -23,7 +23,7 @@ TrainedTabularAgent::TrainedTabularAgent(
 ** Getters & setters.
 */
 
-SnakeMove TrainedTabularAgent::GetNextAction(const GameState& gmState) const
+SnakeMove TrainedTabularAgent::GetNextAction(const GameState& gmState)
 {
 	std::random_device randomDevice;
 	std::mt19937 merseneTwister(randomDevice());

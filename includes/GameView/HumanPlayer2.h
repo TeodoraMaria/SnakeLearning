@@ -13,7 +13,7 @@ public:
    ~HumanPlayer2();
 
    // Inherited via IPlayer
-   virtual SnakeMove GetNextAction(const GameState & gameState) const override;
+   virtual SnakeMove GetNextAction(const GameState & gameState) override;
 
    void setDirection(Utils::InputDirection direction);
 

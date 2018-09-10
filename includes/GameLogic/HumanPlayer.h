@@ -7,7 +7,7 @@ public:
 	HumanPlayer();
 	~HumanPlayer();
 
-	SnakeMove GetNextAction(const GameState& gameState) const override;
+	SnakeMove GetNextAction(const GameState& gameState) override;
 
 private:
 	SnakeMove GetUserInput() const;

@@ -16,12 +16,15 @@ using namespace GymEnv::Utils;
 QTabStudent::QTabStudent(
 	std::shared_ptr<ICellInterpreter> cellInterpreter,
 	std::shared_ptr<IStateObserver> observer,
-	std::function<double ()> qtabInitializer
+	std::function<double ()> qtabInitializer,
+	double actionQulityCompareEps
 ) :
 	m_cellIntepreter(cellInterpreter),
 	m_observer(observer),
-	m_qtabInitializer(qtabInitializer),
-	m_observationContainer(m_observer->NbOfObservations())
+	m_merseneTwister(std::random_device()()),
+	m_actionQulityCompareEps(actionQulityCompareEps),
+	m_observationContainer(m_observer->NbOfObservations()),
+	m_qtabInitializer(qtabInitializer)
 {
 }
 
@@ -47,6 +50,11 @@ const GymEnv::StateObserver::IStateObserver* QTabStudent::GetObserver() const { 
 ** Public methods.
 */
 
+SnakeMove QTabStudent::GetNextAction(const GameState& gameState)
+{
+	return IPlayer::possibleMoves[PickAction(ObserveState(gameState))];
+}
+
 void QTabStudent::PrepareForNewEpisode()
 {
 	m_reward = 0;
@@ -65,17 +73,14 @@ State QTabStudent::ObserveState(const GameState& gmState)
 		m_cellIntepreter->NbOfInterpretableParts());
 }
 
-unsigned int QTabStudent::PickAction(
-	State fromState,
-	std::mt19937& merseneTwister,
-	double actionQualityEps)
+unsigned int QTabStudent::PickAction(State fromState)
 {
 	TryInitQField(fromState);
 	return QLearning::Utils::PickActionAdditiveNoise(
 		m_qtable[fromState],
 		m_noise,
-		merseneTwister,
-		actionQualityEps);
+		m_merseneTwister,
+		m_actionQulityCompareEps);
 }
 
 double QTabStudent::GetBestQualityFromState(State state)
