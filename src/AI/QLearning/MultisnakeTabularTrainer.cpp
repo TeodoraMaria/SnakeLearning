@@ -24,7 +24,10 @@
 #include <thread>
 #include <algorithm>
 #include <iostream>
+#include <json.hpp>
 #include <assert.h>
+#include <fstream>
+#include <iomanip>
 
 using namespace AI::QLearning;
 using namespace GameLogic::CellInterpreter;
@@ -88,6 +91,27 @@ void TrySaveQTab(const GridObserver& observer, const QTable& qtab, std::string r
 	catch (...)
 	{
 		std::cerr << "Failed to save QTab: " << filePath << std::endl;
+	}
+}
+
+void TrySavePlayer(const QTabStudent& student)
+{
+	const auto filePath = "aux_files/qtabular/TrainedQTabAgent.json";
+	std::ofstream outFileStream(filePath);
+	
+	if (!outFileStream.is_open())
+	{
+		std::cerr << "Failed to open " << filePath << std::endl;
+		return;
+	}
+	
+	try
+	{
+		outFileStream << std::setw(2) << nlohmann::json(&student);
+	}
+	catch (...)
+	{
+		std::cerr << "Failed to save player." << std::endl;
 	}
 }
 
@@ -262,12 +286,7 @@ IPlayer* MultisnakeTabularTrainer::Train()
 			return agent1->m_totalReward < agent2->m_totalReward;
 		});
 	
-	if (dynamic_cast<const GridObserver*>(bestAgent->GetObserver()))
-	{
-		TrySaveQTab(
-			*dynamic_cast<const GridObserver*>(bestAgent->GetObserver()),
-			bestAgent->GetQTab());
-	}
+	TrySavePlayer(*bestAgent);
 
 	return nullptr;
 }

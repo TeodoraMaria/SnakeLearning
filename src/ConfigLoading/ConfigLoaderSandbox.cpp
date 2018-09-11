@@ -30,7 +30,7 @@ void TestGameOptionsJson()
 	(void)test;
 }
 
-void TestQTabStudent()
+void TestQTabStudentFromFile()
 {
 	const auto jsonFile = "./aux_files/json_test/QTabStudent.json";
 	std::ifstream stream(jsonFile);
@@ -39,6 +39,21 @@ void TestQTabStudent()
 	stream >> j;
 	
 	std::cout << std::setw(2) << j << std::endl;
+	
+	auto agent = j.get<std::shared_ptr<AI::QLearning::QTabStudent>>();
+	assert(agent.get() != nullptr);
+	
+	auto iAgent = j.get<IPlayerPtr>();
+	assert(iAgent.get() != nullptr);
+}
+
+void TestQTabStudent()
+{
+	const auto jsonFile = "./aux_files/json_test/TrainedQTabAgent.json";
+	std::ifstream stream(jsonFile);
+	
+	json j;
+	stream >> j;
 	
 	auto agent = j.get<std::shared_ptr<AI::QLearning::QTabStudent>>();
 	assert(agent.get() != nullptr);
@@ -66,6 +81,7 @@ void ConfigLoaderSandbox()
 {
 //	TestGameOptionsJson();
 //	TestGame();
+//	TestQTabStudentFromFile();
 	TestQTabStudent();
 	
 }

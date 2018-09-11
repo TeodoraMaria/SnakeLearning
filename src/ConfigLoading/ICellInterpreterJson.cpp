@@ -3,6 +3,20 @@
 #include "GameLogic/CellInterpreter/WallFoodBody.hpp"
 #include "GameLogic/CellInterpreter/WallFoodEnemy.hpp"
 
+using json = nlohmann::json;
+
+void GameLogic::CellInterpreter::to_json(nlohmann::json& j, const ICellInterpreter* cellInterpreter)
+{
+	if (dynamic_cast<const Basic3CellInterpreter*>(cellInterpreter))
+		j = json{{ "type", "Basic3CellInterpreter" }};
+	else if (dynamic_cast<const WallFoodBody*>(cellInterpreter))
+		j = json{{ "type", "WallFoodBody" }};
+	else if (dynamic_cast<const WallFoodEnemy*>(cellInterpreter))
+		j = json{{ "type", "WallFoodEnemy" }};
+	else
+		throw "Unprocessed to_json for the given ICellInterpreter. Please implement me.";
+}
+
 void GameLogic::CellInterpreter::from_json(const nlohmann::json& j, ICellInterpreterPtr& cellInterpreter)
 {
 	const auto type = j.at("type").get<std::string>();

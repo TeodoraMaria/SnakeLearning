@@ -20,6 +20,10 @@
 		},
 		{
 			"type": "QTabStudent",
+			
+			"noise": 0.001,
+			"actionQulityCompareEps": 0.001,
+			"brainsFilePath": "./aux_files/qtabular/TrainedGrid5x5.json",
 
 			"observer": {
 				"type": "GridObserver",
@@ -28,10 +32,7 @@
 				},
 				"width": 5,
 				"height": 5
-			},
-
-			"actionQulityCompareEps": 0.001,
-			"brains": "./aux_files/qtabular/TrainedGrid5x5.json"
+			}
 		}
 	]
 }

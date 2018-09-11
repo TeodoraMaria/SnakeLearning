@@ -9,6 +9,8 @@ namespace GameLogic { namespace CellInterpreter
 	class WallFoodBody;
 	class WallFoodEnemy;
 
+	void to_json(nlohmann::json& j, const ICellInterpreter* cellInterpreter);
+	
 	void from_json(const nlohmann::json& j, ICellInterpreterPtr& cellInterpreter);
 	void from_json(const nlohmann::json& j, std::shared_ptr<Basic3CellInterpreter>& cellInterpreter);
 	void from_json(const nlohmann::json& j, std::shared_ptr<WallFoodBody>& cellInterpreter);

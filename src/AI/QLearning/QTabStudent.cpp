@@ -6,12 +6,15 @@
 #include "Utils/PrintUtils.h"
 #include "Utils/MatrixUtils.h"
 
+#include "ConfigLoading/IObserverJson.h"
+
 #include <algorithm>
 
 using namespace AI::QLearning;
 using namespace GameLogic::CellInterpreter;
 using namespace GymEnv::StateObserver;
 using namespace GymEnv::Utils;
+using json = nlohmann::json;
 
 QTabStudent::QTabStudent(
 	std::shared_ptr<IStateObserver> observer,
@@ -43,6 +46,21 @@ const QTable& QTabStudent::GetQTab() const { return m_qtable; }
 void QTabStudent::SetQTab(const QTable& newQTab) { m_qtable = newQTab; }
 
 const GymEnv::StateObserver::IStateObserver* QTabStudent::GetObserver() const { return m_observer.get(); }
+
+/*
+** JSON helper.
+*/
+
+void AI::QLearning::to_json(nlohmann::json& j, const QTabStudent* player)
+{
+	j = nlohmann::json{
+		{ "type", "QTabStudent" },
+		{ "noise", player->GetNoise() },
+		{ "actionQulityCompareEps", player->m_actionQulityCompareEps },
+		{ "observer", json(player->GetObserver()) },
+		{ "brains", json(player->GetQTab()) }
+	};
+}
 
 /*
 ** Public methods.

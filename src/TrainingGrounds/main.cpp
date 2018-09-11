@@ -64,6 +64,5 @@ int main(int nargs, char** args)
 //	MultisnakeMain();
 	ConfigLoaderSandbox();
 //    GeneticSingleSnake();
-	
 	return 0;
 }

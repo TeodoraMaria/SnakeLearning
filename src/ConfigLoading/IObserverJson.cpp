@@ -1,9 +1,27 @@
 #include "IObserverJson.h"
 #include "ICellInterpreterJson.h"
 
-void GymEnv::StateObserver::from_json(
-	const nlohmann::json& j,
-	std::shared_ptr<IStateObserver>& observer)
+using json = nlohmann::json;
+
+void GymEnv::StateObserver::to_json(json& j, const IStateObserver* observer)
+{
+	if (dynamic_cast<const GridObserver*>(observer))
+		to_json(j, dynamic_cast<const GridObserver*>(observer));
+	else
+		throw "to_json() for the given Observer type was not implemented.";
+}
+
+void GymEnv::StateObserver::to_json(json& j, const GridObserver* observer)
+{
+	j = {
+		{ "type", "GridObserver" },
+		{ "width", observer->GetWidth() },
+		{ "height", observer->GetHeight() },
+		{ "cellInterpreter", json(observer->GetCellInterpreter()) }
+	};
+}
+
+void GymEnv::StateObserver::from_json(const json& j, std::shared_ptr<IStateObserver>& observer)
 {
 	const auto observerType = j.at("type").get<std::string>();
 	
@@ -13,9 +31,7 @@ void GymEnv::StateObserver::from_json(
 		throw "Invalid Observer type.";
 }
 
-void GymEnv::StateObserver::from_json(
-	const nlohmann::json& j,
-	std::shared_ptr<GridObserver>& observer)
+void GymEnv::StateObserver::from_json(const json& j, std::shared_ptr<GridObserver>& observer)
 {
 	observer.reset(new GridObserver(
 		j.at("cellInterpreter").get<GameLogic::CellInterpreter::ICellInterpreterPtr>(),

@@ -10,6 +10,7 @@
 #include "GymEnv/SnakeStudent.hpp"
 
 #include <random>
+#include <json_fwd.hpp>
 
 namespace AI { namespace QLearning
 {
@@ -35,6 +36,7 @@ namespace AI { namespace QLearning
 		
 		const GymEnv::StateObserver::IStateObserver* GetObserver() const;
 		
+		friend void to_json(nlohmann::json& j, const QTabStudent* player);
 		SnakeMove GetNextAction(const GameState& gameState) override;
 		
 		void PrepareForNewEpisode();
