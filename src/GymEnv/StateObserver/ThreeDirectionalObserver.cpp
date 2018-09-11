@@ -61,7 +61,8 @@ void ThreeDirectionalObserver::Observe(
 			gmState.GetGameBoard(),
 			snake.GetSnakeHead(),
 			direction,
-			dist);
+			dist,
+			snakeId);
 		
 		if (rayCastRs.detectedPart == 0)
 			return;
@@ -101,7 +102,8 @@ ThreeDirectionalObserver::InterpretRayCast(
 	const GameBoard& gmBoard,
 	const Coordinate& origin,
 	const Coordinate& direction,
-	const size_t distance) const
+	const size_t distance,
+	const int playerId) const
 {
 	auto result = InterpretRayCastResult();
 	
@@ -110,7 +112,7 @@ ThreeDirectionalObserver::InterpretRayCast(
 		const auto pos = origin + direction * (i + 1);
 		const auto boardPart = static_cast<BoardPart>(gmBoard[pos]);
 		const auto interpretationId =
-			m_cellInterpreter->InterpretCell(boardPart);
+			m_cellInterpreter->InterpretCell(playerId, boardPart);
 		
 		if (interpretationId != 0)
 		{

@@ -30,7 +30,8 @@ namespace GymEnv { namespace StateObserver
 			const GameBoard& gmBoard,
 			const Coordinate& origin,
 			const Coordinate& direction,
-			size_t distance) const;
+			size_t distance,
+			int playerId) const;
 	
 		GameLogic::CellInterpreter::ICellInterpreterPtr m_cellInterpreter;
 		const size_t m_leftFieldSize;

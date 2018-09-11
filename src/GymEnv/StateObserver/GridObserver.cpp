@@ -59,7 +59,7 @@ void GridObserver::Observe(
 				startOfIndex *
 				(m_cellInterpreter->NbOfInterpretableParts() - 1);
 
-			const auto interpretVal = m_cellInterpreter->InterpretCell(cellVal);
+			const auto interpretVal = m_cellInterpreter->InterpretCell(snakeId, cellVal);
 			
 			assert(indx <= observationTab.size());
 			if (interpretVal != 0)
