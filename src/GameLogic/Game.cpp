@@ -240,7 +240,7 @@ void Game::RestockFood()
 void Game::RunRound()
 {
 	GameState gameState = GetGameState();
-	if (!m_gameOptions.playWithoutRenedring && m_gameRenderer!=nullptr)
+	if (m_gameRenderer != nullptr)
 	{
 		m_gameRenderer->Render(gameState);
 	}
@@ -261,7 +261,7 @@ void Game::RunRound()
 void Game::RunRoundAndSave(FileHelper& helper)
 {
 	GameState gamestate = GetGameState();
-	if (!m_gameOptions.playWithoutRenedring && m_gameRenderer != nullptr)
+	if (m_gameRenderer != nullptr)
 	{
 		PrintBoard();
 	}

@@ -242,15 +242,18 @@ IPlayer* MultisnakeTabularTrainer::Train()
 			game.RestockFood();
 		}
 		
-		std::cout << "Step: " << step << std::endl;
-		for (const auto& agent : agents)
+		if (episode % 100 == 0)
 		{
-			printf(
-				"End of episode: %d with a reward of %.2f."
-				"Random action chance: %.2f\n",
-				episode,
-				agent->GetReward(),
-				agent->GetNoise());
+			std::cout << "Step: " << step << std::endl;
+			for (const auto& agent : agents)
+			{
+				printf(
+					"End of episode: %d with a reward of %.2f."
+					"Random action chance: %.2f\n",
+					episode,
+					agent->GetReward(),
+					agent->GetNoise());
+			}
 		}
 	}
 	
@@ -266,9 +269,6 @@ IPlayer* MultisnakeTabularTrainer::Train()
 			*dynamic_cast<const GridObserver*>(bestAgent->GetObserver()),
 			bestAgent->GetQTab());
 	}
-	
-	auto rawAgentPtr = bestAgent.get();
-	bestAgent.reset();
-	
-	return rawAgentPtr;
+
+	return nullptr;
 }

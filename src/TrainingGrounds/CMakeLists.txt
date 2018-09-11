@@ -16,6 +16,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 LoadOpenGl()
 include_directories(${SDL2_INCLUDE_DIRS})
 
+include_directories("${CMAKE_SOURCE_DIR}/third_party/json/")
+
 target_link_libraries(${PROJECT_NAME} PUBLIC
 	HardCoded
 	GymEnv

@@ -62,17 +62,9 @@ void MultisnakeMain()
 //			return qInitDistrib(merseneTwister);
 		};
 		qoptions.milsToSleepBetweenFrames = 25;
+		qoptions.lastNGamesToRender = 0;
 	}
 	
 	auto trainer = AI::QLearning::MultisnakeTabularTrainer(gmOptions, qoptions);
-	auto trainedAgent = trainer.Train();
-	
-	std::vector<IPlayerPtr> players(
-	{
-		IPlayerPtr(trainedAgent)
-	});
-	
-	Game game(gmOptions, players);
-	game.InitGame();
-	game.Play();
+	trainer.Train();
 }

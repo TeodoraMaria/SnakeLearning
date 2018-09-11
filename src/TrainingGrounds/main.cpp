@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <iostream>
+#include <iomanip>
 #include <SDL.h>
 
 using namespace GameLogic;

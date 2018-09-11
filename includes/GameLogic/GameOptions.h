@@ -12,7 +12,5 @@ struct GameOptions
 	size_t initialSnakeSize = 3;
 
 	GameView::IGameRenderer* gameRenderer = nullptr;
-
-	bool playWithoutRenedring = false;
 	bool saveGameplay = false;
 };
