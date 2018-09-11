@@ -1,3 +1,5 @@
+#pragma once
+
 #include "TermRenderer.hpp"
 #include "Board.h"
 
