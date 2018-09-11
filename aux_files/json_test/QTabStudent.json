@@ -1,0 +1,19 @@
+{
+	"type": "QTabStudent",
+
+	"cellInterpreter": {
+		"type": "Basic3CellInterpreter"
+	},
+
+	"observer": {
+		"type": "GridObserver",
+		"cellInterpreter": {
+			"type": "Basic3CellInterpreter"
+		},
+		"width": 5,
+		"height": 5
+	},
+
+	"actionQulityCompareEps": 0.001,
+	"brains": "./aux_files/qtabular/TrainedGrid5x5.json"
+}

@@ -3,9 +3,15 @@
 #include "GameJson.h"
 #include "ICellInterpreterJson.h"
 
+#include "IPlayerJson.h"
+#include "QTabStudentJson.h"
+
+#include "AI/QLearning/QTabStudent.hpp"
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <assert.h>
 
 using json = nlohmann::json;
 
@@ -24,6 +30,23 @@ void TestGameOptionsJson()
 	(void)test;
 }
 
+void TestQTabStudent()
+{
+	const auto jsonFile = "./aux_files/json_test/QTabStudent.json";
+	std::ifstream stream(jsonFile);
+	
+	json j;
+	stream >> j;
+	
+	std::cout << std::setw(2) << j << std::endl;
+	
+	auto agent = j.get<std::shared_ptr<AI::QLearning::QTabStudent>>();
+	assert(agent.get() != nullptr);
+	
+	auto iAgent = j.get<IPlayerPtr>();
+	assert(iAgent.get() != nullptr);
+}
+
 void TestGame()
 {
 	const auto jsonFile = "./aux_files/json_test/Game.json";
@@ -33,15 +56,15 @@ void TestGame()
 	stream >> j;
 
 	std::cout << std::setw(2) << j << std::endl;
+	
 	Game game(j);
-
 	game.InitGame();
 	game.Play();
 }
 
-void _please_ignore_this_file__it_is_used_to_ignore_cmake_build_warnings_()
+void ConfigLoaderSandbox()
 {
 //	TestGameOptionsJson();
-	TestGame();
-//	j.get<GameLogic::CellInterpreter::ICellInterpreter>();
+//	TestGame();
+	TestQTabStudent();
 }

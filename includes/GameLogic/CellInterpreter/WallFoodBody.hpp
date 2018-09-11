@@ -14,7 +14,7 @@ namespace GameLogic { namespace CellInterpreter
 	class WallFoodBody : public ICellInterpreter
 	{
 		size_t NbOfInterpretableParts() const override;
-		size_t InterpretCell(BoardPart boardPart) const override;
+		size_t InterpretCell(int playerId, BoardPart boardPart) const override;
 	};
 }}
 
