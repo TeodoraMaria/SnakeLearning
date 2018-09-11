@@ -2,13 +2,13 @@
 	"type": "QTabStudent",
 
 	"cellInterpreter": {
-		"type": "Basic3CellInterpreter"
+		"type": "WallFoodEnemy"
 	},
 
 	"observer": {
 		"type": "GridObserver",
 		"cellInterpreter": {
-			"type": "Basic3CellInterpreter"
+			"type": "WallFoodEnemy"
 		},
 		"width": 5,
 		"height": 5

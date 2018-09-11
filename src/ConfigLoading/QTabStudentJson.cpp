@@ -9,7 +9,6 @@ void AI::QLearning::from_json(
 {
 	auto a = j.at("cellInterpreter").get<GameLogic::CellInterpreter::ICellInterpreterPtr>();
 	player.reset(new QTabStudent(
-		j.at("cellInterpreter").get<GameLogic::CellInterpreter::ICellInterpreterPtr>(),
 		j.at("observer").get<std::shared_ptr<GymEnv::StateObserver::IStateObserver>>(),
 		[]() { return 0.0; },
 		j.at("actionQulityCompareEps").get<double>()

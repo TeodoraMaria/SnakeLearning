@@ -10,7 +10,7 @@ ThreeDirectionalObserver::ThreeDirectionalObserver(
 	size_t forwardFieldSize,
 	size_t rightFieldSize
 ) :
-	m_cellInterpreter(cellInterpreter),
+	IStateObserver(cellInterpreter),
 	m_leftFieldSize(leftFieldSize),
 	m_forwardFieldSize(forwardFieldSize),
 	m_rightFieldSize(rightFieldSize)
@@ -19,7 +19,7 @@ ThreeDirectionalObserver::ThreeDirectionalObserver(
 
 size_t ThreeDirectionalObserver::NbOfObservations() const
 {
-	return 3 * (m_cellInterpreter->NbOfInterpretableParts() - 1);
+	return 3 * (GetCellInterpreter()->NbOfInterpretableParts() - 1);
 }
 
 /*
@@ -46,7 +46,7 @@ void ThreeDirectionalObserver::Observe(
 	const auto right = forward.Rotate90Right();
 	
 	const auto nbOfInterpretables =
-		m_cellInterpreter->NbOfInterpretableParts() - 1;
+		GetCellInterpreter()->NbOfInterpretableParts() - 1;
 	
 	// Put the 'distance' in the detected part index, if any detected.
 	const auto putDist = [&](
@@ -84,15 +84,6 @@ void ThreeDirectionalObserver::Observe(
 	putDist(right, m_rightFieldSize, 2);
 }
 
-IStateObserver* ThreeDirectionalObserver::Clone() const
-{
-	return new ThreeDirectionalObserver(
-		m_cellInterpreter,
-		m_leftFieldSize,
-		m_forwardFieldSize,
-		m_rightFieldSize);
-}
-
 /*
 ** Private methods.
 */
@@ -112,7 +103,7 @@ ThreeDirectionalObserver::InterpretRayCast(
 		const auto pos = origin + direction * (i + 1);
 		const auto boardPart = static_cast<BoardPart>(gmBoard[pos]);
 		const auto interpretationId =
-			m_cellInterpreter->InterpretCell(playerId, boardPart);
+			GetCellInterpreter()->InterpretCell(playerId, boardPart);
 		
 		if (interpretationId != 0)
 		{

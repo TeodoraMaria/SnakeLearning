@@ -102,7 +102,6 @@ IPlayer* MultisnakeTabularTrainer::Train()
 
 		auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
 		auto agent = std::make_shared<QTabStudent>(
-			cellInterpreter,
 			observer,
 			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); },
 			m_qoptions.actionQualityEps

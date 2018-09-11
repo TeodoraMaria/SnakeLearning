@@ -21,10 +21,6 @@
 		{
 			"type": "QTabStudent",
 
-			"cellInterpreter": {
-				"type": "Basic3CellInterpreter"
-			},
-
 			"observer": {
 				"type": "GridObserver",
 				"cellInterpreter": {

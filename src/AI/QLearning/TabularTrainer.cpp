@@ -62,12 +62,7 @@ IPlayer* TabularTrainer::Train()
 	if (m_qoptions.printDieStates)
 		PrintDieStates(trainSession.dieStates);
 	
-	return new AI::QLearning::TrainedAgent::TrainedTabularAgent(
-		m_env->actions,
-		m_env->GetCellInterpreter()->NbOfInterpretableParts(),
-		m_qtable,
-		std::shared_ptr<GymEnv::StateObserver::IStateObserver>(
-			m_env->GetObserver()->Clone()));
+	return nullptr;
 }
 
 /*

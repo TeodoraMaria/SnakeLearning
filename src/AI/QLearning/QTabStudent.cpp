@@ -14,12 +14,10 @@ using namespace GymEnv::StateObserver;
 using namespace GymEnv::Utils;
 
 QTabStudent::QTabStudent(
-	std::shared_ptr<ICellInterpreter> cellInterpreter,
 	std::shared_ptr<IStateObserver> observer,
 	std::function<double ()> qtabInitializer,
 	double actionQulityCompareEps
 ) :
-	m_cellIntepreter(cellInterpreter),
 	m_observer(observer),
 	m_merseneTwister(std::random_device()()),
 	m_actionQulityCompareEps(actionQulityCompareEps),
@@ -70,7 +68,7 @@ State QTabStudent::ObserveState(const GameState& gmState)
 	
 	return StateExtractor::BinaryVectorToNumber(
 		m_observationContainer,
-		m_cellIntepreter->NbOfInterpretableParts());
+		m_observer->GetCellInterpreter()->NbOfInterpretableParts());
 }
 
 unsigned int QTabStudent::PickAction(State fromState)

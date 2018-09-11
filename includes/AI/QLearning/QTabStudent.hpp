@@ -17,7 +17,6 @@ namespace AI { namespace QLearning
 	{
 	public:
 		QTabStudent(
-			std::shared_ptr<GameLogic::CellInterpreter::ICellInterpreter> cellInterpreter,
 			std::shared_ptr<GymEnv::StateObserver::IStateObserver> observer,
 			std::function<double ()> qtabInitializer = []() { return 0.0; },
 			double actionQulityCompareEps = 0.0);
@@ -56,7 +55,6 @@ namespace AI { namespace QLearning
 	private:
 		void TryInitQField(State state);
 	
-		std::shared_ptr<GameLogic::CellInterpreter::ICellInterpreter> m_cellIntepreter;
 		std::shared_ptr<GymEnv::StateObserver::IStateObserver> m_observer;
 		
 		AI::QLearning::QTable m_qtable;
