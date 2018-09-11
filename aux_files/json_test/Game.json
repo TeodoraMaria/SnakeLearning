@@ -1,23 +1,23 @@
 {
+	"gameOptions": {
+		"boardLength": 25,
+		"boardWidth": 25,
+		"numFoods": 10,
+		"initialSnakeSize": 3,
+		"renderer": {
+			"type": "OpenGLRenderer",
+			"model": {
+				"resolutionX": 500,
+				"resolutionY": 500,
+				"lines": 25,
+				"cols": 25
+			}
+		}
+	},
 	"players": [
 		{
-			"type": "HumanPlayer"
-		},
-		{
-			"type": "AI::GeneticPlayer",
-			"brains": "file/path/to/some/genetic/brains.json",
-			"cellInterpreter": "Basic3CellInterpreter",
-			"observer": "GridObserver",
-			"actionQualityCmpEps": 0.001
-		},
-		{
-			"type": "AI::QTabular",
-			"brains": "file/path/to/some/genetic/brains.json",
-			"cellInterpreter": "Basic3CellInterpreter",
-			"observer": "GridObserver",
-			"actionQualityCmpEps": 0.001,
-
-			"noise": 0.0001
+			"type": "HumanPlayer",
+			"isAI": false
 		}
 	]
 }
