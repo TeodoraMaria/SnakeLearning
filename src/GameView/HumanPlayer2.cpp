@@ -20,7 +20,7 @@ SnakeMove HumanPlayer2::GetNextAction(const GameState & gameState)
    return move != SnakeMove::DOWN ? move : SnakeMove::FORWARD;
 }
 
-void HumanPlayer2::setDirection(Utils::InputDirection direction)
+void HumanPlayer2::setDirection(GameViewUtils::InputDirection direction)
 {
    m_direction = direction;
 }
@@ -28,22 +28,22 @@ void HumanPlayer2::setDirection(Utils::InputDirection direction)
 SnakeMove HumanPlayer2::GetUserInput() const
 {
    switch (m_direction) {
-      case Utils::InputDirection::UP: {
+      case GameViewUtils::InputDirection::UP: {
          std::cout << "up"<<std::endl;
          return SnakeMove::FORWARD;
          break;
       }
-      case Utils::InputDirection::DOWN: {
+      case GameViewUtils::InputDirection::DOWN: {
          std::cout << "down" << std::endl;
          return SnakeMove::DOWN;
          break;
       }
-      case Utils::InputDirection::LEFT: {
+      case GameViewUtils::InputDirection::LEFT: {
          std::cout << "left" << std::endl;
          return SnakeMove::RIGHT;
          break;
       }
-      case Utils::InputDirection::RIGHT: {
+      case GameViewUtils::InputDirection::RIGHT: {
          std::cout << "right" << std::endl;
          return SnakeMove::LEFT;
          break;

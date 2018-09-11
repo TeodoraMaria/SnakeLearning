@@ -14,11 +14,11 @@ namespace GameView
    }
 
    Cell::Cell(double x, double y, double width, double height, int value) 
-      :m_x(x), m_y(y), m_width(width), m_height(height), m_value(value), m_cellType(Utils::CellType::WALL)
+      :m_x(x), m_y(y), m_width(width), m_height(height), m_value(value), m_cellType(GameViewUtils::CellType::WALL)
    {
       
    }
-   Cell::Cell(double x, double y, double width, double height, int value,Utils::CellType celltype)
+   Cell::Cell(double x, double y, double width, double height, int value,GameViewUtils::CellType celltype)
       : m_x(x), m_y(y), m_width(width), m_height(height), m_value(value), m_cellType(celltype)
    {
 
@@ -34,55 +34,55 @@ namespace GameView
       glBegin(GL_TRIANGLES);
 
       switch (m_cellType) {
-         case GameView::Utils::CellType::WALL: {
+         case GameView::GameViewUtils::CellType::WALL: {
             drawBlock();
             break;
          }
-         case GameView::Utils::CellType::FIELD: {
+         case GameView::GameViewUtils::CellType::FIELD: {
 
             break;
          }
-         case GameView::Utils::CellType::FOOD1: {
+         case GameView::GameViewUtils::CellType::FOOD1: {
 
             break;
          }
-         case GameView::Utils::CellType::FOOD2: {
+         case GameView::GameViewUtils::CellType::FOOD2: {
             break;
 
          }
-         case GameView::Utils::CellType::FOOD3: {
+         case GameView::GameViewUtils::CellType::FOOD3: {
             break;
 
          }
-         case GameView::Utils::CellType::SNAKE_HEAD_N: {
+         case GameView::GameViewUtils::CellType::SNAKE_HEAD_N: {
             break;
 
          }
-         case GameView::Utils::CellType::SNAKE_TAIL_N: {
+         case GameView::GameViewUtils::CellType::SNAKE_TAIL_N: {
             break;
 
          }
-         case GameView::Utils::CellType::SNAKE_BODY_HORIZONTAL: {
+         case GameView::GameViewUtils::CellType::SNAKE_BODY_HORIZONTAL: {
             break;
 
          }
-         case GameView::Utils::CellType::SNAKE_BODY_VERTICAL: {
+         case GameView::GameViewUtils::CellType::SNAKE_BODY_VERTICAL: {
             break;
 
          }
-         case GameView::Utils::CellType::SNAKE_BODY_BENT_NE: {
+         case GameView::GameViewUtils::CellType::SNAKE_BODY_BENT_NE: {
             break;
 
          }
-         case GameView::Utils::CellType::SNAKE_BODY_BENT_SE: {
+         case GameView::GameViewUtils::CellType::SNAKE_BODY_BENT_SE: {
 
             break;
          }
-         case GameView::Utils::CellType::SNAKE_BODY_BENT_SW: {
+         case GameView::GameViewUtils::CellType::SNAKE_BODY_BENT_SW: {
             break;
 
          }
-         case GameView::Utils::CellType::SNAKE_BODY_BENT_NW: {
+         case GameView::GameViewUtils::CellType::SNAKE_BODY_BENT_NW: {
 
             break;
          }
@@ -194,7 +194,7 @@ namespace GameView
       m_value = value;
    }
 
-   void Cell::setCellType(Utils::CellType cellType)
+   void Cell::setCellType(GameViewUtils::CellType cellType)
    {
       m_cellType = cellType;
    }
