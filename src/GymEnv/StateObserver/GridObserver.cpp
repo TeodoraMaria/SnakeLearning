@@ -43,7 +43,7 @@ void GridObserver::Observe(
 	const auto right = forward.Rotate90Right();
 	
 	const auto origin =
-		snake.GetSnakeHead() + m_deltaPos + left * (m_height / 2);
+		snake.GetSnakeHead() + forward * m_deltaPos.GetX() + left * m_deltaPos.GetY()  + left * (m_height / 2);
 	
 	std::fill(observationTab.begin(), observationTab.end(), 0);
 	

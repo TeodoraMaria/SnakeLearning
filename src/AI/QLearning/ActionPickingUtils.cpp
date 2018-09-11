@@ -2,6 +2,7 @@
 #include "Utils/MathUtils.h"
 #include <algorithm>
 #include <iostream>
+#include <assert.h>
 
 typedef std::uniform_int_distribution<int> IntDistrib;
 
