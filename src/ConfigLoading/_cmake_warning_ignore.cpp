@@ -26,10 +26,10 @@ void TestGame()
 {
 	const auto jsonFile = "./aux_files/json_test/Game.json";
 	std::ifstream stream(jsonFile);
-	
+
 	json j;
 	stream >> j;
-	
+
 	std::cout << std::setw(2) << j << std::endl;
 	Game game(j);
 
