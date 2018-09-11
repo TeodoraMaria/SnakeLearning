@@ -22,11 +22,8 @@ namespace GymEnv { namespace StateObserver
 			std::vector<double>& observationContainer,
 			const GameState& gmState,
 			int snakeId) const override;
-		
-		IStateObserver* Clone() const override;
-		
+
 	private:
-		GameLogic::CellInterpreter::ICellInterpreterPtr m_cellInterpreter;
 		const size_t m_width;
 		const size_t m_height;
 		const Coordinate m_deltaPos;

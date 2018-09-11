@@ -18,7 +18,7 @@ namespace GameLogic { namespace CellInterpreter
 		// can interpret 4 types of cells, then it could return:
 		// 0 - Empty, 1 - Wall, 2 - Food, 3 - SnakeBody.
 		// It must always be 0 for empty.
-		virtual size_t InterpretCell(BoardPart boardPart) const = 0;
+		virtual size_t InterpretCell(int playerId, BoardPart boardPart) const = 0;
 	};
 	
 	typedef std::shared_ptr<ICellInterpreter> ICellInterpreterPtr;

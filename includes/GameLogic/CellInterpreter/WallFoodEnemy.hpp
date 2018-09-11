@@ -16,12 +16,7 @@ namespace GameLogic { namespace CellInterpreter
 	class WallFoodEnemy : public ICellInterpreter
 	{
 	public:
-		void SetPlayer(std::shared_ptr<IPlayer> player);
-	
 		size_t NbOfInterpretableParts() const override;
-		size_t InterpretCell(BoardPart boardPart) const override;
-	
-	private:
-		std::shared_ptr<IPlayer> m_player;
+		size_t InterpretCell(int playerId, BoardPart boardPart) const override;
 	};
 }}

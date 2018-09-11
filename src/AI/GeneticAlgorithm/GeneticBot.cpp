@@ -11,7 +11,7 @@ GeneticBot::GeneticBot(const GeneticNetwork& network, std::shared_ptr<GymEnv::St
     
 }
 
-SnakeMove GeneticBot::GetNextAction(const GameState & gameState) const
+SnakeMove GeneticBot::GetNextAction(const GameState & gameState)
 {
     const GameBoard& board = gameState.GetGameBoard();
 

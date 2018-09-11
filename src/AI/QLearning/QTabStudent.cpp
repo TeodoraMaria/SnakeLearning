@@ -6,20 +6,21 @@
 #include "Utils/PrintUtils.h"
 #include "Utils/MatrixUtils.h"
 
+#include "ConfigLoading/IObserverJson.h"
+
 #include <algorithm>
 
 using namespace AI::QLearning;
 using namespace GameLogic::CellInterpreter;
 using namespace GymEnv::StateObserver;
 using namespace GymEnv::Utils;
+using json = nlohmann::json;
 
 QTabStudent::QTabStudent(
-	std::shared_ptr<ICellInterpreter> cellInterpreter,
 	std::shared_ptr<IStateObserver> observer,
 	std::function<double ()> qtabInitializer,
 	double actionQulityCompareEps
 ) :
-	m_cellIntepreter(cellInterpreter),
 	m_observer(observer),
 	m_merseneTwister(std::random_device()()),
 	m_actionQulityCompareEps(actionQulityCompareEps),
@@ -47,6 +48,21 @@ void QTabStudent::SetQTab(const QTable& newQTab) { m_qtable = newQTab; }
 const GymEnv::StateObserver::IStateObserver* QTabStudent::GetObserver() const { return m_observer.get(); }
 
 /*
+** JSON helper.
+*/
+
+void AI::QLearning::to_json(nlohmann::json& j, const QTabStudent* player)
+{
+	j = nlohmann::json{
+		{ "type", "QTabStudent" },
+		{ "noise", player->GetNoise() },
+		{ "actionQulityCompareEps", player->m_actionQulityCompareEps },
+		{ "observer", json(player->GetObserver()) },
+		{ "brains", json(player->GetQTab()) }
+	};
+}
+
+/*
 ** Public methods.
 */
 
@@ -70,7 +86,7 @@ State QTabStudent::ObserveState(const GameState& gmState)
 	
 	return StateExtractor::BinaryVectorToNumber(
 		m_observationContainer,
-		m_cellIntepreter->NbOfInterpretableParts());
+		m_observer->GetCellInterpreter()->NbOfInterpretableParts());
 }
 
 unsigned int QTabStudent::PickAction(State fromState)

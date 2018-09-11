@@ -24,7 +24,10 @@
 #include <thread>
 #include <algorithm>
 #include <iostream>
+#include <json.hpp>
 #include <assert.h>
+#include <fstream>
+#include <iomanip>
 
 using namespace AI::QLearning;
 using namespace GameLogic::CellInterpreter;
@@ -91,41 +94,62 @@ void TrySaveQTab(const GridObserver& observer, const QTable& qtab, std::string r
 	}
 }
 
+void TrySavePlayer(const QTabStudent& student)
+{
+	const auto filePath = "aux_files/qtabular/TrainedQTabAgent.json";
+	std::ofstream outFileStream(filePath);
+	
+	if (!outFileStream.is_open())
+	{
+		std::cerr << "Failed to open " << filePath << std::endl;
+		return;
+	}
+	
+	try
+	{
+		outFileStream << std::setw(2) << nlohmann::json(&student);
+	}
+	catch (...)
+	{
+		std::cerr << "Failed to save player." << std::endl;
+	}
+}
+
 IPlayer* MultisnakeTabularTrainer::Train()
 {
 	auto agents = std::vector<std::shared_ptr<QTabStudent>>();
 	
 	{
 		//auto cellInterpreter1 = std::make_shared<WallFoodBody>();
-		//auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
-		auto cellInterpreter = std::make_shared<WallFoodEnemy>();
+		auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
+//		auto cellInterpreter = std::make_shared<WallFoodEnemy>();
+
 		auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
 		auto agent = std::make_shared<QTabStudent>(
-			cellInterpreter,
 			observer,
 			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); },
 			m_qoptions.actionQualityEps
 		);
-		cellInterpreter->SetPlayer(agent);
+//		cellInterpreter->SetPlayer(agent);
 		agent->SetQTab(TryLoadQTab(*observer));
 		agents.push_back(agent);
 	}
 	
-	{
-		//auto cellInterpreter1 = std::make_shared<WallFoodBody>();
-		//auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
-		auto cellInterpreter = std::make_shared<WallFoodEnemy>();
-		auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
-		auto agent = std::make_shared<QTabStudent>(
-			cellInterpreter,
-			observer,
-			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); },
-			m_qoptions.actionQualityEps
-		);
-		cellInterpreter->SetPlayer(agent);
-		agent->SetQTab(TryLoadQTab(*observer));
-		agents.push_back(agent);
-	}
+//	{
+//		//auto cellInterpreter1 = std::make_shared<WallFoodBody>();
+//		//auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
+//		auto cellInterpreter = std::make_shared<WallFoodEnemy>();
+//		auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
+//		auto agent = std::make_shared<QTabStudent>(
+//			cellInterpreter,
+//			observer,
+//			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); },
+//			m_qoptions.actionQualityEps
+//		);
+//		cellInterpreter->SetPlayer(agent);
+//		agent->SetQTab(TryLoadQTab(*observer));
+//		agents.push_back(agent);
+//	}
 
 	auto players = std::vector<std::shared_ptr<IPlayer>>();
 	for (auto agent : agents)
@@ -195,7 +219,6 @@ IPlayer* MultisnakeTabularTrainer::Train()
 				{
 					const auto gmState = game.GetGameState();
 					assert(!gmState.GetSnake(snakeId).IsAlive());
-					std::cout << snakeId << " hits something." << std::endl;
 				}
 				
 				agent->UpdateQTab(
@@ -242,15 +265,18 @@ IPlayer* MultisnakeTabularTrainer::Train()
 			game.RestockFood();
 		}
 		
-		std::cout << "Step: " << step << std::endl;
-		for (const auto& agent : agents)
+		if (episode % 100 == 0)
 		{
-			printf(
-				"End of episode: %d with a reward of %.2f."
-				"Random action chance: %.2f\n",
-				episode,
-				agent->GetReward(),
-				agent->GetNoise());
+			std::cout << "Step: " << step << std::endl;
+			for (const auto& agent : agents)
+			{
+				printf(
+					"End of episode: %d with a reward of %.2f."
+					"Random action chance: %.2f\n",
+					episode,
+					agent->GetReward(),
+					agent->GetNoise());
+			}
 		}
 	}
 	
@@ -260,15 +286,7 @@ IPlayer* MultisnakeTabularTrainer::Train()
 			return agent1->m_totalReward < agent2->m_totalReward;
 		});
 	
-	if (dynamic_cast<const GridObserver*>(bestAgent->GetObserver()))
-	{
-		TrySaveQTab(
-			*dynamic_cast<const GridObserver*>(bestAgent->GetObserver()),
-			bestAgent->GetQTab());
-	}
-	
-	auto rawAgentPtr = bestAgent.get();
-	bestAgent.reset();
-	
-	return rawAgentPtr;
+	TrySavePlayer(*bestAgent);
+
+	return nullptr;
 }
