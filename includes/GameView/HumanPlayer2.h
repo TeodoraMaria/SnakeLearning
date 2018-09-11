@@ -15,7 +15,7 @@ public:
    // Inherited via IPlayer
    virtual SnakeMove GetNextAction(const GameState & gameState) override;
 
-   void setDirection(Utils::InputDirection direction);
+   void setDirection(GameViewUtils::InputDirection direction);
 
 private:
    SnakeMove GetUserInput() const;
@@ -24,7 +24,7 @@ private:
 
    //SnakeMove getSnakeMoveRelativeToInput(const GameState& gameState)const;
 
-   Utils::InputDirection m_direction=Utils::InputDirection::DEFAULT;
+   GameViewUtils::InputDirection m_direction=GameViewUtils::InputDirection::DEFAULT;
 };
 
 }

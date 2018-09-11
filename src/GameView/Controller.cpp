@@ -103,7 +103,7 @@ void Controller::resetPlayersInput()
    for (auto player : m_players) {
       auto humanPlayer = std::dynamic_pointer_cast<HumanPlayer2>(player);
       if (humanPlayer != nullptr) {
-         humanPlayer->setDirection(Utils::InputDirection::DEFAULT);
+         humanPlayer->setDirection(GameViewUtils::InputDirection::DEFAULT);
       }
    }
 }
@@ -146,19 +146,19 @@ void Controller::processInputPlayer1(const SDL_Event & keyPressed)
 
          // wasd for player1
          case SDLK_w: {
-            player1->setDirection(Utils::InputDirection::UP);
+            player1->setDirection(GameViewUtils::InputDirection::UP);
             break;
          }
          case SDLK_s: {
-            player1->setDirection(Utils::InputDirection::DOWN);
+            player1->setDirection(GameViewUtils::InputDirection::DOWN);
             break;
          }
          case SDLK_d: {
-            player1->setDirection(Utils::InputDirection::RIGHT);
+            player1->setDirection(GameViewUtils::InputDirection::RIGHT);
             break;
          }
          case SDLK_a: {
-            player1->setDirection(Utils::InputDirection::LEFT);
+            player1->setDirection(GameViewUtils::InputDirection::LEFT);
             break;
          }
 
@@ -174,19 +174,19 @@ void Controller::processInputPlayer2(const SDL_Event & keyPressed)
          // arrow keys for player2
 
          case SDLK_UP: {
-            player2->setDirection(Utils::InputDirection::UP);
+            player2->setDirection(GameViewUtils::InputDirection::UP);
             break;
          }
          case SDLK_DOWN: {
-            player2->setDirection(Utils::InputDirection::DOWN);
+            player2->setDirection(GameViewUtils::InputDirection::DOWN);
             break;
          }
          case SDLK_RIGHT: {
-            player2->setDirection(Utils::InputDirection::RIGHT);
+            player2->setDirection(GameViewUtils::InputDirection::RIGHT);
             break;
          }
          case SDLK_LEFT: {
-            player2->setDirection(Utils::InputDirection::LEFT);
+            player2->setDirection(GameViewUtils::InputDirection::LEFT);
             break;
          }
       }

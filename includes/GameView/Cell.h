@@ -9,7 +9,7 @@ namespace GameView
     public:
         Cell();
         Cell(double x, double y, double width, double height, int value);
-        Cell(double x, double y, double width, double height, int value, Utils::CellType celltype);
+        Cell(double x, double y, double width, double height, int value, GameViewUtils::CellType celltype);
         ~Cell();
 
         void draw() const;
@@ -26,7 +26,7 @@ namespace GameView
 
 
         void setValue(int value);
-        void setCellType(Utils::CellType cellType);
+        void setCellType(GameViewUtils::CellType cellType);
 
         void printConsole() const;
 
@@ -41,6 +41,6 @@ namespace GameView
 
         int m_value = 0;
 
-        Utils::CellType m_cellType;
+        GameViewUtils::CellType m_cellType;
     };
 }

@@ -4,7 +4,7 @@
 
 namespace GameView
 {
-   namespace Utils
+   namespace GameViewUtils
    {
       enum class InputDirection
       {
