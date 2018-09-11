@@ -55,12 +55,14 @@ using namespace GameLogic;
 
 // }
 
+void _please_ignore_this_file__it_is_used_to_ignore_cmake_build_warnings_();
+
 int main(int nargs, char** args)
 {
 	srand(time(nullptr));
 
-	MultisnakeMain();
-
+//	MultisnakeMain();
+	_please_ignore_this_file__it_is_used_to_ignore_cmake_build_warnings_();
 //    GeneticSingleSnake();
 	
 	return 0;

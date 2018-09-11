@@ -1,0 +1,23 @@
+{
+	"players": [
+		{
+			"type": "HumanPlayer"
+		},
+		{
+			"type": "AI::GeneticPlayer",
+			"brains": "file/path/to/some/genetic/brains.json",
+			"cellInterpreter": "Basic3CellInterpreter",
+			"observer": "GridObserver",
+			"actionQualityCmpEps": 0.001
+		},
+		{
+			"type": "AI::QTabular",
+			"brains": "file/path/to/some/genetic/brains.json",
+			"cellInterpreter": "Basic3CellInterpreter",
+			"observer": "GridObserver",
+			"actionQualityCmpEps": 0.001,
+
+			"noise": 0.0001
+		}
+	]
+}

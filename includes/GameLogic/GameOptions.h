@@ -2,6 +2,11 @@
 #include "GameUtils.h"
 #include "GameView/IGameRenderer.hpp"
 
+/*
+** If additional parameters are added to this model, please
+** add them to CofigLoading/GameOptionsJson.h.
+*/
+
 struct GameOptions
 {
 	GameBoardType gameBoardType = GameBoardType::BOX;

@@ -1,0 +1,15 @@
+{
+	"boardLength": 42,
+	"boardWidth": 24,
+	"numFoods": 10,
+	"initialSnakeSize": 3,
+	"renderer":  {
+		"type": "OpenGLRenderer",
+		"model": {
+			"resolutionX": 420,
+			"resolutionY": 420,
+			"lines": 10,
+			"cols": 10
+		}
+	}
+}
