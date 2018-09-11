@@ -17,7 +17,7 @@ Game::Game(
 	m_gameOptions(gameOptions),
 	m_players(players)
 {
-	m_players.resize(gameOptions.numberOfPlayers);
+	m_players.resize(players.size());
 	m_gameBoard = GameBoard(
 		gameOptions.gameBoardType,
 		gameOptions.boardLength,
@@ -59,6 +59,12 @@ std::vector<Snake> Game::GetLivingSnakes() const
 	return livingSnakes;
 }
 
+size_t Game::CountLivingSnakes() const
+{
+	return std::count_if(m_snakes.cbegin(), m_snakes.cend(),
+		[](const auto& snake) { return snake.IsAlive(); });
+}
+
 GameState Game::GetGameState() const
 {
 	return GameState(m_gameBoard, m_snakes);
@@ -69,6 +75,24 @@ std::vector<Snake> Game::GetAllSnakes() const
 	return m_snakes;
 }
 
+bool Game::EveryoneIsDead() const
+{
+	CheckIfGameOver();
+	return m_isGameOver;
+}
+
+void Game::ForcefullyKillPlayer(int snakeId)
+{
+	auto& snake = *std::find_if(m_snakes.begin(), m_snakes.end(),
+		[&](const auto& snake)
+		{
+			return snake.GetSnakeNumber() == snakeId;
+		});
+	
+	m_gameBoard.KillSnake(snake.GetSnakeBody());
+	snake.Die();
+	DisablePlayer(snakeId);
+}
 
 void Game::InitSnakes()
 {
@@ -101,9 +125,9 @@ void Game::SaveMove(FileHelper& helper, const std::vector<int> view, const Snake
 	helper.WriteToFile(view, move, snakeNumber);
 }
 
-void Game::CheckIfGameOver()
+void Game::CheckIfGameOver() const
 {
-	m_isGameOver = (GetLivingSnakes().size() == 0);
+	m_isGameOver = (CountLivingSnakes() == 0);
 }
 
 #ifdef _WIN32

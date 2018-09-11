@@ -26,7 +26,7 @@ Iter select_randomly(Iter start, Iter end) {
 ** The actual Bot implementation.
 */
 
-SnakeMove SingleBot::GetNextAction(const GameState& gameState) const
+SnakeMove SingleBot::GetNextAction(const GameState& gameState)
 {
 	const Snake& snake = gameState.GetSnake(GetSnakeNumber());
 

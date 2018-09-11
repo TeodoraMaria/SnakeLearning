@@ -6,7 +6,7 @@ using namespace GymEnv;
 ** Getters & setters.
 */
 
-SnakeMove SnakeStudent::GetNextAction(const GameState& gameState) const
+SnakeMove SnakeStudent::GetNextAction(const GameState& gameState)
 {
 	return m_nextMove;
 }

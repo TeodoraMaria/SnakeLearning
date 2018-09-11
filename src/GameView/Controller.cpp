@@ -40,7 +40,6 @@ Controller::Controller()
 	{
 		gameOptions.boardLength = 25;
 		gameOptions.boardWidth = 25;
-		gameOptions.numberOfPlayers = m_players.size();
 		gameOptions.numFoods = 3;
         gameOptions.playWithoutRenedring = true;
 	}

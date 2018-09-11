@@ -15,4 +15,14 @@ namespace AI { namespace QLearning { namespace Utils
 		std::mt19937& merseneTwister,
 		bool shuffleEquals = true,
 		double eps = 0.000001);
+	
+	/*
+	** Instead of choosing a random action, add some noise to the table.
+	*/
+	
+	int PickActionAdditiveNoise(
+		std::vector<double> actionsQ,
+		double noise,
+		std::mt19937& merseneTwister,
+		double eps = 0.000001);
 }}}

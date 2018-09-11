@@ -11,7 +11,7 @@ namespace AI{ namespace GeneticAlgorithm
     public:
 
         GeneticBot(const GeneticNetwork& network, std::shared_ptr<GymEnv::StateObserver::IStateObserver> observer);
-        SnakeMove GetNextAction(const GameState& gameState) const override;
+        SnakeMove GetNextAction(const GameState& gameState) override;
 
     private:
         GeneticNetwork m_network;

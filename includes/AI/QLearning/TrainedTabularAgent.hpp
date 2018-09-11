@@ -16,7 +16,7 @@ namespace AI { namespace QLearning { namespace TrainedAgent
 			const QTable& qBrains,
 			std::shared_ptr<GymEnv::StateObserver::IStateObserver> observer);
 		
-		SnakeMove GetNextAction(const GameState& gameState) const override;
+		SnakeMove GetNextAction(const GameState& gameState) override;
 	
 	private:
 		const std::vector<SnakeMove> m_actions;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <random>
+
 namespace Utils { namespace Math
 {
 	bool Approx(double a, double b, double eps = 0.00001);

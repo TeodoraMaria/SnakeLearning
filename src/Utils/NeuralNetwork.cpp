@@ -1,6 +1,7 @@
 #include "NeuralNetwork.h"
 #include "Utils/MathUtils.h"
 #include <iostream>
+#include <cmath>
 
 using namespace Utils;
 

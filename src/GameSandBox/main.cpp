@@ -22,7 +22,6 @@ int main(int argc, char** argv)
 	{
 		gameOptions.boardLength = 10;
 		gameOptions.boardWidth = 10;
-		gameOptions.numberOfPlayers = players.size();
 		gameOptions.numFoods = 1;
 		gameOptions.initialSnakeSize = 2;
 		//gameOptions.playWithoutRenedring = true;

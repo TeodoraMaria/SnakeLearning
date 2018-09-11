@@ -7,12 +7,14 @@
 class IPlayer
 {
 public:
+	static std::vector<SnakeMove> possibleMoves;
+
 	int GetSnakeNumber() const;
 	void SetSnakeNumber(int snakeNumber);
 	bool GetIsActive() const;
 	void SetIsActive(bool isActive);
 	
-	virtual SnakeMove GetNextAction(const GameState& gameState) const = 0;
+	virtual SnakeMove GetNextAction(const GameState& gameState) = 0;
 
 private:
 	int m_snakeNumber;
