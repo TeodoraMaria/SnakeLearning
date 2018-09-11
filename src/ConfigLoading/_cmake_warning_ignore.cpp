@@ -1,6 +1,8 @@
 #include "GameOptionsJson.h"
 #include "OpenGLRendererModelJson.h"
 #include "GameJson.h"
+#include "ICellInterpreterJson.h"
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -41,4 +43,5 @@ void _please_ignore_this_file__it_is_used_to_ignore_cmake_build_warnings_()
 {
 //	TestGameOptionsJson();
 	TestGame();
+//	j.get<GameLogic::CellInterpreter::ICellInterpreter>();
 }

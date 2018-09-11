@@ -41,13 +41,13 @@ void MultisnakeMain()
 		qoptions.qDiscountFactor = 0.9;
 		qoptions.actionQualityEps = 0.005;
 		
-		qoptions.numEpisodes = 1000;
-		qoptions.randActionDecayFactor = 1.0;// / (qoptions.numEpisodes * 10);
+		qoptions.numEpisodes = 20000;
+		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes * 10);
 		qoptions.learningRate = 0.1;
 		qoptions.minRandActionChance = 0.001;
 		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
 		{
-			return 300u + (double)episode / qoptions.numEpisodes * 300.0;
+			return 400u + (double)episode / qoptions.numEpisodes * 300.0;
 		};
 		
 		qoptions.foodReward = [](int episode) { return 1.0; };
@@ -62,7 +62,7 @@ void MultisnakeMain()
 //			return qInitDistrib(merseneTwister);
 		};
 		qoptions.milsToSleepBetweenFrames = 25;
-		qoptions.lastNGamesToRender = 0;
+		qoptions.lastNGamesToRender = 5;
 	}
 	
 	auto trainer = AI::QLearning::MultisnakeTabularTrainer(gmOptions, qoptions);

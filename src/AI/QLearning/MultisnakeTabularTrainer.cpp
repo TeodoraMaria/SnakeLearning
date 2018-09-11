@@ -97,8 +97,9 @@ IPlayer* MultisnakeTabularTrainer::Train()
 	
 	{
 		//auto cellInterpreter1 = std::make_shared<WallFoodBody>();
-		//auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
-		auto cellInterpreter = std::make_shared<WallFoodEnemy>();
+		auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
+//		auto cellInterpreter = std::make_shared<WallFoodEnemy>();
+
 		auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
 		auto agent = std::make_shared<QTabStudent>(
 			cellInterpreter,
@@ -106,26 +107,26 @@ IPlayer* MultisnakeTabularTrainer::Train()
 			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); },
 			m_qoptions.actionQualityEps
 		);
-		cellInterpreter->SetPlayer(agent);
+//		cellInterpreter->SetPlayer(agent);
 		agent->SetQTab(TryLoadQTab(*observer));
 		agents.push_back(agent);
 	}
 	
-	{
-		//auto cellInterpreter1 = std::make_shared<WallFoodBody>();
-		//auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
-		auto cellInterpreter = std::make_shared<WallFoodEnemy>();
-		auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
-		auto agent = std::make_shared<QTabStudent>(
-			cellInterpreter,
-			observer,
-			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); },
-			m_qoptions.actionQualityEps
-		);
-		cellInterpreter->SetPlayer(agent);
-		agent->SetQTab(TryLoadQTab(*observer));
-		agents.push_back(agent);
-	}
+//	{
+//		//auto cellInterpreter1 = std::make_shared<WallFoodBody>();
+//		//auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
+//		auto cellInterpreter = std::make_shared<WallFoodEnemy>();
+//		auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
+//		auto agent = std::make_shared<QTabStudent>(
+//			cellInterpreter,
+//			observer,
+//			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); },
+//			m_qoptions.actionQualityEps
+//		);
+//		cellInterpreter->SetPlayer(agent);
+//		agent->SetQTab(TryLoadQTab(*observer));
+//		agents.push_back(agent);
+//	}
 
 	auto players = std::vector<std::shared_ptr<IPlayer>>();
 	for (auto agent : agents)
@@ -195,7 +196,6 @@ IPlayer* MultisnakeTabularTrainer::Train()
 				{
 					const auto gmState = game.GetGameState();
 					assert(!gmState.GetSnake(snakeId).IsAlive());
-					std::cout << snakeId << " hits something." << std::endl;
 				}
 				
 				agent->UpdateQTab(
