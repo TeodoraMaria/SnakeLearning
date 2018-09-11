@@ -16,13 +16,13 @@ namespace AI{namespace GeneticAlgorithm
         virtual IPlayer * Train() override;
 
     private:
-        void runEpisode();
+        void runEpisode(size_t episode);
         double runStep(const std::vector<double>& state, const GeneticNetwork& network);
         void runNetwork(GeneticNetwork& network);
         void crossover();
         void selectNewNetworks();
         void mutate();
-        void printMaxFitness();
+        void printFitnessInfo();
         void resetFitness();
         
 

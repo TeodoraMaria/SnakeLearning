@@ -1,9 +1,10 @@
 #pragma once
 
-#include <vector>
 #include <GameLogic/GameBoard.h>
 #include "Utils/NeuralNetwork.h"
 
+#include <vector>
+#include <random>
 
 
 namespace AI{namespace GeneticAlgorithm{
@@ -23,15 +24,14 @@ namespace AI{namespace GeneticAlgorithm{
         void setSelectionProb(double prob);
         double getSelectionProb() const;
 
-        void selectForCrossOver(bool selected);
-        bool isSelectedForCrossOver();
-
-        void mutateWeights(float mutateProb);
+        void mutateWeights(double mutateProb);
         void crossover(GeneticNetwork& otherNetwork);
+
+
 
     private:
         double m_fitness;
         double m_selectionProb;
-        bool m_selectedForCrossover;
+        mutable std::mt19937 m_merseneTwister;
     };
 }}

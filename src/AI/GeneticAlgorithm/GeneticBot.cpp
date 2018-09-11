@@ -4,18 +4,21 @@
 using namespace AI::GeneticAlgorithm;
 
 
-GeneticBot::GeneticBot(const GeneticNetwork & network):m_network(m_network)
+GeneticBot::GeneticBot(const GeneticNetwork& network, std::shared_ptr<GymEnv::StateObserver::IStateObserver> observer) :
+    m_network(network),
+    m_observer(observer)
 {
-
+    
 }
 
 SnakeMove GeneticBot::GetNextAction(const GameState & gameState) const
 {
     const GameBoard& board = gameState.GetGameBoard();
 
-    
-    
+    std::vector<double> input;
 
-    return SnakeMove::FORWARD;
+    m_observer->Observe(input,gameState,GetSnakeNumber());
+
+    return m_network.feedForward(input);
 }
 

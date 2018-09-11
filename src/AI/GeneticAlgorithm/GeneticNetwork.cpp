@@ -1,23 +1,26 @@
 #include "GeneticNetwork.h"
 #include "Utils/MathUtils.h"
+#include "AI/QLearning/ActionPickingUtils.h"
 #include <algorithm>
 #include <iostream>
-
+#include <algorithm>
 
 using namespace AI::GeneticAlgorithm;
 
 GeneticNetwork::GeneticNetwork(const Utils::NetworkSettings& settings):
     m_fitness(0.0),
     m_selectionProb(0.0),
-    NeuralNetwork(settings)
+    NeuralNetwork(settings),
+    m_merseneTwister(std::random_device()())
 {
- 
+    
 }
 
 GeneticNetwork::GeneticNetwork():
     m_fitness(0.0),
     m_selectionProb(0.0),
-    NeuralNetwork(Utils::NetworkSettings())
+    NeuralNetwork(Utils::NetworkSettings()),
+    m_merseneTwister(std::random_device()())
 {
     
 }
@@ -30,8 +33,11 @@ SnakeMove GeneticNetwork::feedForward(const std::vector<double>& input) const
 
     const auto& result = Utils::NeuralNetwork::feedForward(floatInput);
 
+    std::vector<double> doubleInput(result.begin(), result.end());
+
     SnakeMove bestMove;
-    size_t index=std::distance(result.begin(), std::max_element(result.begin(), result.end()));
+    //size_t index=std::distance(result.begin(), std::max_element(result.begin(), result.end()));
+    size_t index = AI::QLearning::Utils::PickAction(doubleInput, 0, m_merseneTwister,true,0.001);
 
     switch (index) {
         case 0: {
@@ -43,10 +49,10 @@ SnakeMove GeneticNetwork::feedForward(const std::vector<double>& input) const
             break;
         }
         case 2: {
-            bestMove = SnakeMove::DOWN;
+            bestMove = SnakeMove::LEFT;
             break;
         }
-        case 3: {
+        case 3: {//TODO: remove
             bestMove = SnakeMove::LEFT;
             break;
         }
@@ -69,7 +75,7 @@ void GeneticNetwork::updateFitness( double value)
 
 double GeneticNetwork::getFitness() const
 {
-    return m_fitness;
+    return m_fitness *m_fitness * m_fitness;
 }
 
 void GeneticNetwork::setSelectionProb(double prob)
@@ -82,24 +88,22 @@ double GeneticNetwork::getSelectionProb() const
     return m_selectionProb;
 }
 
-void GeneticNetwork::selectForCrossOver(bool selected)
-{
-    m_selectedForCrossover = selected;
-}
-
-bool GeneticNetwork::isSelectedForCrossOver()
-{
-    return m_selectedForCrossover;
-}
-
-void GeneticNetwork::mutateWeights(float mutateProb)
+void GeneticNetwork::mutateWeights(double mutateProb)
 {
     for (auto& weight : m_weights) {
-        float mutateValue = Utils::Math::randomDouble(0.00001, 1.0);
-
+        double mutateValue = Utils::Math::randomDouble(0.00001, 1.0);
+        
         if (mutateValue < mutateProb) {
-            weight = Utils::Math::randomDouble(0.00001, 1.0);
+            weight += Utils::Math::randomDouble(-0.1, 0.1);
+            weight = std::max(-1.0f, std::min(1.0f, weight));
         }
+        
+        
+        /*
+        if (mutateValue < mutateProb) {
+            weight = Utils::Math::randomDouble(-1.0, 1.0);
+        }
+        */
     }
 }
 

@@ -24,10 +24,10 @@ NeuralNetwork::~NeuralNetwork()
 
 const std::vector<float> NeuralNetwork::feedForward(const std::vector<float>& input) const
 {
-    auto& result = singleForward(input, 0);
+    auto result = singleForward(input, 0);
 
     for (size_t i = 1; i < m_settings.m_hiddenLayersSizes.size(); i++) {
-        auto& temp = singleForward(result, i);
+        auto temp = singleForward(result, i);
         result = temp;
     }
     return result;
@@ -87,7 +87,8 @@ void NeuralNetwork::setWeightsSize()
 void NeuralNetwork::initWeights()
 {
     for (auto& weight : m_weights) {
-        weight = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        //weight = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        weight= Utils::Math::randomDouble(-1.0, 1.0);
     }
 }
 
