@@ -33,26 +33,26 @@ using namespace GameLogic;
 //         gmOptions.numFoods = 10;
 //     }
 //     auto gmRenderer = new GameView::TermRenderer();
-
+//
 //     auto baseModel = GymEnv::SingleSnakeEnvBaseModel();
-
+//
 //     baseModel.gmOptions = &gmOptions;
 //     baseModel.gmRenderer = gmRenderer;
 //     baseModel.celInterpreter = std::make_shared<CellInterpreter::WallFoodBody>();
-
+//
 //     auto env = new GymEnv::SingleSnakeRelativeView(baseModel);
-
+//
 //     AI::GeneticAlgorithm::GeneticOptions options;
-
+//
 //     options.crossoverProb = 0.4;
 //     options.maxNumSteps = 100;
 //     options.mutationProb = 0.04;
 //     options.numEpisodes = 1000;
 //     options.numOfNetworks = 50;
-
+//
 //     auto trainer = AI::GeneticAlgorithm::GeneticTrainer(options, env);
 //     trainer.Train();
-
+//
 // }
 
 void _please_ignore_this_file__it_is_used_to_ignore_cmake_build_warnings_();
