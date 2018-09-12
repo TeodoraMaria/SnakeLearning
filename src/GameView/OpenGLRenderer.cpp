@@ -1,5 +1,7 @@
 #include "OpenGLRenderer.h"
 #include "Board.h"
+#include "Utils/MathUtils.h"
+#include "GameView/GraphPlotter.h"
 
 #include <SDL.h>
 #include <GL/glew.h>
@@ -19,7 +21,7 @@ void fatalError(std::string error)
 OpenGLRenderer::OpenGLRenderer(size_t resolutionX,size_t resolutionY,size_t lines,size_t cols)
     :m_resolutionX(resolutionX),m_resolutionY(resolutionY)
 {
-    m_board = new Board(resolutionX, resolutionY);
+    m_board = new Board(resolutionX-500, resolutionY);
     m_board->setUpBoard(lines, cols);
 }
 
@@ -39,7 +41,11 @@ void OpenGLRenderer::Render(const GameState & gameState) const
    const GameBoard gameBoard = gameState.GetGameBoard();
    
    updateBoard(gameState);
+   
    m_board->draw();
+
+   GraphPlotter g;
+   g.plot();
 
    SDL_GL_SwapWindow(m_window);
 }
@@ -95,6 +101,7 @@ void OpenGLRenderer::init() const
     glOrtho(0.0f, m_resolutionX, m_resolutionY, 0.0f, 0.0f, 1.0f);
     glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
 
+    
 }
 
 }
