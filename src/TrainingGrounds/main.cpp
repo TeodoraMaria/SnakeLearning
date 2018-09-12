@@ -30,9 +30,7 @@ int main(int nargs, char** args)
 {
 	srand(time(nullptr));
 
-//	MultisnakeMain();
-	ConfigLoaderSandbox();
-//    GeneticSingleSnake();
+//  GeneticSingleSnake();
 	
 	return 0;
 }
