@@ -56,6 +56,11 @@ size_t GameBoard::GetFoodPortions() const
 	return sum;
 }
 
+std::vector<int> GameBoard::GetBoard() const
+{
+	return m_board;
+}
+
 /*
 ** Operators.
 */

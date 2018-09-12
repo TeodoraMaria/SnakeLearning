@@ -2,7 +2,7 @@
 
 FileHelper::FileHelper(const std::string& filename)
 {
-	m_file.open(filename, std::fstream::out);
+	m_file.open(filename, std::ios::app);
 }
 
 FileHelper::~FileHelper()
@@ -17,7 +17,7 @@ void FileHelper::WriteToFile(const std::vector<int> view, SnakeMove move, const 
 		int val = 0;
 		if (elem == 0)
 		{
-			val = 0;
+			val = 1;
 		}
 		else if (elem == 1)
 		{
@@ -25,13 +25,17 @@ void FileHelper::WriteToFile(const std::vector<int> view, SnakeMove move, const 
 		}
 		else if (elem == snakeNumber)
 		{
-			val = 1;
+			val = 0;
 		}
-		else
+		else if (elem == 2)
+		{
+			val = 2;
+		}
+		else 
 		{
 			val = -1;
 		}
 		m_file << val <<" ";
 	}
-	m_file << "," << static_cast<int>(move)<<std::endl;
+	m_file << static_cast<int>(move)<<std::endl;
 }

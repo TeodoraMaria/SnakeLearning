@@ -66,6 +66,11 @@ std::vector<int> GameState::GetFieldOfView(
 	return fieldOfView;
 }
 
+std::vector<int> GameState::GetMap() const
+{
+	return m_gameBoard.GetBoard();
+}
+
 bool GameState::IsSnakeHead(const Coordinate& coord) const
 {
 	if (m_gameBoard[coord] <= startOfSnakeIndexes)

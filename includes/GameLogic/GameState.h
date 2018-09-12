@@ -13,6 +13,7 @@ public:
 	const std::vector<Snake>& GetSnakes() const;
 	const Snake& GetSnake(int snakeNumber) const;
 	std::vector<int> GetFieldOfView(const Snake& snake, int width, int length) const;
+	std::vector<int> GetMap() const;
 
 	bool IsSnakeHead(const Coordinate& coord) const;
 	

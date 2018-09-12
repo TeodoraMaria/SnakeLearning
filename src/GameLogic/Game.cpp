@@ -285,7 +285,7 @@ void Game::Play()
 {
 	if (m_gameOptions.saveGameplay)
 	{
-		FileHelper helper(GenerateFileName());
+		FileHelper helper("D:\\SnakeData.txt");
 		while (!m_isGameOver)
 		{
 			RunRoundAndSave(helper);
