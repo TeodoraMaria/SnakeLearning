@@ -23,4 +23,11 @@ endmacro()
 macro(SetNanoGUIDependecies)
 	# For reliability of parallel build, make the NanoGUI targets dependencies
 	set_property(TARGET glfw glfw_objects nanogui PROPERTY FOLDER "dependencies")
+
+	set_target_properties(nanogui PROPERTIES
+		ARCHIVE_OUTPUT_DIRECTORY	"${CMAKE_SOURCE_DIR}/bin"
+		LIBRARY_OUTPUT_DIRECTORY	"${CMAKE_SOURCE_DIR}/bin"
+		RUNTIME_OUTPUT_DIRECTORY	"${CMAKE_SOURCE_DIR}/bin"
+		EXECUTABLE_OUTPUT_PATH		"${CMAKE_SOURCE_DIR}/bin"
+	)
 endmacro()
