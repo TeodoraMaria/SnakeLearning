@@ -11,7 +11,7 @@ GraphPlotter::GraphPlotter()
     m_axisVertices[0].y = 0;
 
 
-    m_axisVertices[1].x = m_maxValues;
+    m_axisVertices[1].x = 300;
     m_axisVertices[1].y = 0;
 
     m_axisVertices[2].x = 0;
@@ -41,16 +41,13 @@ void GraphPlotter::addValue(float value)
 {
     Vertex vertex;
     vertex.y = value;
+        m_graphVertices.push_back(vertex);
 
     if (m_graphVertices.size() == m_maxValues) {
-        m_graphVertices.pop_back();
-        m_graphVertices.push_back(vertex);
-
-        for (size_t i = 0; i < m_graphVertices.size(); i++) {
-            m_graphVertices[i].x = i;
-        }
-    } else {
-        m_graphVertices.push_back(vertex);
+        m_graphVertices.erase(m_graphVertices.begin());
+    }   
+    for (size_t i = 0; i < m_graphVertices.size(); i++) {
+        m_graphVertices[i].x = i*10;
     }
 }
 

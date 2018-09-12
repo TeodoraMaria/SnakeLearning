@@ -22,7 +22,7 @@ namespace GameView
     private:
         size_t m_currentIndex=0;
 
-        const size_t m_maxValues = 300;
+        const size_t m_maxValues = 30;
 
         const int m_xOffset = 600;
         const int m_yOffset = 400;
