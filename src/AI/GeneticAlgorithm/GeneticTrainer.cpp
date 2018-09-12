@@ -61,7 +61,11 @@ IPlayer *GeneticTrainer::Train()
     //TODO: fix link;
     SaveWeights(bestNetwork->getWeights(), "D:\\fac\\snake\\aux_files\\genetic\\TrainedGenetic.json");
     
-    return new GeneticBot(*bestNetwork, std::shared_ptr<GymEnv::StateObserver::IStateObserver>(m_env->GetObserver()->Clone()));
+//    return new GeneticBot(*bestNetwork, std::shared_ptr<GymEnv::StateObserver::IStateObserver>(m_env->GetObserver()->Clone()));
+
+	// Sorry, no more Clone.
+	// You should be able to create one from json.
+	return nullptr;
 }
 
 void GeneticTrainer::runEpisode(size_t episode)

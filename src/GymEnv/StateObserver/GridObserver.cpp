@@ -9,7 +9,7 @@ GridObserver::GridObserver(
 	size_t height,
 	const Coordinate& deltaPos
 ) :
-	m_cellInterpreter(cellInterpreter),
+	GymEnv::StateObserver::IStateObserver(cellInterpreter),
 	m_width(width),
 	m_height(height),
 	m_deltaPos(deltaPos)
@@ -23,7 +23,7 @@ size_t GridObserver::NbOfObservations() const
 {
 	return
 		(m_width * m_height) *
-		(m_cellInterpreter->NbOfInterpretableParts() - 1);
+		(GetCellInterpreter()->NbOfInterpretableParts() - 1);
 }
 
 void GridObserver::Observe(
@@ -57,9 +57,9 @@ void GridObserver::Observe(
 			
 			const auto indx =
 				startOfIndex *
-				(m_cellInterpreter->NbOfInterpretableParts() - 1);
+				(GetCellInterpreter()->NbOfInterpretableParts() - 1);
 
-			const auto interpretVal = m_cellInterpreter->InterpretCell(cellVal);
+			const auto interpretVal = GetCellInterpreter()->InterpretCell(snakeId, cellVal);
 			
 			assert(indx <= observationTab.size());
 			if (interpretVal != 0)
@@ -67,13 +67,4 @@ void GridObserver::Observe(
 			
 			startOfIndex++;
 		}
-}
-
-IStateObserver* GridObserver::Clone() const
-{
-	return new GridObserver(
-		m_cellInterpreter,
-		m_width,
-		m_height,
-		m_deltaPos);
 }

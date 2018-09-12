@@ -19,16 +19,19 @@
 #include <stdlib.h>
 #include <time.h>
 #include <iostream>
+#include <iomanip>
 #include <SDL.h>
 
 using namespace GameLogic;
+
+void ConfigLoaderSandbox();
 
 int main(int nargs, char** args)
 {
 	srand(time(nullptr));
 
-	MultisnakeMain();
-
+//	MultisnakeMain();
+	ConfigLoaderSandbox();
 //    GeneticSingleSnake();
 	
 	return 0;

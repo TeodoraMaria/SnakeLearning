@@ -41,7 +41,6 @@ Controller::Controller()
 		gameOptions.boardLength = 25;
 		gameOptions.boardWidth = 25;
 		gameOptions.numFoods = 3;
-        gameOptions.playWithoutRenedring = true;
 	}
    m_game = new Game(gameOptions, m_players);
    m_game->InitGame();

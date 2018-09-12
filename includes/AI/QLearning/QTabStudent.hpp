@@ -10,6 +10,7 @@
 #include "GymEnv/SnakeStudent.hpp"
 
 #include <random>
+#include <json_fwd.hpp>
 
 namespace AI { namespace QLearning
 {
@@ -17,7 +18,6 @@ namespace AI { namespace QLearning
 	{
 	public:
 		QTabStudent(
-			std::shared_ptr<GameLogic::CellInterpreter::ICellInterpreter> cellInterpreter,
 			std::shared_ptr<GymEnv::StateObserver::IStateObserver> observer,
 			std::function<double ()> qtabInitializer = []() { return 0.0; },
 			double actionQulityCompareEps = 0.0);
@@ -36,6 +36,7 @@ namespace AI { namespace QLearning
 		
 		const GymEnv::StateObserver::IStateObserver* GetObserver() const;
 		
+		friend void to_json(nlohmann::json& j, const QTabStudent* player);
 		SnakeMove GetNextAction(const GameState& gameState) override;
 		
 		void PrepareForNewEpisode();
@@ -56,7 +57,6 @@ namespace AI { namespace QLearning
 	private:
 		void TryInitQField(State state);
 	
-		std::shared_ptr<GameLogic::CellInterpreter::ICellInterpreter> m_cellIntepreter;
 		std::shared_ptr<GymEnv::StateObserver::IStateObserver> m_observer;
 		
 		AI::QLearning::QTable m_qtable;

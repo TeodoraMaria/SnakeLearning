@@ -2,6 +2,11 @@
 #include "GameUtils.h"
 #include "GameView/IGameRenderer.hpp"
 
+/*
+** If additional parameters are added to this model, please
+** add them to CofigLoading/GameOptionsJson.h.
+*/
+
 struct GameOptions
 {
 	GameBoardType gameBoardType = GameBoardType::BOX;
@@ -12,7 +17,5 @@ struct GameOptions
 	size_t initialSnakeSize = 3;
 
 	GameView::IGameRenderer* gameRenderer = nullptr;
-
-	bool playWithoutRenedring = false;
 	bool saveGameplay = false;
 };

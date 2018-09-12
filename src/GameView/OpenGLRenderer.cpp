@@ -25,6 +25,15 @@ OpenGLRenderer::OpenGLRenderer(size_t resolutionX,size_t resolutionY,size_t line
     m_board->setUpBoard(lines, cols);
 }
 
+OpenGLRenderer::OpenGLRenderer(const OpenGLRendererModel& model) :
+	OpenGLRenderer(
+		model.resolutionX,
+		model.resolutionY,
+		model.lines,
+		model.cols)
+{
+}
+
 OpenGLRenderer::OpenGLRenderer()
 {}
 
