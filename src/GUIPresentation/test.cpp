@@ -1,8 +1,10 @@
-//
-//  test.cpp
-//  nanogui
-//
-//  Created by Emil Terman on 9/12/18.
-//
+#include "GL/glew.h"
 
-#include <stdio.h>
+void emil()
+{
+		glBegin(GL_TRIANGLES);
+        glVertex2f(1.0, 1.0);
+        glVertex2f(0.7, 1.0);
+        glVertex2f(-0.5, 0.5);
+        glEnd();
+}
