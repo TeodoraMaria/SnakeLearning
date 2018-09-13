@@ -2,8 +2,10 @@
 
 #include "TermRenderer.hpp"
 #include "Board.h"
+#include "GraphPlotter.h"
 
 struct SDL_Window;
+
 
 namespace GameView
 {
@@ -31,6 +33,9 @@ namespace GameView
       virtual void Render(const GameState & gameState) const override;
 
       Board* getBoard()const; 
+
+      void addGraphPlotter(GraphPlotter* graphPlotter);
+
    private:
       void updateBoard(const GameState& gameState) const;
       void init() const;
@@ -42,6 +47,8 @@ namespace GameView
       Board* m_board=nullptr;
 
       mutable SDL_Window* m_window=nullptr;
+
+      GraphPlotter* m_graphPlotter=nullptr;
    };
 
 
