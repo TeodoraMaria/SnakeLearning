@@ -6,8 +6,7 @@ using namespace GameView;
 
 GraphPlotter::GraphPlotter()
 {
-
-    m_axisVertices[0].x = 0;
+    m_axisVertices[0].x = -10;
     m_axisVertices[0].y = 0;
 
 
@@ -15,7 +14,7 @@ GraphPlotter::GraphPlotter()
     m_axisVertices[1].y = 0;
 
     m_axisVertices[2].x = 0;
-    m_axisVertices[2].y = 0;
+    m_axisVertices[2].y = 10;
 
     m_axisVertices[3].x = 0;
     m_axisVertices[3].y = -200;
@@ -32,22 +31,26 @@ GraphPlotter::GraphPlotter()
 
     m_backgroundVertices[3].x = 310;
     m_backgroundVertices[3].y = 10;
-
-
 }
 
 
 void GraphPlotter::addValue(float value)
 {
     Vertex vertex;
-    vertex.y = value;
-        m_graphVertices.push_back(vertex);
+
+    float offset = -10;
+
+    vertex.y = value*offset;
+    m_graphVertices.push_back(vertex);
 
     if (m_graphVertices.size() == m_maxValues) {
-        m_graphVertices.erase(m_graphVertices.begin());
-    }   
-    for (size_t i = 0; i < m_graphVertices.size(); i++) {
-        m_graphVertices[i].x = i*10;
+        size_t index = Utils::Math::randomNumber<size_t>(0, m_maxValues-1);
+        m_graphVertices.erase(m_graphVertices.begin()+index);
+    }
+
+    scaleXValues();
+    if (value*offset <= m_maxYValue) {
+        scaleYValues(value*-10);
     }
 }
 
@@ -90,7 +93,6 @@ void GraphPlotter::drawBackground()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glDeleteBuffers(m_numBackgroundVertices * sizeof(Vertex),&vbo);
-    
 }
 
 void GraphPlotter::drawAxes()
@@ -115,7 +117,7 @@ void GraphPlotter::drawAxes()
 
     glColor3d(0, 0, 0);
     glLineWidth(2.5);
-    glDrawArrays(GL_LINE_STRIP, 0, m_numAxisVertices);
+    glDrawArrays(GL_LINES, 0, m_numAxisVertices);
     glLineWidth(1);
 
     glDisableVertexAttribArray(attribute_coord2d);
@@ -150,5 +152,34 @@ void GraphPlotter::drawGraph()
     glDisableVertexAttribArray(attribute_coord2d);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    glDeleteBuffers(m_graphVertices.size() * sizeof(Vertex), &vbo);
 }
+
+void GraphPlotter::checkIfMaxValue(float value)
+{
+    if (value >= m_maxValueSoFar) {
+        m_maxValueSoFar = value;
+    }
+}
+
+float scaleBetween(float unscaledNum, float minAllowed, float maxAllowed, float min, float max)
+{
+    return (maxAllowed - minAllowed) * (unscaledNum - min) / (max - min) + minAllowed;
+}
+
+void GraphPlotter::scaleXValues()
+{
+    float offset = static_cast<float>(m_maxValues) / m_graphVertices.size();
+
+    for (float i = 0; i < m_graphVertices.size(); i++) {
+        m_graphVertices[i].x = i*offset;
+    }
+}
+
+void GraphPlotter::scaleYValues(float value)
+{
+    for (float i = 0; i < m_graphVertices.size(); i++) {
+        float absVal = abs(m_graphVertices[i].y);
+        m_graphVertices[i].y = scaleBetween(absVal, 0, 200, 0, abs(value))*-1;
+    }
+}
+

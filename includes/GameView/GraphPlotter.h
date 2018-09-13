@@ -22,7 +22,12 @@ namespace GameView
     private:
         size_t m_currentIndex=0;
 
-        const size_t m_maxValues = 30;
+        float m_maxValueSoFar=0;
+
+        const size_t m_maxValues = 300;
+
+        const float m_maxYValue = -200;
+        const float m_minYValue = 0;
 
         const int m_xOffset = 600;
         const int m_yOffset = 400;
@@ -33,11 +38,14 @@ namespace GameView
         void drawAxes();
         void drawGraph();
 
+        void checkIfMaxValue(float value);
+
+        void scaleXValues();
+        void scaleYValues(float value);
+
         std::vector<Vertex> m_graphVertices;
         
         Vertex m_backgroundVertices[m_numBackgroundVertices];
         Vertex m_axisVertices[m_numAxisVertices];
     };
-
-
 }
