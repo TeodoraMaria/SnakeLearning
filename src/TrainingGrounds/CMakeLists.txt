@@ -22,7 +22,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 	HardCoded
 	GymEnv
 	QLearning
-	# GeneticAlgorithm
+	GeneticAlgorithm
 	GameLogic
 	ConfigLoading
 )
