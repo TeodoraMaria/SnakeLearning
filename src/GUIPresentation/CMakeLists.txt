@@ -14,11 +14,6 @@ include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(${GLEW_INCLUDE_DIRS})
 include_directories(${OPENGL_INCLUDE_DIR})
 
-add_definitions(${NANOGUI_EXTRA_DEFS})
-include_directories(${NANOGUI_EXTRA_INCS})
-include_directories("${CMAKE_SOURCE_DIR}/third_party/nanogui/include/")
-include_directories(${MYPROJ_EIGEN3_INCLUDE_DIR})
-
 target_include_directories(${PROJECT_NAME} PRIVATE
 	${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/
 	${CMAKE_SOURCE_DIR}/includes/)
