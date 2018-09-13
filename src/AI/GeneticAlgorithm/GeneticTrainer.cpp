@@ -33,7 +33,7 @@ IPlayer *GeneticTrainer::Train()
         }
 
         runEpisode(i);
-        std::cout << "episode" << i;
+        std::cout << "episode " << i;
         printFitnessInfo();
 
         selectNewNetworks();
