@@ -207,6 +207,7 @@ int Game::MoveSnake(const size_t & snakeNumber, const SnakeMove& move)
 
 	if (m_gameBoard.IsFood(newSnakeHeadPosition))
 	{
+		m_gameBoard.RemoveFood(newSnakeHeadPosition);
 		snakeToMove.Eat(newSnakeHeadPosition);
 		m_gameBoard[newSnakeHeadPosition] = snakeNumber;
 		return 1;

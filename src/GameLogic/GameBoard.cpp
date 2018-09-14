@@ -149,6 +149,24 @@ void GameBoard::PlaceFood()
 		coord.GenerateCoordinate(m_width, m_length);
 	} while (!CoordIsEmpty(coord));
 	(*this)[coord] = BoardPart::FOOD;
+	m_foods.push_back(coord);
+}
+
+void GameBoard::RemoveFood(const Coordinate& location)
+{
+	const auto foodIndx = std::find_if(
+		m_foods.begin(),
+		m_foods.end(),
+		[&](const auto& coord)
+		{
+			return coord == location;
+		});
+	
+	if (foodIndx == m_foods.end())
+		throw "Tried to remove nonesisting food.";
+	
+	m_foods.erase(foodIndx);
+	(*this)[location] = BoardPart::EMPTY;
 }
 
 void GameBoard::GrowSnake(const size_t & snakeNumber, const Coordinate & location)
