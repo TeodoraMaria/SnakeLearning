@@ -21,12 +21,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME}
 	GameView
 
-	
 	${SDL2_LIBRARIES}
 	${GLEW_LIBRARIES}
 	${OPENGL_LIBRARIES}
-
-	nanogui ${NANOGUI_EXTRA_LIBS}
 )
 
 SetDefaultTargetProperties()
