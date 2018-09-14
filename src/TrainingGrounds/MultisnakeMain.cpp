@@ -41,7 +41,7 @@ void MultisnakeMain()
 		qoptions.qDiscountFactor = 0.9;
 		qoptions.actionQualityEps = 0.005;
 		
-		qoptions.numEpisodes = 1000;
+		qoptions.numEpisodes = 10;
 		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes * 10);
 		qoptions.learningRate = 0.1;
 		qoptions.minRandActionChance = 0.001;

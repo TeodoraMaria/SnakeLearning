@@ -54,6 +54,8 @@ public:
 	void KillSnake(const std::list<Coordinate>& snakeBody);
 	Coordinate GenerateCoordinate() const;
 
+	Coordinate FindClosestFood(const Coordinate& position) const;
+
 private:
 	
 	void AddLimitsToBoard();

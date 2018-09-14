@@ -10,6 +10,7 @@
 
 #include "GymEnv/SnakeStudent.hpp"
 #include "GymEnv/StateObserver/GridObserver.hpp"
+#include "GymEnv/StateObserver/FoodDirectionDecorator.hpp"
 #include "GymEnv/StateExtractor.hpp"
 
 #include "GameLogic/CellInterpreter/Basic3CellInterpreter.hpp"
@@ -124,7 +125,11 @@ IPlayer* MultisnakeTabularTrainer::Train()
 		auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
 //		auto cellInterpreter = std::make_shared<WallFoodEnemy>();
 
+//		auto gridObserver = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
+//		auto observer = std::make_shared<FoodDirectionDecorator>(cellInterpreter, gridObserver);
+		
 		auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
+		
 		auto agent = std::make_shared<QTabStudent>(
 			observer,
 			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); },

@@ -199,3 +199,15 @@ Coordinate GameBoard::GenerateCoordinate() const
 	} while (!CoordIsEmpty(coord));
 	return coord;
 }
+
+Coordinate GameBoard::FindClosestFood(const Coordinate& targetPos) const
+{
+	if (m_foods.empty())
+		throw "No foods.";
+	
+	return *std::min_element(m_foods.begin(), m_foods.end(),
+		[&](const auto& pos1, const auto& pos2)
+		{
+			return (pos1 - targetPos).Magnitude() < (pos2 - targetPos).Magnitude();
+		});
+}
