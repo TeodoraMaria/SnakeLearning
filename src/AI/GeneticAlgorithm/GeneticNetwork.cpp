@@ -36,8 +36,8 @@ SnakeMove GeneticNetwork::feedForward(const std::vector<double>& input) const
     std::vector<double> doubleInput(result.begin(), result.end());
 
     SnakeMove bestMove;
-    //size_t index=std::distance(result.begin(), std::max_element(result.begin(), result.end()));
-    size_t index = AI::QLearning::Utils::PickAction(doubleInput, 0, m_merseneTwister,true,0.001);
+    size_t index=std::distance(result.begin(), std::max_element(result.begin(), result.end()));
+    //size_t index = AI::QLearning::Utils::PickAction(doubleInput, 0, m_merseneTwister,true,0.001);
 
     switch (index) {
         case 0: {
@@ -53,7 +53,7 @@ SnakeMove GeneticNetwork::feedForward(const std::vector<double>& input) const
             break;
         }
         case 3: {//TODO: remove
-            bestMove = SnakeMove::LEFT;
+            bestMove = SnakeMove::DOWN;
             break;
         }
         default:
@@ -109,6 +109,12 @@ void GeneticNetwork::mutateWeights(double mutateProb)
 
 void GeneticNetwork::crossover(GeneticNetwork & otherNetwork)
 {
-    size_t numOfWeights = Utils::Math::randomNumber<size_t>(0, m_weights.size());
-    std::swap_ranges(m_weights.begin(), m_weights.begin() + numOfWeights, otherNetwork.m_weights.begin());
+    //size_t numOfWeights = Utils::Math::randomNumber<size_t>(0, m_weights.size());
+    //std::swap_ranges(m_weights.begin(), m_weights.begin() + numOfWeights, otherNetwork.m_weights.begin());
+    for (size_t i = 0; i < m_weights.size(); i++) {
+        size_t randomNumber= Utils::Math::randomNumber<size_t>(0, 100);
+        if (randomNumber < 50) {
+            std::swap(m_weights[i], otherNetwork.m_weights[i]);
+        }
+    }
 }

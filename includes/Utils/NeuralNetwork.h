@@ -20,8 +20,10 @@ namespace Utils
         void initWeights();
 
         void setSettings(const NetworkSettings& settings);
+        NetworkSettings getNetworkSettings()const;
 
         std::vector<float> getWeights() const;
+        void setWeights(const std::vector<float>& weights);
 
     protected:
         float getWeightAt(size_t layer, size_t weightIndex, size_t inputIndex)const;

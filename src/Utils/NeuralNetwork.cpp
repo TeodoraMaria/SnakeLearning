@@ -102,3 +102,13 @@ std::vector<float> Utils::NeuralNetwork::getWeights() const
 {
     return m_weights;
 }
+
+void Utils::NeuralNetwork::setWeights(const std::vector<float>& weights)
+{
+    m_weights = weights;
+}
+
+NetworkSettings NeuralNetwork::getNetworkSettings()const
+{
+    return m_settings;
+}

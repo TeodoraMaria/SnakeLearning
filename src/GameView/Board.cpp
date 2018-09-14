@@ -15,9 +15,7 @@ namespace GameView
    void Board::draw()
    {
       for (const auto& cell : m_gameCells) {
-         //for (const auto& cell : cellVec) {
             cell.draw();
-         //}
       }
    }
 
