@@ -1,3 +1,5 @@
+#pragma once
+
 #include "IStateObserver.hpp"
 
 namespace GymEnv { namespace StateObserver
