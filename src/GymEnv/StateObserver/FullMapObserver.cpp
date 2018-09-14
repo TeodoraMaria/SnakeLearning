@@ -13,7 +13,7 @@ FullMapObserver::FullMapObserver(
 
 size_t FullMapObserver::NbOfObservations() const
 {
-	return m_maxMapCells;
+	return m_maxMapCells * (m_cellInterpreter->NbOfInterpretableParts() - 1);
 }
 
 void FullMapObserver::Observe(
