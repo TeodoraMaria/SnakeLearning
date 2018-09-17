@@ -22,9 +22,9 @@ namespace AI {
 
 			inline static int32_t ClampOutputValue(double x)
 			{
-				if (x < 0.4) return 0;
-				else if (x > 0.6) return 1;
-				else return -1;
+				if (x < 0.5) return 0;
+				//else if (x > 0.6) return 1;
+				else return 1;
 			}
 
 		public:
@@ -41,7 +41,7 @@ namespace AI {
 			SupervisedNetwork(Settings const& settings);
 			SupervisedNetwork(Settings const& settings, std::vector<double> const& weights);
 
-			std::vector<int32_t> const& Evaluate(std::vector<double> const& input);
+			std::vector<double> const& Evaluate(std::vector<double> const& input);
 
 			std::vector<double> const& GetInputHiddenWeights() const { return m_weightsInputHidden; }
 			std::vector<double> const& GetHiddenOutputWeights() const { return m_weightsHiddenOutput; }
@@ -65,7 +65,7 @@ namespace AI {
 			std::vector<double>     m_hiddenNeurons;
 			std::vector<double>     m_outputNeurons;
 
-			std::vector<int32_t>    m_clampedOutputs;
+			std::vector<double>    m_clampedOutputs;
 
 			std::vector<double>     m_weightsInputHidden;
 			std::vector<double>     m_weightsHiddenOutput;
