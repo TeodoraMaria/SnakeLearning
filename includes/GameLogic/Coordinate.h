@@ -1,5 +1,7 @@
 #pragma once
+
 #include <vector>
+#include <cstddef>
 
 class Coordinate
 {
@@ -14,6 +16,7 @@ public:
 
 	int GetX() const;
 	int GetY() const;
+	double Magnitude() const;
 
 	Coordinate operator + (const Coordinate& coord) const;
 	Coordinate operator - (const Coordinate& coord) const;

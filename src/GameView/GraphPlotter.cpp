@@ -6,41 +6,20 @@ using namespace GameView;
 
 GraphPlotter::GraphPlotter()
 {
-    m_graphVertices.resize(m_maxValues);
-}
+    m_axisVertices[0].x = -10;
+    m_axisVertices[0].y = 0;
 
 
-void GraphPlotter::addValue(float value)
-{
-    Vertex vertex;
-    vertex.x = m_currentIndex;
-    vertex.y = value;
+    m_axisVertices[1].x = 300;
+    m_axisVertices[1].y = 0;
 
-    if (m_currentIndex == m_maxValues) {
-        m_graphVertices.pop_back();
-        m_graphVertices.push_back(vertex);
+    m_axisVertices[2].x = 0;
+    m_axisVertices[2].y = 10;
 
-        for (size_t i = 0; i < m_graphVertices.size(); i++) {
-            m_graphVertices[i].x = i;
-        }
-    } else {
-        m_graphVertices[m_currentIndex] = vertex;
-        m_currentIndex++;
-    }
-}
+    m_axisVertices[3].x = 0;
+    m_axisVertices[3].y = -200;
 
-void GraphPlotter::plot()
-{
-    glTranslatef(m_xOffset, m_yOffset, 0);
-    drawBackground();
-    drawAxes();
-    drawGraph();
 
-    glTranslatef(-m_xOffset, -m_yOffset, 0);
-}
-
-void GraphPlotter::drawBackground()
-{
     m_backgroundVertices[0].x = -10;
     m_backgroundVertices[0].y = 10;
 
@@ -52,15 +31,49 @@ void GraphPlotter::drawBackground()
 
     m_backgroundVertices[3].x = 310;
     m_backgroundVertices[3].y = 10;
+}
 
+
+void GraphPlotter::addValue(float value)
+{
+    Vertex vertex;
+
+    float offset = -10;
+
+    vertex.y = value*offset;
+    m_graphVertices.push_back(vertex);
+
+    if (m_graphVertices.size() == m_maxValues) {
+        size_t index = Utils::Math::randomNumber<size_t>(0, m_maxValues-1);
+        m_graphVertices.erase(m_graphVertices.begin()+index);
+    }
+
+    scaleXValues();
+    if (value*offset <= m_maxYValue) {
+        scaleYValues(value*-10);
+    }
+}
+
+void GraphPlotter::plot()
+{
+    glTranslatef(m_xOffset, m_yOffset, 0);
+    drawBackground();
+    drawAxes();
+    if (m_graphVertices.size() > 0) {
+        drawGraph();
+    }
+    
+    glTranslatef(-m_xOffset, -m_yOffset, 0);
+}
+
+void GraphPlotter::drawBackground()
+{
     GLuint vbo;
 
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-    glBufferData(GL_ARRAY_BUFFER, m_numBackgroundVertices * sizeof(Vertex), m_backgroundVertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, m_numBackgroundVertices * sizeof(Vertex), m_backgroundVertices, GL_DYNAMIC_DRAW);
 
     GLuint attribute_coord2d = 0;
     glEnableVertexAttribArray(attribute_coord2d);
@@ -78,31 +91,18 @@ void GraphPlotter::drawBackground()
 
     glDisableVertexAttribArray(attribute_coord2d);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glDeleteBuffers(m_numBackgroundVertices * sizeof(Vertex),&vbo);
 }
 
 void GraphPlotter::drawAxes()
 {
-    m_axisVertices[0].x = 0;
-    m_axisVertices[0].y = 0;
-
-
-    m_axisVertices[1].x = m_graphVertices.size();
-    m_axisVertices[1].y = 0;
-
-    m_axisVertices[2].x = 0;
-    m_axisVertices[2].y = 0;
-
-    m_axisVertices[3].x = 0;
-    m_axisVertices[3].y = -200;
-
     GLuint vbo;
 
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-    glBufferData(GL_ARRAY_BUFFER, m_numAxisVertices * sizeof(Vertex), m_axisVertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, m_numAxisVertices * sizeof(Vertex), m_axisVertices, GL_DYNAMIC_DRAW);
 
     GLuint attribute_coord2d = 0;
     glEnableVertexAttribArray(attribute_coord2d);
@@ -117,11 +117,13 @@ void GraphPlotter::drawAxes()
 
     glColor3d(0, 0, 0);
     glLineWidth(2.5);
-    glDrawArrays(GL_LINE_STRIP, 0, m_numAxisVertices);
+    glDrawArrays(GL_LINES, 0, m_numAxisVertices);
     glLineWidth(1);
 
     glDisableVertexAttribArray(attribute_coord2d);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glDeleteBuffers(m_numAxisVertices * sizeof(Vertex), &vbo);
 }
 
 void GraphPlotter::drawGraph()
@@ -131,9 +133,7 @@ void GraphPlotter::drawGraph()
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-    glBufferData(GL_ARRAY_BUFFER, m_graphVertices.size() * sizeof(Vertex), &m_graphVertices.front(), GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, m_graphVertices.size() * sizeof(Vertex), &m_graphVertices.front(), GL_DYNAMIC_DRAW);
 
     GLuint attribute_coord2d = 0;
     glEnableVertexAttribArray(attribute_coord2d);
@@ -151,4 +151,35 @@ void GraphPlotter::drawGraph()
 
     glDisableVertexAttribArray(attribute_coord2d);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 }
+
+void GraphPlotter::checkIfMaxValue(float value)
+{
+    if (value >= m_maxValueSoFar) {
+        m_maxValueSoFar = value;
+    }
+}
+
+float scaleBetween(float unscaledNum, float minAllowed, float maxAllowed, float min, float max)
+{
+    return (maxAllowed - minAllowed) * (unscaledNum - min) / (max - min) + minAllowed;
+}
+
+void GraphPlotter::scaleXValues()
+{
+    float offset = static_cast<float>(m_maxValues) / m_graphVertices.size();
+
+    for (float i = 0; i < m_graphVertices.size(); i++) {
+        m_graphVertices[i].x = i*offset;
+    }
+}
+
+void GraphPlotter::scaleYValues(float value)
+{
+    for (float i = 0; i < m_graphVertices.size(); i++) {
+        float absVal = abs(m_graphVertices[i].y);
+        m_graphVertices[i].y = scaleBetween(absVal, 0, 200, 0, abs(value))*-1;
+    }
+}
+

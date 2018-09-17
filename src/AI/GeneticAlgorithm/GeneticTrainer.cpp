@@ -5,7 +5,6 @@
 #include <chrono>
 #include <thread>
 
-
 using namespace AI::GeneticAlgorithm;
 
 GeneticTrainer::GeneticTrainer(Utils::NetworkSettings networkSettings,GeneticOptions options, GymEnv::SingleSnakeEnvBase* env):
@@ -33,13 +32,12 @@ IPlayer *GeneticTrainer::Train()
         }
 
         runEpisode(i);
-        std::cout << "episode" << i;
+        std::cout << "episode " << i;
         printFitnessInfo();
 
         selectNewNetworks();
         crossover();
         mutate();
-
 
         if (i < m_options.numEpisodes - 1) {
             resetFitness();
@@ -93,7 +91,7 @@ void GeneticTrainer::runEpisode(size_t episode)
     }
 
 
-    if (episode < m_options.numEpisodes - 10) {
+    if (episode < m_options.numEpisodes-10) {
         return;
     }
     
@@ -136,7 +134,7 @@ double GeneticTrainer::runStep(const std::vector<double>& state, const GeneticNe
             break;
         }
         case 0: {
-           // reward = 0.0;
+            //reward = -0.1;
             break;
         }
         case 1: {

@@ -21,7 +21,7 @@ void fatalError(std::string error)
 OpenGLRenderer::OpenGLRenderer(size_t resolutionX,size_t resolutionY,size_t lines,size_t cols)
     :m_resolutionX(resolutionX),m_resolutionY(resolutionY)
 {
-    m_board = new Board(resolutionX-500, resolutionY);
+    m_board = new Board(resolutionX, resolutionY);
     m_board->setUpBoard(lines, cols);
 }
 
@@ -53,15 +53,20 @@ void OpenGLRenderer::Render(const GameState & gameState) const
    
    m_board->draw();
 
-   GraphPlotter g;
-   g.plot();
-
+   if (m_graphPlotter != nullptr) {
+      m_graphPlotter->plot();
+   }
    SDL_GL_SwapWindow(m_window);
 }
 
 Board * OpenGLRenderer::getBoard() const
 {
     return m_board;
+}
+
+void OpenGLRenderer::addGraphPlotter(GraphPlotter * graphPlotter)
+{
+    m_graphPlotter = graphPlotter;
 }
 
 void OpenGLRenderer::updateBoard(const GameState & gameState) const
@@ -109,8 +114,6 @@ void OpenGLRenderer::init() const
     glLoadIdentity();
     glOrtho(0.0f, m_resolutionX, m_resolutionY, 0.0f, 0.0f, 1.0f);
     glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
-
-    
 }
 
 }

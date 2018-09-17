@@ -48,16 +48,21 @@ public:
 
 	void Init();
 	void PlaceFood();
+	void RemoveFood(const Coordinate& location);
 	void GrowSnake(const size_t& snakeNumber, const Coordinate& location);
 	void MoveSnake(const Coordinate& freedLocation, const Coordinate& newLocation);
 	void KillSnake(const std::list<Coordinate>& snakeBody);
 	Coordinate GenerateCoordinate() const;
+
+	Coordinate FindClosestFood(const Coordinate& position) const;
 
 private:
 	
 	void AddLimitsToBoard();
 	
 	std::vector<int> m_board;
+	std::vector<Coordinate> m_foods;
+	
 	size_t m_length;
 	size_t m_width;
 	GameBoardType m_gameBoardType;

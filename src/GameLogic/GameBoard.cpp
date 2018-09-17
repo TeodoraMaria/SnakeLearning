@@ -61,6 +61,11 @@ std::vector<int> GameBoard::GetBoard() const
 	return m_board;
 }
 
+const std::vector<int>& GameBoard::GetBoardCells() const
+{
+	return m_board;
+}
+
 /*
 ** Operators.
 */
@@ -149,6 +154,24 @@ void GameBoard::PlaceFood()
 		coord.GenerateCoordinate(m_width, m_length);
 	} while (!CoordIsEmpty(coord));
 	(*this)[coord] = BoardPart::FOOD;
+	m_foods.push_back(coord);
+}
+
+void GameBoard::RemoveFood(const Coordinate& location)
+{
+	const auto foodIndx = std::find_if(
+		m_foods.begin(),
+		m_foods.end(),
+		[&](const auto& coord)
+		{
+			return coord == location;
+		});
+	
+	if (foodIndx == m_foods.end())
+		throw "Tried to remove nonesisting food.";
+	
+	m_foods.erase(foodIndx);
+	(*this)[location] = BoardPart::EMPTY;
 }
 
 void GameBoard::GrowSnake(const size_t & snakeNumber, const Coordinate & location)
@@ -180,4 +203,16 @@ Coordinate GameBoard::GenerateCoordinate() const
 		coord.GenerateCoordinate(m_width, m_length);
 	} while (!CoordIsEmpty(coord));
 	return coord;
+}
+
+Coordinate GameBoard::FindClosestFood(const Coordinate& targetPos) const
+{
+	if (m_foods.empty())
+		throw "No foods.";
+	
+	return *std::min_element(m_foods.begin(), m_foods.end(),
+		[&](const auto& pos1, const auto& pos2)
+		{
+			return (pos1 - targetPos).Magnitude() < (pos2 - targetPos).Magnitude();
+		});
 }

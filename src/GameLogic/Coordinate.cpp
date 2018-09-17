@@ -1,5 +1,6 @@
 #include "Coordinate.h"
 #include <stdlib.h>
+#include <cmath>
 
 const Coordinate Coordinate::UP(-1, 0);
 const Coordinate Coordinate::RIGHT(0, 1);
@@ -22,6 +23,11 @@ int Coordinate::GetX() const
 int Coordinate::GetY() const
 {
 	return m_y;
+}
+
+double Coordinate::Magnitude() const
+{
+	return std::sqrt(m_x * m_x + m_y * m_y);
 }
 
 Coordinate Coordinate::operator+(const Coordinate & coord) const
