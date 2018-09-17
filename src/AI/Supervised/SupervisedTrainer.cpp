@@ -46,7 +46,7 @@ void AI::Supervised::SupervisedTrainer::Train(TrainingData const & trainingData)
 
 	std::cout << std::endl << " Neural Network Training Starting: " << std::endl
 		<< "==========================================================================" << std::endl
-		<< " LR: " << m_learningRate << ", Momentum: " << m_momentum << ", Max Epochs: " << m_maxEpochs << std::endl
+		<< " LR: " << m_learningRate << ", Momentum: " << m_momentum << ", Max Epochs: " << m_maxEpochs << "Training data:"<<trainingData.m_trainingSet.size()<<std::endl
 		<< " " << m_pNetwork->m_numInputs << " Input Neurons, " << m_pNetwork->m_numHidden << " Hidden Neurons, " << m_pNetwork->m_numOutputs << " Output Neurons" << std::endl
 		<< "==========================================================================" << std::endl << std::endl;
 

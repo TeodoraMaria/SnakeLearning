@@ -242,7 +242,7 @@ void Game::RunRound()
 	GameState gameState = GetGameState();
 	if (m_gameRenderer != nullptr)
 	{
-		m_gameRenderer->Render(gameState);
+		PrintBoard();
 	}
 	std::random_shuffle(m_players.begin(), m_players.end());
 	for (auto player : m_players)
@@ -273,7 +273,7 @@ void Game::RunRoundAndSave(FileHelper& helper)
 		
 		const auto chosenMove = player->GetNextAction(gamestate);
 		const auto snakeNumber = player->GetSnakeNumber();
-		SaveMove(helper, gamestate.GetFieldOfView(gamestate.GetSnake(snakeNumber),5,5), chosenMove, snakeNumber);
+		SaveMove(helper, gamestate.GetFieldOfView(gamestate.GetSnake(snakeNumber),7,7), chosenMove, snakeNumber);
 
 		
 		MoveSnake(snakeNumber, chosenMove);

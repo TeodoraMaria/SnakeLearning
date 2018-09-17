@@ -24,8 +24,10 @@ AI::Supervised::SupervisedNetwork::SupervisedNetwork(Settings const & settings, 
 	LoadWeights(weights);
 }
 
-std::vector<int32_t> const & AI::Supervised::SupervisedNetwork::Evaluate(std::vector<double> const & input)
+std::vector<double> const & AI::Supervised::SupervisedNetwork::Evaluate(std::vector<double> const & input)
 {
+	for (auto elem : input)
+		elem = elem / 2;
 	assert(input.size() == m_numInputs);
 	assert(m_inputNeurons.back() == -1.0 && m_hiddenNeurons.back() == -1.0);
 
@@ -68,9 +70,9 @@ std::vector<int32_t> const & AI::Supervised::SupervisedNetwork::Evaluate(std::ve
 
 		// Apply activation function and clamp the result
 		m_outputNeurons[outputIdx] = SigmoidActivationFunction(m_outputNeurons[outputIdx]);
-		m_clampedOutputs[outputIdx] = ClampOutputValue(m_outputNeurons[outputIdx]);
+		m_clampedOutputs[outputIdx] = m_outputNeurons[outputIdx];
 	}
-
+	
 	return m_clampedOutputs;
 }
 
