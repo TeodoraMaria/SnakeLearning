@@ -40,7 +40,7 @@ Controller::Controller()
 	{
 		gameOptions.boardLength = 25;
 		gameOptions.boardWidth = 25;
-		gameOptions.numFoods = 3;
+		gameOptions.numFoods = 40;
 	}
    m_game = new Game(gameOptions, m_players);
    m_game->InitGame();
@@ -70,6 +70,11 @@ void Controller::addBoard(Board * board)
 
    const GameBoard gameBoard = state.GetGameBoard();
    m_board->setUpBoard(gameBoard.GetBoardLength(), gameBoard.GetBoardWidth());
+}
+
+void Controller::addGraphPlotter(GraphPlotter * graphPlotter)
+{
+    m_graphPlotter = graphPlotter;
 }
 
 GameState Controller::getGameState() const
@@ -116,11 +121,11 @@ bool Controller::sendActions()
       GameState state = m_game->GetGameState();
       m_game->RunRound();
       
-     
-      //code
-     // resetPlayersInput();
+      auto score = static_cast<int>(m_game->GetAllSnakes().at(0).GetScore());
+      if (score > 0) {
 
-     
+      m_graphPlotter->addValue(score);
+      }   
       m_lastTime = m_currentTime;
       return true;
    }

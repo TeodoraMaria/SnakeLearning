@@ -1,5 +1,6 @@
 #include "StateObserver/FoodDirectionDecorator.hpp"
 #include <iostream>
+#include <assert.h>
 
 using namespace GymEnv::StateObserver;
 

@@ -4,8 +4,10 @@
 #include "Controller.h"
 #include "OpenGLRenderer.h"
 #include "TermRenderer.hpp"
+#include "GraphPlotter.h"
 
 #include <memory>
+
 
 namespace GameView
 {
@@ -39,6 +41,8 @@ namespace GameView
       GameState m_gameSate = GameState::PLAY;
       
       OpenGLRenderer m_renderer;
+
+      std::shared_ptr<GraphPlotter> m_graphPlotter;
       
 
       std::unique_ptr<Board> m_board;
