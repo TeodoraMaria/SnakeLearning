@@ -57,10 +57,10 @@ using namespace GymEnv::Utils;
 
 int main()
 {
-	const auto learningRate = 0.01;
+	const auto learningRate = 0.1;
 
 	auto cellInterpreter = std::make_shared<CellInterpreter::Basic3CellInterpreter>();
-	auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
+	auto observer = std::make_shared<GridObserver>(cellInterpreter, 3, 3);
 	
 	auto scope = Scope::NewRootScope();
 
@@ -73,7 +73,7 @@ int main()
 	const int numInputs = observer->NbOfObservations();
 	const int numOutputs = IPlayer::possibleMoves.size();
 	
-	const auto layersSizes = std::array<int, 2>{{ numInputs * 4, (numInputs + numOutputs) * 2 }};
+	const auto layersSizes = std::array<int, 2>{{ numInputs * 2, (numInputs + numOutputs) * 2 }};
 	
 	// Weights.
 	const int shape1[] = { numInputs, layersSizes[0] };
@@ -99,9 +99,9 @@ int main()
 	auto assignB3 = Assign(scope, b3, RandomNormal(scope, { 1, shape3[1] }, DataType::DT_FLOAT));
 	
 	// Layers.
-	auto layer1 = Relu(scope, Add(scope, MatMul(scope, input, w1), b1));
-	auto layer2 = Relu(scope, Add(scope, MatMul(scope, layer1, w2), b2));
-	auto layer3 = Relu(scope, Add(scope, MatMul(scope, layer2, w3), b3));
+	auto layer1 = Tanh(scope, Add(scope, MatMul(scope, input, w1), b1));
+	auto layer2 = Tanh(scope, Add(scope, MatMul(scope, layer1, w2), b2));
+	auto layer3 = Tanh(scope, Add(scope, MatMul(scope, layer2, w3), b3));
 	
 	auto reqularization = AddN(
 		scope,
@@ -162,9 +162,10 @@ int main()
 		qoptions.qDiscountFactor = 0.9;
 		qoptions.actionQualityEps = 0.005;
 
-		qoptions.numEpisodes = 10;
-		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes * 10);
+		qoptions.numEpisodes = 10000;
+		qoptions.randActionDecayFactor = 1.0 / (qoptions.numEpisodes / 4);
 		qoptions.learningRate = 0.1;
+		qoptions.maxRandActionChance = 1.0;
 		qoptions.minRandActionChance = 0.001;
 		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
 		{
@@ -172,7 +173,7 @@ int main()
 		};
 
 		qoptions.foodReward = [](int episode) { return 1.0; };
-		qoptions.dieReward = [&](int episode) { return -1.0 + (double)episode / qoptions.numEpisodes * (-100.0); };
+		qoptions.dieReward = [&](int episode) { return 0; };//+ (double)episode / qoptions.numEpisodes * (-100.0); };
 		qoptions.stepReward = [](int episode) { return 0; };
 
 		qoptions.milsToSleepBetweenFrames = 25;
@@ -193,6 +194,11 @@ int main()
 	auto nextObservationContainer = std::vector<double>(observer->NbOfObservations());
 	auto requiredOutput = std::vector<float>(IPlayer::possibleMoves.size());
 	auto startedToRender = false;
+	
+	auto noise = qoptions.maxRandActionChance;
+	auto merseneTwister = std::mt19937(std::random_device()());
+	auto chanceDistrib = std::uniform_real_distribution<double>(0.0, 1.0);
+	auto actionDistrib = std::uniform_int_distribution<>(0, IPlayer::possibleMoves.size());
 
 	for (auto episode = 0u; episode < qoptions.numEpisodes; episode++)
 	{
@@ -221,18 +227,25 @@ int main()
 					game.ForcefullyKillPlayer(snakeId);
 					continue;
 				}
-
+				
 				observer->Observe(observationContainer, gmState, snakeId);
 				std::copy_n(observationContainer.begin(), observer->NbOfObservations(), inputTensor.flat<float>().data());
 				TF_CHECK_OK(session.Run({{ input, inputTensor }}, { layer3 }, &tfOutputs));
-
-//				if (episode >= qoptions.numEpisodes - qoptions.lastNGamesToRender)
+				
+//				LOG(INFO) << tfOutputs[0].DebugString() << std::endl;
+//				std::vector<Tensor> tfOutputsPrint;
+//				TF_CHECK_OK(session.Run({}, { w1 }, &tfOutputsPrint));
+//				LOG(INFO) << w1.node()->DebugString() << std::endl;
+//				LOG(INFO) << w2 << std::endl;
+//				LOG(INFO) << w3 << std::endl;
+				
+				if (episode >= qoptions.numEpisodes - qoptions.lastNGamesToRender)
 				{
 					if (!startedToRender)
 					{
 						startedToRender = true;
-//						std::system("play -q -n synth 1 sin 880");
-//						std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+						std::system("play -q -n synth 1 sin 880");
+						std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 					}
 					gmOptions.gameRenderer->Render(game.GetGameState());
 					if (qoptions.milsToSleepBetweenFrames != 0)
@@ -241,9 +254,16 @@ int main()
 					}
 				}
 
+				unsigned int bestMoveIndx;
 				const auto networkOutput = tfOutputs[0].flat<float>().data();
-				const auto bestMoveQ = std::max_element(networkOutput, networkOutput + IPlayer::possibleMoves.size());
-				const auto bestMoveIndx = std::distance(networkOutput, bestMoveQ);
+				
+				if (chanceDistrib(merseneTwister) < noise)
+					bestMoveIndx = actionDistrib(merseneTwister);
+				else
+				{
+					const auto bestMoveQ = std::max_element(networkOutput, networkOutput + IPlayer::possibleMoves.size());
+					bestMoveIndx = std::distance(networkOutput, bestMoveQ);
+				}
 				
 				const auto rawReward = game.MoveSnake(
 					snakeId,
@@ -298,12 +318,15 @@ int main()
 					nullptr
 				));
 			}
+			
+			noise = ::Utils::Math::Lerp(noise, qoptions.minRandActionChance, qoptions.randActionDecayFactor);
 		}
 
 		printf(
-			"End of episode: %d with a reward of %.2f.",
+			"End of episode: %d with a reward of %.2f. Noise: %.2f\n",
 			episode,
-			episodeReward);
+			episodeReward,
+			noise);
 	}
 	return 0;
 }
