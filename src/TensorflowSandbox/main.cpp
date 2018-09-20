@@ -190,11 +190,18 @@ int main()
 
 	auto game = Game(gmOptions, players);
 	auto observationContainer = std::vector<double>(observer->NbOfObservations());
+	auto nextObservationContainer = std::vector<double>(observer->NbOfObservations());
+	auto requiredOutput = std::vector<float>(IPlayer::possibleMoves.size());
+	auto startedToRender = false;
 
 	for (auto episode = 0u; episode < qoptions.numEpisodes; episode++)
 	{
 		game.InitGame();
 		const auto maxNbOfSteps = qoptions.maxNumSteps(episode);
+		const auto maxStepsWithoutFood = qoptions.maxStepsWithoutFood(episode);
+		
+		auto stepsWithoutFood = 0u;
+		auto episodeReward = 0.0;
 		for (auto step = 0u; step < maxNbOfSteps; step++)
 		{
 			if (game.EveryoneIsDead())
@@ -207,14 +214,96 @@ int main()
 				const auto snakeId = agent->GetSnakeNumber();
 				if (!gmState.GetSnake(snakeId).IsAlive())
 					continue;
+				
+				if (stepsWithoutFood >= maxStepsWithoutFood)
+				{
+					std::cout << snakeId << " starved to death. ----- " << std::endl;
+					game.ForcefullyKillPlayer(snakeId);
+					continue;
+				}
 
 				observer->Observe(observationContainer, gmState, snakeId);
 				std::copy_n(observationContainer.begin(), observer->NbOfObservations(), inputTensor.flat<float>().data());
 				TF_CHECK_OK(session.Run({{ input, inputTensor }}, { layer3 }, &tfOutputs));
 
-//				tfOutputs[0].flat<float>();
+//				if (episode >= qoptions.numEpisodes - qoptions.lastNGamesToRender)
+				{
+					if (!startedToRender)
+					{
+						startedToRender = true;
+//						std::system("play -q -n synth 1 sin 880");
+//						std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+					}
+					gmOptions.gameRenderer->Render(game.GetGameState());
+					if (qoptions.milsToSleepBetweenFrames != 0)
+					{
+						std::this_thread::sleep_for(std::chrono::milliseconds(qoptions.milsToSleepBetweenFrames));
+					}
+				}
+
+				const auto networkOutput = tfOutputs[0].flat<float>().data();
+				const auto bestMoveQ = std::max_element(networkOutput, networkOutput + IPlayer::possibleMoves.size());
+				const auto bestMoveIndx = std::distance(networkOutput, bestMoveQ);
+				
+				const auto rawReward = game.MoveSnake(
+					snakeId,
+					IPlayer::possibleMoves[bestMoveIndx]);
+				
+				auto reward = 0.0;
+				if (rawReward < 0)
+				{
+					reward += qoptions.dieReward(episode);
+				}
+				else if (rawReward > 0)
+				{
+					reward += qoptions.foodReward(episode);
+					stepsWithoutFood = 0;
+				}
+				else
+				{
+					reward += qoptions.stepReward(episode);
+					stepsWithoutFood++;
+				}
+				
+				episodeReward += reward;
+				
+				double bestNextQ = 0;
+				const auto isDone = (rawReward < 0);
+				if (!isDone)
+				{
+					const auto gmState = game.GetGameState();
+					observer->Observe(nextObservationContainer, gmState, snakeId);
+					std::copy_n(nextObservationContainer.begin(), observer->NbOfObservations(), inputTensor.flat<float>().data());
+					TF_CHECK_OK(session.Run({{ input, inputTensor }}, { layer3 }, &tfOutputs));
+					
+					const auto networkOutput = tfOutputs[0].flat<float>().data();
+					const auto bestMoveQ = std::max_element(networkOutput, networkOutput + IPlayer::possibleMoves.size());
+					bestNextQ = *bestMoveQ;
+				}
+				
+				std::copy_n(observationContainer.begin(), observer->NbOfObservations(), inputTensor.flat<float>().data());
+				
+				std::copy_n(networkOutput, IPlayer::possibleMoves.size(), requiredOutput.begin());
+				requiredOutput[bestMoveIndx] = reward + qoptions.qDiscountFactor * bestNextQ;
+				
+				std::copy_n(requiredOutput.begin(), IPlayer::possibleMoves.size(), outputTensor.flat<float>().data());
+				
+				TF_CHECK_OK(session.Run(
+					{{ input, inputTensor }, { output, outputTensor }},
+					{
+						applyW1, applyW2, applyW3,
+						applyB1, applyB2, applyB3,
+						layer3
+					},
+					nullptr
+				));
 			}
 		}
+
+		printf(
+			"End of episode: %d with a reward of %.2f.",
+			episode,
+			episodeReward);
 	}
 	return 0;
 }
