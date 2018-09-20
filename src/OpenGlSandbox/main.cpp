@@ -1,11 +1,22 @@
-#include <GameView/GameWindow.h>
-#include <GameView/OpenGLRenderer.h>
+#include <QApplication.h>
 
-int main(int nargs,char** args)
+#include <AppUI/Application.h>
+#include <AppUI/ApplicationModel.h>
+
+int main(int argc,char** argv)
 {
-    GameView::GameWindow game(1000,500);
+    //GameView::GameWindow game(1000,500);
 
-    game.run();
+    srand(time(0));
+    QApplication qApplication(argc, argv);
+
+    AppUI::ApplicationModel* appModel= AppUI::ApplicationModel::getInstance();
+
+    AppUI::Application app(appModel);
+
+    app.start("lol", 500, 500);
+
+    qApplication.exec();
 
 	return 0;
 }
