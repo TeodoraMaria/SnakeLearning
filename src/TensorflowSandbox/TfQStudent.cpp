@@ -83,14 +83,11 @@ TfQStudent::TfQStudent(
 	auto applyB2 = ApplyGradientDescent(scope, b2, Cast(scope, m_learningRate, DataType::DT_FLOAT), { gradOutputs[4] });
 	auto applyB3 = ApplyGradientDescent(scope, b3, Cast(scope, m_learningRate, DataType::DT_FLOAT), { gradOutputs[5] });
 	
-	ClientSession session(scope);
-	auto outputs = std::vector<Tensor>();
+	m_session = std::make_unique<ClientSession>(scope);
 	
 	// Init the weights and biases by running the assigns nodes once.
-	TF_CHECK_OK(session.Run(
+	TF_CHECK_OK(m_session->Run(
 		{ assignW1, assignW2, assignW3, assignB1, assignB2, assignB3 },
 		nullptr
 	));
-	
-	
 }
