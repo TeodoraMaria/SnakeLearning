@@ -10,6 +10,8 @@ size_t GraphicCell::m_height;
 qreal GraphicCell::m_shadowX;
 qreal GraphicCell::m_shadowY;
 
+const double GraphicCell::SHADOW_FACTOR = 0.6;
+
 GraphicCell::GraphicCell(size_t x, size_t y, size_t width, size_t height):QGraphicsPolygonItem()
 {
     m_x = x;

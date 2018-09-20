@@ -8,9 +8,11 @@ namespace AppUI
     {
     public:
         GraphicCell(size_t x,size_t y,size_t width,size_t height);
+        ~GraphicCell() = default;
 
         virtual QPainterPath shape()const override;
         virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
+
 
     protected:
         size_t m_x;
@@ -21,6 +23,7 @@ namespace AppUI
         static qreal m_shadowY;
         QColor m_baseColor;
 
+        static const double SHADOW_FACTOR;
     };
 
 }

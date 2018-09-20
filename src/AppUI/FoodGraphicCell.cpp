@@ -5,7 +5,7 @@ using namespace AppUI;
 
 FoodGraphicCell::FoodGraphicCell(size_t x, size_t y, size_t width, size_t height):GraphicCell(x,y,width,height)
 {
-    m_baseColor = QColor(205,84,75);
+    m_baseColor = QColor(220, 20, 60);
 }
 
 QPainterPath FoodGraphicCell::shape() const
@@ -35,7 +35,7 @@ void FoodGraphicCell::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     path.lineTo(newX + newWidth, newY);
     path.lineTo(newX, newY + newHeight);
     painter->setPen(Qt::NoPen);
-    painter->setBrush(QColor(196,40,27));
+    painter->setBrush(QColor(m_baseColor.red() * SHADOW_FACTOR, m_baseColor.green()*SHADOW_FACTOR, m_baseColor.blue()*SHADOW_FACTOR));
     painter->drawPath(path);
     
     painter->setBrush(m_baseColor);

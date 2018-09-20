@@ -5,6 +5,9 @@
 
 namespace AppUI
 {
+
+
+
     class StartMenuScene:public IScene
     {
         Q_OBJECT

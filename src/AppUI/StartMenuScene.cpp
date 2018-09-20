@@ -1,5 +1,6 @@
 #include "StartMenuScene.h"
 #include "GameScene.h"
+#include "OptionsScene.h"
 #include "ApplicationModel.h"
 #include "ui_StartMenuScene.h"
 #include <memory>

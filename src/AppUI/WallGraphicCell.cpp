@@ -27,7 +27,7 @@ void WallGraphicCell::paint(QPainter * painter, const QStyleOptionGraphicsItem *
     path.lineTo(m_x + m_width, m_y);
     path.lineTo(m_x, m_y + m_height);
 
-    painter->setBrush(QColor(98,71,50));
+    painter->setBrush(QColor(m_baseColor.red() * SHADOW_FACTOR, m_baseColor.green()*SHADOW_FACTOR, m_baseColor.blue()*SHADOW_FACTOR));
     painter->drawPath(path);
     
     GraphicCell::paint(painter, option, widget);

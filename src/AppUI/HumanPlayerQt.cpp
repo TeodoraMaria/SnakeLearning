@@ -1,11 +1,24 @@
 #include "HumanPlayerQt.h"
+#include <vector>
 
 
 using namespace AppUI;
 
+const std::map < size_t, std::vector<Qt::Key>> HumanPlayerQt::playerKeys = {
+    std::pair<size_t,std::vector<Qt::Key>>(0,{Qt::Key::Key_W, Qt::Key::Key_S, Qt::Key::Key_A, Qt::Key::Key_D}),
+    std::pair<size_t,std::vector<Qt::Key>>(1,{Qt::Key::Key_Up, Qt::Key::Key_Down, Qt::Key::Key_Left, Qt::Key::Key_Right})
+
+};
+
 HumanPlayerQt::HumanPlayerQt(Qt::Key up, Qt::Key down, Qt::Key left, Qt::Key right):
     m_up(up),m_down(down),m_left(left),m_right(right),QObject()
 {
+}
+
+HumanPlayerQt::HumanPlayerQt(std::vector<Qt::Key> keys):
+    m_up(keys[0]),m_down(keys[1]),m_left(keys[2]),m_right(keys[3])
+{
+
 }
 
 HumanPlayerQt::~HumanPlayerQt()

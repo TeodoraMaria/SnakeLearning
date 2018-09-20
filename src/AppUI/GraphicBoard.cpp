@@ -20,7 +20,8 @@ void GraphicBoard::updateBoard(const GameState & gameState)
     size_t cols = gameBoard.GetBoardWidth();
     auto width = sceneRect().width();
     size_t widthOffset = width / rows;
-    size_t heightOffset = sceneRect().height() / cols;
+   // size_t heightOffset = sceneRect().height() / cols;
+    size_t heightOffset = width / rows;
 
     for (size_t i = 0; i < cols; i++) {
         for (size_t j = 0; j < rows; j++) {

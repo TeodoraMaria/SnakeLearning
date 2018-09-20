@@ -13,7 +13,7 @@ SnakeGraphicCell::SnakeGraphicCell(size_t x, size_t y, size_t width, size_t heig
     size_t blue = ((snakeNumber*100 & 0x0C) >> 2) * 64;
 
     //m_baseColor= QColor(red,green, blue);
-    m_baseColor = QColor(rand() % 256, rand() % 256, rand() % 256);
+    m_baseColor = QColor(red, green, blue);
     srand(time(0));
 }
 
@@ -37,7 +37,7 @@ void SnakeGraphicCell::paint(QPainter * painter, const QStyleOptionGraphicsItem 
     path.lineTo(m_x + m_width, m_y);
     path.lineTo(m_x, m_y + m_height);
 
-    painter->setBrush(QColor(m_baseColor.red() * 0.4,m_baseColor.green()*0.4,m_baseColor.blue()*0.4));
+    painter->setBrush(QColor(m_baseColor.red() * SHADOW_FACTOR,m_baseColor.green()*SHADOW_FACTOR,m_baseColor.blue()*SHADOW_FACTOR));
     painter->drawPath(path);
 
     GraphicCell::paint(painter, option, widget);

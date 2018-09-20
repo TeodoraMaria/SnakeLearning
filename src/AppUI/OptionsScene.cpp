@@ -1,4 +1,5 @@
 #include "OptionsScene.h"
+#include "GameScene.h"
 #include "ui_OptionsScene.h"
 #include "ApplicationModel.h"
 
@@ -22,6 +23,7 @@ void OptionsScene::createScene()
 
     m_centralWidget = ui->centralwidget;
 
+
     QObject::connect(ui->pushButton, SIGNAL(released()), this, SLOT(quitButtonPressed()));
 }
 
@@ -30,8 +32,9 @@ void OptionsScene::release()
 
 }
 
+
 void OptionsScene::quitButtonPressed()
-{
+{   
     emit sceneChange(ApplicationModel::startMenuSceneName);
 }
 

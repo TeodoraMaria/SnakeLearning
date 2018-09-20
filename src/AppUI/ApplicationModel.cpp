@@ -33,11 +33,12 @@ void ApplicationModel::defineScenes()
     auto startMenuScene = new StartMenuScene(startMenuSceneName);
     m_scenes.emplace(startMenuSceneName, startMenuScene);
 
+    auto optionsScene = new OptionsScene(optionsSceneName);
+    m_scenes.emplace(optionsSceneName, optionsScene);
+
     auto gameScene = new GameScene(gameSceneName);
     m_scenes.emplace(gameSceneName, gameScene);
 
-    auto optionsScene = new OptionsScene(optionsSceneName);
-    m_scenes.emplace(optionsSceneName, optionsScene);
 }
 
 void ApplicationModel::defineInitialScene()

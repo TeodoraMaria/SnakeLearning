@@ -12,6 +12,7 @@ namespace AppUI
     {
     public:
         GraphicBoard(size_t windowWidth, size_t windowHeigth);
+        ~GraphicBoard() = default;
         void updateBoard(const GameState & gameState);
     };
 
