@@ -55,6 +55,7 @@ public:
 	Coordinate GenerateCoordinate() const;
 
 	Coordinate FindClosestFood(const Coordinate& position) const;
+    const std::vector<int>& GetBoardCells() const;
 
 private:
 	

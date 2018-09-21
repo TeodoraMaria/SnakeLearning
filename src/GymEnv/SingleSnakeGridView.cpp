@@ -34,7 +34,7 @@ std::vector<double> SingleSnakeGridView::GetState() const
 	const auto gmState = m_game->GetGameState();
 	const auto snake = gmState.GetSnake(m_student->GetSnakeNumber());
 	
-	auto observationContainer =
+	static auto observationContainer =
 		std::vector<double>(m_gridObserver->NbOfObservations());
 	
 	m_gridObserver->Observe(
