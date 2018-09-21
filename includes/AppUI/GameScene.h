@@ -13,11 +13,11 @@ namespace AppUI
 {
     struct OptionsValues
     {
-        size_t humanPlayers = 2;
+        size_t humanPlayers = 0;
         size_t geneticBots = 0;
         size_t supervizedBots = 0;
         size_t qLearningBots = 0;
-        size_t normalBots = 5;
+        size_t normalBots = 0;
     };
 
     class GameScene :public IScene

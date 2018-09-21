@@ -20,6 +20,7 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS "${CMAKE_SOURCE_DIR}/ui")
 
 include_directories("${CMAKE_SOURCE_DIR}/bin")
 ######
+include_directories("${CMAKE_SOURCE_DIR}/third_party/json/")
 add_library(${PROJECT_NAME} STATIC ${srcs} ${includes})
 
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -31,6 +32,10 @@ target_link_libraries(${PROJECT_NAME}
 	GameLogic
 	HardCoded
 	Utils
+	GeneticAlgorithm
+	GameLogic
+	ConfigLoading
+
 	Qt5::Widgets 
 	Qt5::Core 
 	Qt5::Gui

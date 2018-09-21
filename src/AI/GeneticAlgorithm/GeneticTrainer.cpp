@@ -1,9 +1,11 @@
 #include "AI/GeneticAlgorithm/GeneticTrainer.h"
 #include "AI/GeneticAlgorithm/GeneticJsonUtils.h"
 #include "Utils/MathUtils.h"
+
 #include <iostream>
 #include <chrono>
 #include <thread>
+
 
 using namespace AI::GeneticAlgorithm;
 
@@ -14,8 +16,7 @@ GeneticTrainer::GeneticTrainer(Utils::NetworkSettings networkSettings,GeneticOpt
 
     for (auto& network : m_networks) {
         network = GeneticNetwork(networkSettings);
-    }
-    
+    }  
 }
 
 IPlayer *GeneticTrainer::Train()
@@ -45,7 +46,7 @@ IPlayer *GeneticTrainer::Train()
     }
 
     const GeneticNetwork* bestNetwork;
-    double maxFitness=0.0;
+    double maxFitness = 0.0;
     for (const auto& network : m_networks) {
         if (maxFitness < network.getFitness()) {
             maxFitness = network.getFitness();
@@ -53,26 +54,31 @@ IPlayer *GeneticTrainer::Train()
         }
     }
 
-
+  
 
 
     //TODO: fix link;
-    SaveWeights(bestNetwork->getWeights(), "D:\\fac\\snake\\aux_files\\genetic\\TrainedGenetic.json");
-    
-//    return new GeneticBot(*bestNetwork, std::shared_ptr<GymEnv::StateObserver::IStateObserver>(m_env->GetObserver()->Clone()));
+    //SaveWeights(bestNetwork->getWeights(), "D:\\fac\\snake\\aux_files\\genetic\\TrainedGenetic.json");
 
-	// Sorry, no more Clone.
-	// You should be able to create one from json.
-	return nullptr;
+    //return new GeneticBot(*bestNetwork, std::shared_ptr<GymEnv::StateObserver::IStateObserver>(m_env->GetObserver()->Clone()));
+
+    // Sorry, no more Clone.
+    // You should be able to create one from json.
+   
+    auto observer = const_cast<GymEnv::StateObserver::IStateObserver*>(m_env->GetObserver());
+
+    return new GeneticBot(*bestNetwork, std::shared_ptr<GymEnv::StateObserver::IStateObserver>(observer));
 }
 
 void GeneticTrainer::runEpisode(size_t episode)
 {
+    size_t maxSteps;
+
     for (auto& network : m_networks) {     
         //run game for each bot;
 
         m_env->Reset();
-        std::vector<double> state = m_env->GetState();
+        std::vector<double>& state = m_env->GetState();
 
         for (size_t i = 0; i < m_options.maxNumSteps; i++) {
 
@@ -89,8 +95,8 @@ void GeneticTrainer::runEpisode(size_t episode)
             state = m_env->GetState();
         }
     }
-
-
+    
+    /*
     if (episode < m_options.numEpisodes-10) {
         return;
     }
@@ -118,6 +124,8 @@ void GeneticTrainer::runEpisode(size_t episode)
         //network.updateFitness(reward);
         state = m_env->GetState();
     }
+    
+    */
     
 }
 

@@ -5,6 +5,10 @@
 #include "ApplicationModel.h"
 #include "HumanPlayerQt.h"
 #include "AI/HardCoded/SingleBot.hpp"
+#include "AI/GeneticAlgorithm/GeneticBot.h"
+
+#include "ConfigLoading/GeneticBotJson.h"
+
 
 #include <sstream>
 #include <memory>
@@ -13,6 +17,8 @@
 #include <qgraphicsitem.h>
 #include <qstringlistmodel.h>
 #include <qpalette.h>
+#include <json.hpp>
+
 
 
 using namespace AppUI;
@@ -21,9 +27,8 @@ GameScene::GameScene(const std::string& name)
 {
     m_sceneName = name;
 
-    m_timer.setInterval(300);
+    m_timer.setInterval(30);
     QObject::connect(&m_timer, SIGNAL(timeout()), this, SLOT(runRound()));
-
     QObject::connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateScoreBoard()));
 }
 
@@ -39,6 +44,7 @@ void GameScene::createScene()
     m_centralWidget = ui->centralwidget;
 
     ui->graphicsView->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    //ui->graphicsView->setAlignment(Qt::AlignCenter);
     m_board = new GraphicBoard(550, 550);
     ui->graphicsView->setScene(m_board);
     
@@ -46,7 +52,7 @@ void GameScene::createScene()
     
     GameOptions options;
     options.boardLength = 25;
-    options.boardWidth =25;
+    options.boardWidth =40;
     options.numFoods = 25;
     options.saveGameplay = true;
 
@@ -130,6 +136,22 @@ void GameScene::addPlayersToTheGame()
 
         m_playerNames.emplace(count++, "Supervised bot" + std::to_string(i + 1) + ":");
     }
+
+    const auto filePath = "D:\\fac\\snake\\aux_files\\genetic\\TrainedGenetic.json";
+
+    std::ifstream fileStream;
+
+    fileStream.open(filePath);
+    if (!fileStream.is_open()) {
+        throw "Failed to open file.";
+    }
+
+    nlohmann::json fileJsonContent;
+
+    fileStream >> fileJsonContent;
+    std::shared_ptr<AI::GeneticAlgorithm::GeneticBot> player = fileJsonContent.get<std::shared_ptr<AI::GeneticAlgorithm::GeneticBot>>();
+    m_players.push_back(player);
+    m_playerNames.emplace(count++, "Genetic bot" + std::to_string(3 + 1) + ":");
 }
 
 void GameScene::updateScoreBoard()

@@ -2,6 +2,7 @@
 #include "WallGraphicCell.h"
 #include "FoodGraphicCell.h"
 #include "SnakeGraphicCell.h"
+#include "SnakeHeadGraphicCell.h"
 
 
 using namespace AppUI;
@@ -19,13 +20,26 @@ void GraphicBoard::updateBoard(const GameState & gameState)
     size_t rows = gameBoard.GetBoardLength();
     size_t cols = gameBoard.GetBoardWidth();
     auto width = sceneRect().width();
-    size_t widthOffset = width / rows;
+    size_t widthOffset;
+    size_t heightOffset;
+    if (rows > cols) {
+    widthOffset = width / rows;
    // size_t heightOffset = sceneRect().height() / cols;
-    size_t heightOffset = width / rows;
+    heightOffset = width / rows;
+    } else {
+    widthOffset = width / cols;
+    // size_t heightOffset = sceneRect().height() / cols;
+    heightOffset = width / cols;
+
+    }
+
 
     for (size_t i = 0; i < cols; i++) {
         for (size_t j = 0; j < rows; j++) {
-            int boardValue = gameBoard[Coordinate(i, j)];
+
+            auto coord = Coordinate(i, j);
+
+            int boardValue = gameBoard[coord];
             GraphicCell* cell = nullptr;
 
             switch (boardValue) {
@@ -39,7 +53,12 @@ void GraphicBoard::updateBoard(const GameState & gameState)
                 }
                 default: {
                     if (boardValue != 0) {
-                    addItem(new SnakeGraphicCell(i*widthOffset, j*heightOffset, widthOffset, heightOffset, boardValue));
+                        if (gameState.GetSnake(boardValue).GetSnakeHead() == coord) {
+                            addItem(new SnakeHeadGraphicCell(i*widthOffset, j*heightOffset, widthOffset, heightOffset, boardValue));
+                        } else {
+                            addItem(new SnakeGraphicCell(i*widthOffset, j*heightOffset, widthOffset, heightOffset, boardValue));
+
+                        }
                     }
                     break;
                 }                    
