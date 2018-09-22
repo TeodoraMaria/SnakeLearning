@@ -2,31 +2,32 @@
 
 #include "AppUI/IScene.h"
 #include "qobject.h"
+#include <string>
+#include "ui_TrainScene.h"
 
 namespace AppUI
 {
 
-
-
-    class StartMenuScene:public IScene
+    class TrainScene :public IScene
     {
         Q_OBJECT
     public:
 
-        StartMenuScene(const std::string& name);
+        TrainScene(const std::string& name);
+        ~TrainScene();
 
         // Inherited via IScene
         virtual void createScene() override;
         virtual void release() override;
 
-        ~StartMenuScene();
-
     protected slots:
+        void backButtonPressed();
         void startButtonPressed();
-        void optionsButtonPressed();
-        void quitButtonPressed();
-        void trainButtonPressed();
+        void updateGraph();
+
     private:
+
+        QLineSeries* series;
 
         QWidget* m_centralWidget;
     };

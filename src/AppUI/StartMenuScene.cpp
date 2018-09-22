@@ -27,6 +27,7 @@ void StartMenuScene::createScene()
     QObject::connect(ui->pushButtonStart, SIGNAL(released()), this, SLOT(startButtonPressed()));
     QObject::connect(ui->pushButtonOptions, SIGNAL(released()), this, SLOT(optionsButtonPressed()));
     QObject::connect(ui->pushButtonExit, SIGNAL(released()), this, SLOT(quitButtonPressed()));
+    QObject::connect(ui->pushButtonTrain, SIGNAL(released()), this, SLOT(trainButtonPressed()));
 }
 
 void StartMenuScene::release()
@@ -46,5 +47,10 @@ void StartMenuScene::optionsButtonPressed()
 void StartMenuScene::quitButtonPressed()
 {
     QCoreApplication::quit();
+}
+
+void StartMenuScene::trainButtonPressed()
+{
+    emit sceneChange(ApplicationModel::trainSceneName);
 }
 

@@ -25,6 +25,7 @@ namespace AppUI
         static const std::string startMenuSceneName;
         static const std::string gameSceneName;
         static const std::string optionsSceneName;
+        static const std::string trainSceneName;
 
     private:
         ApplicationModel();

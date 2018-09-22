@@ -52,8 +52,8 @@ void GameScene::createScene()
     
     GameOptions options;
     options.boardLength = 25;
-    options.boardWidth =40;
-    options.numFoods = 25;
+    options.boardWidth =25;
+    options.numFoods = 30;
     options.saveGameplay = true;
 
     addPlayersToTheGame();

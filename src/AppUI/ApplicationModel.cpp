@@ -2,6 +2,7 @@
 #include "StartMenuScene.h"
 #include "GameScene.h"
 #include "OptionsScene.h"
+#include "TrainScene.h"
 #include "IScene.h"
 
 using namespace AppUI;
@@ -9,6 +10,7 @@ using namespace AppUI;
 const std::string ApplicationModel::startMenuSceneName = std::string("StartMenuScene");
 const std::string ApplicationModel::gameSceneName = std::string("GameScene");
 const std::string ApplicationModel::optionsSceneName= std::string("OptionsScene");
+const std::string ApplicationModel::trainSceneName = std::string("TrainScene");
 
 ApplicationModel* ApplicationModel::instance;
 
@@ -38,6 +40,9 @@ void ApplicationModel::defineScenes()
 
     auto gameScene = new GameScene(gameSceneName);
     m_scenes.emplace(gameSceneName, gameScene);
+
+    auto trainScene = new TrainScene(trainSceneName);
+    m_scenes.emplace(trainSceneName, trainScene);
 
 }
 
