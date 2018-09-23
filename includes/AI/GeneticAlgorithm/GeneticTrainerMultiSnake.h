@@ -6,15 +6,21 @@
 #include "GeneticNetwork.h"
 #include "GeneticBot.h"
 #include "GymEnv/StateObserver/GridObserver.hpp"
+#include "GymEnv/StateObserver/ThreeDirectionalObserver.hpp"
+
+#include <QtCharts/qlineseries.h>
+#include <qobject.h>
 #include <vector>
 #include <memory>
+
 
 namespace AI
 {
     namespace GeneticAlgorithm{
     
-        class GeneticTrainerMultiSnake:public ITrainer
+        class GeneticTrainerMultiSnake:public QObject,public ITrainer
         {
+            Q_OBJECT
         public:
             GeneticTrainerMultiSnake();
             ~GeneticTrainerMultiSnake();
@@ -27,10 +33,14 @@ namespace AI
             void crossover();
             void selectNewNetworks();
             void mutate();
-            void printFitnessInfo();
+            void printFitnessInfo(size_t episode);
             void resetFitness();
 
+        signals:
+            void graphValues(const std::vector<double>& values);
         private:
+
+            void emitGraphValues(const std::vector<double>& values);
             Game* m_game;
             Utils::NetworkSettings m_networkSettings;
             GeneticOptions m_options;
@@ -38,7 +48,13 @@ namespace AI
 
             std::vector<IPlayerPtr> m_players;
 
-            std::shared_ptr<GymEnv::StateObserver::GridObserver> m_observer=nullptr;
+           // std::shared_ptr<GymEnv::StateObserver::GridObserver> m_observer=nullptr;
+
+            std::shared_ptr<GymEnv::StateObserver::ThreeDirectionalObserver> m_observer = nullptr;
+
+            QtCharts::QLineSeries* m_maxFitness;
+            QtCharts::QLineSeries* m_avgFitenss;
+
 
         };
     }

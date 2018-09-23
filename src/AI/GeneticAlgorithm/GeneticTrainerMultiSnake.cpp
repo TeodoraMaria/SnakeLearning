@@ -5,9 +5,14 @@
 #include "GameLogic/CellInterpreter/WallFoodEnemy.hpp"
 
 #include "GymEnv/StateObserver/GridObserver.hpp"
+#include "GymEnv/StateObserver/ThreeDirectionalObserver.hpp"
 #include "GymEnv/StateObserver/FoodDirectionDecorator.hpp"
 #include "Utils/MathUtils.h"
 #include <memory>
+#include <qcoreapplication.h>
+#include <QtConcurrent\qtconcurrentrun.h>
+#include <qfuturesynchronizer.h>
+
 
 using namespace AI::GeneticAlgorithm;
 using namespace GameLogic::CellInterpreter;
@@ -16,12 +21,14 @@ using namespace GymEnv::StateObserver;
 
 GeneticTrainerMultiSnake::GeneticTrainerMultiSnake()
 {
-
+    m_avgFitenss = new QtCharts::QLineSeries;
+    m_maxFitness = new QtCharts::QLineSeries;
 }
 
 GeneticTrainerMultiSnake::~GeneticTrainerMultiSnake()
 {
-
+    delete m_avgFitenss;
+    delete m_maxFitness;
 }
 
 IPlayer * GeneticTrainerMultiSnake::Train()
@@ -30,8 +37,8 @@ IPlayer * GeneticTrainerMultiSnake::Train()
 
     for (size_t i = 0; i < m_options.numEpisodes; i++) {
         runEpisode(i);
-        std::cout << "episode " << i;
-        printFitnessInfo();
+       // std::cout << "episode " << i;
+        printFitnessInfo(i);
 
         selectNewNetworks();
         crossover();
@@ -56,12 +63,13 @@ IPlayer * GeneticTrainerMultiSnake::Train()
 void GeneticTrainerMultiSnake::setup()
 {
     auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
-    m_observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
+   // m_observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
+    m_observer = std::make_shared<ThreeDirectionalObserver>(cellInterpreter);
 
     m_options.crossoverProb = 0.5;
-    m_options.maxNumSteps = 50;
+    m_options.maxNumSteps = 100;
     m_options.mutationProb = 0.1;
-    m_options.numEpisodes = 10000;
+    m_options.numEpisodes = 1000;
     m_options.numOfNetworks = 50;
 
     m_networkSettings.m_inputs = m_observer.get()->NbOfObservations() + 1;
@@ -80,9 +88,11 @@ void GeneticTrainerMultiSnake::runEpisode(size_t episode)
     static GameOptions options;
     options.boardLength = 25;
     options.boardWidth = 25;
-    options.numFoods = 30;
+    options.numFoods = 10;
 
-    for (auto& network : m_networks) {
+    QFutureSynchronizer<void> synchronizer;
+
+    auto networkGame = [&](GeneticNetwork& network) {
 
         auto geneticBot = GeneticBot(network, m_observer);
 
@@ -90,24 +100,36 @@ void GeneticTrainerMultiSnake::runEpisode(size_t episode)
 
         players.push_back(std::make_shared<GeneticBot>(geneticBot));
 
-        m_game = new Game(options, players);
-        m_game->InitGame();
-    
-        for (size_t i = 0; i < m_options.maxNumSteps; i++) {
-            auto currentScore = m_game->GetAllSnakes().at(0).GetScore();
-            m_game->RunRound();
+        Game* game = new Game(options, players);
+        //  m_game= new Game(options, players);
+        game->InitGame();
 
-            if (m_game->GetAllSnakes().at(0).GetScore() != currentScore) {
+        for (size_t i = 0; i < m_options.maxNumSteps; i++) {
+            auto currentScore = game->GetAllSnakes().at(0).GetScore();
+            game->RunRound();
+
+            if (game->GetAllSnakes().at(0).GetScore() != currentScore) {
                 i = 0;
             }
-            if (m_game->EveryoneIsDead()) {
+            if (game->EveryoneIsDead()) {
                 break;
             }
         }
 
-        network.updateFitness(m_game->GetAllSnakes().at(0).GetScore());
-        delete m_game;
+        network.updateFitness(game->GetAllSnakes().at(0).GetScore());
+        delete game;
+    };
+
+
+    for (GeneticNetwork& network : m_networks) {
+
+       
+
+        QFuture<void> future = QtConcurrent::run(networkGame,std::ref(network));
+        synchronizer.addFuture(future);
     }
+    synchronizer.waitForFinished();
+    synchronizer.clearFutures();
 }
 
 double GeneticTrainerMultiSnake::runStep(const std::vector<double>& state, const GeneticNetwork & network)
@@ -177,20 +199,24 @@ void GeneticTrainerMultiSnake::mutate()
     }
 }
 
-void GeneticTrainerMultiSnake::printFitnessInfo()
+void GeneticTrainerMultiSnake::printFitnessInfo(size_t episode)
 {
-    size_t maxFitness = 0;
+    double maxFitness = 0;
     double totalFitness = 0;
     for (const auto& network : m_networks) {
 
-        size_t networkFitness = std::cbrt(network.getFitness());
+        double networkFitness = std::cbrt(network.getFitness());
 
         if (maxFitness < networkFitness) {
             maxFitness = networkFitness;
         }
         totalFitness += networkFitness;
     }
-    std::cout << " max fitness: " << maxFitness << " avg: " << totalFitness / m_networks.size() << std::endl;
+    //std::cout << " max fitness: " << maxFitness << " avg: " << totalFitness / m_networks.size() << std::endl;
+
+    std::vector<double> values = {maxFitness,totalFitness / m_networks.size()};
+
+    emitGraphValues(values);
 }
 
 void GeneticTrainerMultiSnake::resetFitness()
@@ -198,4 +224,9 @@ void GeneticTrainerMultiSnake::resetFitness()
     for (auto& network : m_networks) {
         network.setFitness(0);
     }
+}
+
+void GeneticTrainerMultiSnake::emitGraphValues(const std::vector<double>& values)
+{
+    emit(graphValues(values));
 }

@@ -18,7 +18,6 @@ namespace AI{namespace GeneticAlgorithm
     private:
         void runEpisode(size_t episode);
         double runStep(const std::vector<double>& state, const GeneticNetwork& network);
-        void runNetwork(GeneticNetwork& network);
         void crossover();
         void selectNewNetworks();
         void mutate();

@@ -28,10 +28,6 @@ IPlayer *GeneticTrainer::Train()
 
     for (size_t i = 0; i < m_options.numEpisodes; i++) {
 
-        if (i == 50) {
-            int stop = 1;
-        }
-
         runEpisode(i);
         std::cout << "episode " << i;
         printFitnessInfo();
@@ -156,11 +152,6 @@ double GeneticTrainer::runStep(const std::vector<double>& state, const GeneticNe
     return reward;
 }
 
-void GeneticTrainer::runNetwork(GeneticNetwork& network)
-{
-  
-}
-
 void GeneticTrainer::crossover()
 {
     //check for 2 networks at a time
@@ -233,7 +224,6 @@ void GeneticTrainer::selectNewNetworks()
 
 void GeneticTrainer::mutate()
 {
-    double mutationValue;
     for (auto& network : m_networks) {
         network.mutateWeights(m_options.mutationProb);
     }
