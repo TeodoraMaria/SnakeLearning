@@ -65,10 +65,10 @@ AI::Supervised::SupervisedBot::SupervisedBot()
 	: m_network(SupervisedNetwork::Settings{ 49, 150, 3 } )
 {
 	SupervisedTrainer::Settings trainerSettings;
-	trainerSettings.m_learningRate = 0.0001;
+	trainerSettings.m_learningRate = 0.0003;
 	trainerSettings.m_momentum = 0.9;
 	trainerSettings.m_useBatchLearning = true;
-	trainerSettings.m_maxEpochs = 40000;
+	trainerSettings.m_maxEpochs = 1000;
 	trainerSettings.m_desiredAccuracy = 90;
 
 	SupervisedTrainer trainer(trainerSettings, &m_network);

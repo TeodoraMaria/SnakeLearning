@@ -36,6 +36,7 @@ public:
 	size_t GetBoardWidth() const;
 	size_t GetFoodPortions() const;
 	std::vector<int> GetBoard() const;
+	const std::vector<int>& GetBoardCells() const;
 
 	int& operator [](const Coordinate& coord);
 	int operator [](const Coordinate& coord) const;
