@@ -259,29 +259,6 @@ void Game::RunRound()
 	RestockFood();
 }
 
-void Game::RunRoundAndSave(FileHelper& helper)
-{
-	GameState gamestate = GetGameState();
-	if (m_gameRenderer != nullptr)
-	{
-		PrintBoard();
-	}
-	std::random_shuffle(m_players.begin(), m_players.end());
-	for (auto player : m_players)
-	{
-		if (player->GetIsActive() == false)
-			break;
-		
-		const auto chosenMove = player->GetNextAction(gamestate);
-		const auto snakeNumber = player->GetSnakeNumber();
-		SaveMove(helper, gamestate.GetFieldOfView(gamestate.GetSnake(snakeNumber),7,7), chosenMove, snakeNumber);
-
-		
-		MoveSnake(snakeNumber, chosenMove);
-	}
-	RestockFood();
-}
-
 void Game::Play()
 {
 	if (m_gameOptions.saveGameplay)
