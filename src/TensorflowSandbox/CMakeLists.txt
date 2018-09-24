@@ -24,6 +24,7 @@ include_directories("${CMAKE_SOURCE_DIR}/third_party/json/")
 target_link_libraries(${PROJECT_NAME} PUBLIC
 	GameLogic
 	Utils
+	QLearning
 	${Tensorflow_LIBRARIES}
 )
 
