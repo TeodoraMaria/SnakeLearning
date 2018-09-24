@@ -34,8 +34,6 @@ void TrainScene::createScene()
     m_maxFitnessValues = new QLineSeries();
     m_avgFitnessValues = new QLineSeries();
 
-    //*series << QPointF(11, 1) << QPointF(13, 3) << QPointF(17, 6) << QPointF(18, 3) << QPointF(20, 2);
-
     m_chart = new QChart();
     m_chart->legend()->hide();
     m_chart->addSeries(m_maxFitnessValues);
@@ -43,6 +41,8 @@ void TrainScene::createScene()
     m_chart->createDefaultAxes();
 
     m_chart->setTitle("Simple line chart example");
+
+    m_board = new GraphicBoard(550, 550);
 
     ui->chartView->setChart(m_chart);
     ui->chartView->repaint();
