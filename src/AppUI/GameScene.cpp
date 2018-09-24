@@ -19,15 +19,13 @@
 #include <qpalette.h>
 #include <json.hpp>
 
-
-
 using namespace AppUI;
 
 GameScene::GameScene(const std::string& name)
 {
     m_sceneName = name;
-
-    m_timer.setInterval(30);
+    
+    m_timer.setInterval(m_timerSpeed);
     QObject::connect(&m_timer, SIGNAL(timeout()), this, SLOT(runRound()));
     QObject::connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateScoreBoard()));
 }
@@ -47,13 +45,11 @@ void GameScene::createScene()
     //ui->graphicsView->setAlignment(Qt::AlignCenter);
     m_board = new GraphicBoard(550, 550);
     ui->graphicsView->setScene(m_board);
-    
-
-    
+        
     GameOptions options;
-    options.boardLength = 25;
-    options.boardWidth =25;
-    options.numFoods = 30;
+    options.boardLength = m_gameSettings.mapWidth;
+    options.boardWidth =m_gameSettings.mapHeight;
+    options.numFoods = m_gameSettings.foodCount;
     options.saveGameplay = true;
 
     addPlayersToTheGame();
@@ -103,6 +99,12 @@ bool GameScene::eventFilter(QObject * obj, QEvent * event)
     return false;
 }
 
+void GameScene::updateSettings(const GameSettings& settings)
+{
+    m_gameSettings = settings;
+}
+
+
 void GameScene::backButtonPressed()
 {
     emit sceneChange(ApplicationModel::startMenuSceneName);
@@ -111,47 +113,49 @@ void GameScene::backButtonPressed()
 void GameScene::addPlayersToTheGame()
 {
     size_t count = 11;
-    for (size_t i = 0; i < m_options.humanPlayers; i++) {
+    for (size_t i = 0; i < m_gameSettings.nbHumanPlayers; i++) {
         m_players.push_back(std::make_shared<HumanPlayerQt>(HumanPlayerQt::playerKeys.at(i)));
         m_playerNames.emplace(count++, "Player" + std::to_string(i+1)+":");
     }
 
-    for (size_t i = 0; i < m_options.geneticBots; i++) {
+    for (size_t i = 0; i < m_gameSettings.nbGeneticBots; i++) {
         
+        const auto filePath = "D:\\fac\\snake\\aux_files\\genetic\\TrainedGenetic.json";
+
+        std::ifstream fileStream;
+
+        fileStream.open(filePath);
+        if (!fileStream.is_open()) {
+            throw "Failed to open file.";
+        }
+
+        nlohmann::json fileJsonContent;
+
+        fileStream >> fileJsonContent;
+        std::shared_ptr<AI::GeneticAlgorithm::GeneticBot> player = fileJsonContent.get<std::shared_ptr<AI::GeneticAlgorithm::GeneticBot>>();
+        m_players.push_back(player);
+
+
         m_playerNames.emplace(count++, "Genetic bot" + std::to_string(i + 1) + ":");
     }
 
-    for (size_t i = 0; i < m_options.normalBots; i++) {
+    for (size_t i = 0; i < m_gameSettings.nbNormalBots; i++) {
         m_players.push_back(std::make_shared<AI::HardCoded::SingleBot>());
 
         m_playerNames.emplace(count++, "Normal bot" + std::to_string(i + 1) + ":");
     }
 
-    for (size_t i = 0; i < m_options.qLearningBots; i++) {
+    for (size_t i = 0; i < m_gameSettings.nbQlearningBots; i++) {
 
         m_playerNames.emplace(count++, "Qlearning bot" + std::to_string(i + 1) + ":");
     }
 
-    for (size_t i = 0; i < m_options.supervizedBots; i++) {
+    for (size_t i = 0; i < m_gameSettings.nbSupervisedBots; i++) {
 
         m_playerNames.emplace(count++, "Supervised bot" + std::to_string(i + 1) + ":");
     }
 
-    const auto filePath = "D:\\fac\\snake\\aux_files\\genetic\\TrainedGenetic.json";
-
-    std::ifstream fileStream;
-
-    fileStream.open(filePath);
-    if (!fileStream.is_open()) {
-        throw "Failed to open file.";
-    }
-
-    nlohmann::json fileJsonContent;
-
-    fileStream >> fileJsonContent;
-    std::shared_ptr<AI::GeneticAlgorithm::GeneticBot> player = fileJsonContent.get<std::shared_ptr<AI::GeneticAlgorithm::GeneticBot>>();
-    m_players.push_back(player);
-    m_playerNames.emplace(count++, "Genetic bot" + std::to_string(3 + 1) + ":");
+    
 }
 
 void GameScene::updateScoreBoard()

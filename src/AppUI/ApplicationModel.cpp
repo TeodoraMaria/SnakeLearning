@@ -4,6 +4,9 @@
 #include "OptionsScene.h"
 #include "TrainScene.h"
 #include "IScene.h"
+#include "GameSettings.h"
+
+#include <qobject.h>
 
 using namespace AppUI;
 
@@ -40,6 +43,8 @@ void ApplicationModel::defineScenes()
 
     auto gameScene = new GameScene(gameSceneName);
     m_scenes.emplace(gameSceneName, gameScene);
+
+    QObject::connect(optionsScene, SIGNAL(settingsChanged(const GameSettings&)), gameScene, SLOT(updateSettings(const GameSettings&)));
 
     auto trainScene = new TrainScene(trainSceneName);
     m_scenes.emplace(trainSceneName, trainScene);

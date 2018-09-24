@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AppUI/IScene.h"
+#include "GraphicBoard.h"
 #include "AI/GeneticAlgorithm/GeneticTrainerMultiSnake.h"
 #include "qobject.h"
 #include "ui_TrainScene.h"
@@ -32,6 +33,8 @@ namespace AppUI
         QLineSeries* m_maxFitnessValues;
         QLineSeries* m_avgFitnessValues;
         QWidget* m_centralWidget;
+
+        GraphicBoard* m_board;
 
         size_t m_graphX = 0;
         size_t m_graphY = 0;

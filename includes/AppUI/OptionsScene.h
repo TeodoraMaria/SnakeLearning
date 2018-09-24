@@ -3,6 +3,8 @@
 #include "AppUI/IScene.h"
 #include "qobject.h"
 #include "ui_OptionsScene.h"
+#include "GameSettings.h"
+
 #include <string>
 #include <memory>
 
@@ -21,11 +23,16 @@ namespace AppUI
         virtual void createScene() override;
         virtual void release() override;
 
-        protected slots:
+    protected slots:
         void quitButtonPressed();
+
+    signals:
+        void settingsChanged(const GameSettings& gameSettings);
 
     private:
         QWidget* m_centralWidget;
-        Ui_OptionsScene* m_ui;
+        std::shared_ptr<Ui_OptionsScene> m_ui;
+
+        GameSettings m_gameSettings;
     };
 }

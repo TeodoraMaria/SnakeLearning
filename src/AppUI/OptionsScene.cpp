@@ -18,13 +18,13 @@ OptionsScene::~OptionsScene()
 }
 void OptionsScene::createScene()
 {
-    auto ui = std::make_unique<Ui_OptionsScene>();
-    ui->setupUi(m_mainWindow.get());
+    m_ui = std::make_shared<Ui_OptionsScene>();
+    m_ui->setupUi(m_mainWindow.get());
 
-    m_centralWidget = ui->centralwidget;
+    m_centralWidget = m_ui->centralwidget;
 
 
-    QObject::connect(ui->pushButton, SIGNAL(released()), this, SLOT(quitButtonPressed()));
+    QObject::connect(m_ui->pushButton, SIGNAL(released()), this, SLOT(quitButtonPressed()));
 }
 
 void OptionsScene::release()
@@ -35,6 +35,17 @@ void OptionsScene::release()
 
 void OptionsScene::quitButtonPressed()
 {   
+    m_gameSettings.nbHumanPlayers = m_ui->spinBoxHumans->value();
+    m_gameSettings.nbGeneticBots = m_ui->spinBoxGeneticBots->value();
+    m_gameSettings.nbQlearningBots = m_ui->spinBoxQlearningBots->value();
+    m_gameSettings.nbSupervisedBots = m_ui->spinBoxSupervisedBots->value();
+    m_gameSettings.nbNormalBots = m_ui->spinBoxNormalBots->value();
+
+    m_gameSettings.mapWidth = m_ui->spinBoxMapWidth->value();
+    m_gameSettings.mapHeight = m_ui->spinBoxMapHeight->value();
+    m_gameSettings.foodCount = m_ui->spinBoxFoodCount->value();
+
+    emit settingsChanged(m_gameSettings);
     emit sceneChange(ApplicationModel::startMenuSceneName);
 }
 
