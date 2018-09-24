@@ -243,7 +243,7 @@ void Game::RunRound()
 	GameState gameState = GetGameState();
 	if (m_gameRenderer != nullptr)
 	{
-		m_gameRenderer->Render(gameState);
+		PrintBoard();
 	}
 	std::random_shuffle(m_players.begin(), m_players.end());
 	for (auto player : m_players)
@@ -259,74 +259,15 @@ void Game::RunRound()
 	RestockFood();
 }
 
-void Game::RunRoundAndSave(FileHelper& helper)
-{
-	GameState gamestate = GetGameState();
-	if (m_gameRenderer != nullptr)
-	{
-		PrintBoard();
-	}
-	std::random_shuffle(m_players.begin(), m_players.end());
-	for (auto player : m_players)
-	{
-		if (player->GetIsActive() == false)
-			break;
-		
-		const auto chosenMove = player->GetNextAction(gamestate);
-		const auto snakeNumber = player->GetSnakeNumber();
-		SaveMove(helper, gamestate.GetFieldOfView(gamestate.GetSnake(snakeNumber),5,5), chosenMove, snakeNumber);
-
-		
-		MoveSnake(snakeNumber, chosenMove);
-	}
-	RestockFood();
-}
-
 void Game::Play()
 {
-	if (m_gameOptions.saveGameplay)
+	while (!m_isGameOver)
 	{
-		FileHelper helper("D:\\SnakeData.txt");
-		while (!m_isGameOver)
-		{
-			RunRoundAndSave(helper);
-			CheckIfGameOver();
-		}
-	}
-	else 
-	{
-		while (!m_isGameOver)
-		{
-			RunRound();
-			CheckIfGameOver();
-		}
+		RunRound();
+		CheckIfGameOver();
 	}
 
 	DisplayScoreBoard();
-}
-
-std::string Game::GenerateFileName()
-{
-	time_t now = time(0);
-
-	tm *ltm = localtime(&now);
-
-	std::string fileName = "D:\\SnakeData\\Game_";
-
-	fileName.append(std::to_string(1900 + ltm->tm_year));
-	fileName.append("_");
-	fileName.append(std::to_string(1 + ltm->tm_mon));
-	fileName.append("_");
-	fileName.append(std::to_string(ltm->tm_mday));
-	fileName.append("_");
-	fileName.append(std::to_string(1 + ltm->tm_hour));
-	fileName.append("_");
-	fileName.append(std::to_string(1 + ltm->tm_min));
-	fileName.append("_");
-	fileName.append(std::to_string(1 + ltm->tm_sec));
-	fileName.append(".csv");
-	
-	return fileName;
 }
 
 void Game::InitFood() 

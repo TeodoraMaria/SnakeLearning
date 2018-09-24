@@ -15,7 +15,7 @@ struct GameOptions
 	size_t numFoods = 1;
 	
 	size_t initialSnakeSize = 3;
+	std::string gameplayLog = "";
 
 	GameView::IGameRenderer* gameRenderer = nullptr;
-	bool saveGameplay = false;
 };

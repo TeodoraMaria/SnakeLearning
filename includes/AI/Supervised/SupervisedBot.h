@@ -1,7 +1,9 @@
 #pragma once
 
 #include "GameLogic/IPlayer.h"
-#include "Utils/NeuralNetwork.h"
+#include "SupervisedNetwork.h"
+
+using namespace AI::Supervised;
 
 namespace AI {
 	namespace Supervised
@@ -10,14 +12,14 @@ namespace AI {
 		{
 		public:
 
-			SupervisedBot(const Utils::NeuralNetwork& network);
-			SnakeMove GetNextAction(const GameState& gameState) const override;
+			SupervisedBot();
+			SnakeMove GetNextAction(const GameState& gameState) override;
 
 		private:
-			std::vector<float> ExtractInput(const GameState& gameState) const;
-			SnakeMove InterpretOutput(std::vector<float>) const;
+			std::vector<double> ExtractInput(const GameState& gameState) const;
+			SnakeMove InterpretOutput(std::vector<double>) const;
 
-			Utils::NeuralNetwork m_network;
+			SupervisedNetwork m_network;
 		};
 	}
 }

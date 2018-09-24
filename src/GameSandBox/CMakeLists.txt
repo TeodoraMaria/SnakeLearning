@@ -20,6 +20,7 @@ target_link_libraries(${PROJECT_NAME}
 	GameLogic
 	HardCoded
 	Utils
+	Supervised
 )
 
 SetDefaultTargetProperties()
