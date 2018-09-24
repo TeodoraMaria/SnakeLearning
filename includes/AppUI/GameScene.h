@@ -14,15 +14,6 @@
 
 namespace AppUI
 {
-    struct OptionsValues
-    {
-        size_t humanPlayers = 0;
-        size_t geneticBots = 0;
-        size_t supervizedBots = 0;
-        size_t qLearningBots = 0;
-        size_t normalBots = 0;
-    };
-
     class GameScene :public IScene
     {
         Q_OBJECT
@@ -35,7 +26,7 @@ namespace AppUI
         virtual void createScene() override;
         virtual void release() override;
     protected:
-        bool eventFilter(QObject* obj, QEvent* event)override;
+        bool eventFilter(QObject* obj, QEvent* event) override;
 
     public slots:
         void updateSettings(const GameSettings& settings);
