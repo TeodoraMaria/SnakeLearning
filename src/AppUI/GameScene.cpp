@@ -50,7 +50,7 @@ void GameScene::createScene()
     options.boardLength = m_gameSettings.mapWidth;
     options.boardWidth =m_gameSettings.mapHeight;
     options.numFoods = m_gameSettings.foodCount;
-
+	options.gameplayLog = "D:\SnakeData.txt";
     addPlayersToTheGame();
 
     m_game = new Game(options, m_players);
