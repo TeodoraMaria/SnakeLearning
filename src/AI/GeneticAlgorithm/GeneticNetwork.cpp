@@ -97,13 +97,6 @@ void GeneticNetwork::mutateWeights(double mutateProb)
             weight += Utils::Math::randomDouble(-0.1, 0.1);
             weight = std::max(-1.0f, std::min(1.0f, weight));
         }
-        
-        
-        /*
-        if (mutateValue < mutateProb) {
-            weight = Utils::Math::randomDouble(-1.0, 1.0);
-        }
-        */
     }
 }
 

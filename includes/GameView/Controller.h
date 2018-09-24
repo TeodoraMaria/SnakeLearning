@@ -7,6 +7,7 @@
 
 #include "HumanPlayer2.h"
 #include "GameLogic/IPlayer.h"
+#include "GraphPlotter.h"
 
 union SDL_Event;
 
@@ -25,6 +26,7 @@ public:
    void processInput(const SDL_Event& keyPressed);
    void updateBoard();
    void addBoard(Board* board);
+   void addGraphPlotter(GraphPlotter* graphPlotter);
 
    GameState getGameState()const;
 
@@ -42,6 +44,8 @@ private:
 
    Game* m_game;
    Board* m_board;
+
+   GraphPlotter* m_graphPlotter=nullptr;
 
    size_t m_lastTime = 0;
    size_t m_currentTime;

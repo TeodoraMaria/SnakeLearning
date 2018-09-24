@@ -12,6 +12,7 @@ add_subdirectory(Utils)
 add_subdirectory(MultiplatformUtils)
 add_subdirectory(GameView)
 add_subdirectory(ConfigLoading)
+add_subdirectory(AppUI)
 
 add_subdirectory(GameSandBox)
 add_subdirectory(OpenGlSandbox)

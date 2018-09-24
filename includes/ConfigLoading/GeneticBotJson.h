@@ -7,6 +7,6 @@ namespace AI
 {
     namespace GeneticAlgorithm
     {
-        void from_json(const nlohmann::json& j, std::shared_ptr<GeneticBot>& player);
+        void from_json(const nlohmann::json& j, std::shared_ptr<AI::GeneticAlgorithm::GeneticBot>& player);
     }
 }
