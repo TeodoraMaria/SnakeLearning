@@ -50,7 +50,6 @@ void GameScene::createScene()
     options.boardLength = m_gameSettings.mapWidth;
     options.boardWidth =m_gameSettings.mapHeight;
     options.numFoods = m_gameSettings.foodCount;
-    options.saveGameplay = true;
 
     addPlayersToTheGame();
 

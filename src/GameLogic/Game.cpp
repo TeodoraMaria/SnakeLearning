@@ -261,49 +261,13 @@ void Game::RunRound()
 
 void Game::Play()
 {
-	if (m_gameOptions.saveGameplay)
+	while (!m_isGameOver)
 	{
-		FileHelper helper("D:\\SnakeData.txt");
-		while (!m_isGameOver)
-		{
-			RunRoundAndSave(helper);
-			CheckIfGameOver();
-		}
-	}
-	else 
-	{
-		while (!m_isGameOver)
-		{
-			RunRound();
-			CheckIfGameOver();
-		}
+		RunRound();
+		CheckIfGameOver();
 	}
 
 	DisplayScoreBoard();
-}
-
-std::string Game::GenerateFileName()
-{
-	time_t now = time(0);
-
-	tm *ltm = localtime(&now);
-
-	std::string fileName = "D:\\SnakeData\\Game_";
-
-	fileName.append(std::to_string(1900 + ltm->tm_year));
-	fileName.append("_");
-	fileName.append(std::to_string(1 + ltm->tm_mon));
-	fileName.append("_");
-	fileName.append(std::to_string(ltm->tm_mday));
-	fileName.append("_");
-	fileName.append(std::to_string(1 + ltm->tm_hour));
-	fileName.append("_");
-	fileName.append(std::to_string(1 + ltm->tm_min));
-	fileName.append("_");
-	fileName.append(std::to_string(1 + ltm->tm_sec));
-	fileName.append(".csv");
-	
-	return fileName;
 }
 
 void Game::InitFood() 
