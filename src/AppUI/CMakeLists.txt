@@ -7,7 +7,7 @@ file(GLOB includes
 	"${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/*.hpp"
 )
 ######
-set(Qt5_DIR "D:/qt2/5.11.1/msvc2015/lib/cmake/Qt5")
+
 
 # Find the QtWidgets library
 find_package(Qt5 COMPONENTS Core Widgets Gui Charts REQUIRED)
