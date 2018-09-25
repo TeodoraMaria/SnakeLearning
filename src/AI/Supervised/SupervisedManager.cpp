@@ -59,6 +59,10 @@ TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX
 	std::ifstream file;
 	int balance = 0;
 	file.open(inputFilePath, std::fstream::in);
+	if (!file.is_open())
+	{
+		throw "File not found";
+	}
 	TrainingSet unbalancedts;
 	int cols;
 	std::vector<int> map;
