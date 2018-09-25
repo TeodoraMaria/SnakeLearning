@@ -1,6 +1,7 @@
 #pragma once
 #include "GameUtils.h"
 #include "GameView/IGameRenderer.hpp"
+#include <string>
 
 /*
 ** If additional parameters are added to this model, please

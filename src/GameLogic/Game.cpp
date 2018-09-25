@@ -120,9 +120,16 @@ void Game::DisablePlayer(const int snakeNumber)
 	(*it)->SetIsActive(false);
 }
 
-void Game::SaveMove(FileHelper& helper, const std::vector<int> view, const SnakeMove& move, const int snakeNumber)
+void Game::SaveMove(const GameState& gameState, const SnakeMove& move, const int snakeNumber)
 {
-	helper.WriteToFile(view, move, snakeNumber);
+	FileHelper helper(m_gameOptions.gameplayLog);
+	const std::vector<int> view = gameState.GetMap();
+	const auto snakeHead = gameState.GetSnake(snakeNumber).GetSnakeHead();
+	int snakeHeadPos = gameState.GetGameBoard().GetBoardLength()*snakeHead.GetX() + snakeHead.GetY();
+	int boardLength = gameState.GetGameBoard().GetBoardLength();
+	const auto snakeNeck = gameState.GetSnake(snakeNumber).GetSnakeNeck();
+	int snakeNeckPos = gameState.GetGameBoard().GetBoardLength()*snakeNeck.GetX() + snakeNeck.GetY();
+	helper.WriteToFile(boardLength, view, move, snakeHeadPos, snakeNeckPos);
 }
 
 void Game::CheckIfGameOver() const
@@ -254,6 +261,10 @@ void Game::RunRound()
 		const auto chosenMove = player->GetNextAction(gameState);
 
 		const auto snakeNumber = player->GetSnakeNumber();
+		if (m_gameOptions.gameplayLog != "")
+		{
+			SaveMove(gameState, chosenMove, snakeNumber);
+		}
 		MoveSnake(snakeNumber, chosenMove);
 	}
 	RestockFood();

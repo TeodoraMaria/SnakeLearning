@@ -1,4 +1,4 @@
-#include "AI\GeneticAlgorithm\GeneticTrainerMultiSnake.h"
+#include "AI/GeneticAlgorithm/GeneticTrainerMultiSnake.h"
 
 #include "GameLogic/CellInterpreter/Basic3CellInterpreter.hpp"
 #include "GameLogic/CellInterpreter/WallFoodBody.hpp"
@@ -12,7 +12,7 @@
 #include <memory>
 #include <thread>
 #include <qcoreapplication.h>
-#include <QtConcurrent\qtconcurrentrun.h>
+#include <QtConcurrent/qtconcurrentrun.h>
 #include <qfuturesynchronizer.h>
 
 

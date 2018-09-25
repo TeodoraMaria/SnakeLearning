@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <vector>
+#include <cmath>
 
 namespace AI {
 	namespace Supervised {

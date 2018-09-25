@@ -74,7 +74,7 @@ void GeneticTrainer::runEpisode(size_t episode)
         //run game for each bot;
 
         m_env->Reset();
-        std::vector<double>& state = m_env->GetState();
+        std::vector<double> state = m_env->GetState();
 
         for (size_t i = 0; i < m_options.maxNumSteps; i++) {
 

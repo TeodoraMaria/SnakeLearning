@@ -21,7 +21,6 @@ public:
 	bool EveryoneIsDead() const;
 
 	void InitGame();
-	void RunRoundAndSave(FileHelper& helper);
 	void RunRound();
 	void Play();
 	
@@ -38,10 +37,8 @@ private:
 	void InitFood();
 	void AddSnakeToGame(const int snakeNumber);
 	void DisablePlayer(const int snakeNumber);
-	void SaveMove(FileHelper& helper, const std::vector<int> view, const SnakeMove& move, const int snakeNumber);
+	void SaveMove(const GameState& gameState, const SnakeMove& move, const int snakeNumber);
 	bool IsSnakeHead(const Coordinate& coord) const;
-	std::string GenerateFileName();
-
 	
 
 	GameBoard m_gameBoard;

@@ -11,7 +11,7 @@ const std::map < size_t, std::vector<Qt::Key>> HumanPlayerQt::playerKeys = {
 };
 
 HumanPlayerQt::HumanPlayerQt(Qt::Key up, Qt::Key down, Qt::Key left, Qt::Key right):
-    m_up(up),m_down(down),m_left(left),m_right(right),QObject()
+    QObject(),m_up(up),m_down(down),m_left(left),m_right(right)
 {
 }
 

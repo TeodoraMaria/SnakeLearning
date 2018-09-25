@@ -49,7 +49,7 @@ static void PrintDieStates(
 IPlayer* TabularTrainer::Train()
 {
 	auto trainSession = TrainSession();
-	trainSession.randomActionChance = m_qoptions.maxRandActionChance;
+	trainSession.randomActionChance = m_qoptions.maxNoise;
 	trainSession.dieStates = std::unordered_map<State, int>();
 	
 	// Train.
@@ -138,8 +138,8 @@ void TabularTrainer::RunEpisode(TrainSession& trainSession)
 		// Update random action chance.
 		trainSession.randomActionChance = ::Utils::Math::Lerp(
 			trainSession.randomActionChance,
-			m_qoptions.minRandActionChance,
-			m_qoptions.randActionDecayFactor);
+			m_qoptions.minNoise,
+			m_qoptions.noiseDecayFactor);
 	}
 
 	printf(

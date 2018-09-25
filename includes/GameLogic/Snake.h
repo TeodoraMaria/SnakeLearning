@@ -15,6 +15,7 @@ public:
 	size_t GetScore() const;
 	
 	Coordinate GetSnakeHead() const;
+	Coordinate GetSnakeNeck() const;
 	Coordinate GetSnakeTail() const;
 	Coordinate GetOrientation() const;
 	std::list<Coordinate> GetSnakeBody() const;

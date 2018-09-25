@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(AppUI)
 
+set(CMAKE_CXX_STANDARD 14)
+
 file(GLOB srcs "*.cpp" "*.h" "*.hpp")
 file(GLOB includes
 	"${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/*.h"
