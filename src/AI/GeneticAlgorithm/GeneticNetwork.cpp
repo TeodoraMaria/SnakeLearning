@@ -33,15 +33,21 @@ SnakeMove GeneticNetwork::feedForward(const std::vector<double>& input) const
 
     const auto& result = Utils::NeuralNetwork::feedForward(floatInput);
 
-    double resultSum = 0;
+    double resultSum = 0.0;
+    double prob1 = 0.0;
+    double prob2 = 0.0;
+    double prob3 = 0.0;
+    //i dont know its a bug
+    if (!result.empty()) {
+        for (const auto& val : result) {
+            resultSum += val;
+        }
 
-    for (const auto& val : result) {
-        resultSum += val;
+        prob1 = result[0] / resultSum;
+        prob2 = prob1 + result[1] / resultSum;
+        prob3 = prob2 + result[2] / resultSum;
+
     }
-
-    double prob1 = result[0] / resultSum;
-    double prob2 = prob1 + result[1] / resultSum;
-    double prob3 = prob2 + result[2] / resultSum;
 
     double randomNr = rand()/double(RAND_MAX);
 
