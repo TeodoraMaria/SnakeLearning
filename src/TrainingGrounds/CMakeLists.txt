@@ -25,6 +25,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 	GeneticAlgorithm
 	GameLogic
 	ConfigLoading
+	${SDL2_LIBRARIES}
 )
 
 SetDefaultTargetProperties()

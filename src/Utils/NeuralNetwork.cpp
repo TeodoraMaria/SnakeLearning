@@ -23,7 +23,7 @@ NeuralNetwork::~NeuralNetwork()
 
 }
 
-const std::vector<float> NeuralNetwork::feedForward(const std::vector<float>& input) const
+const std::vector<float> NeuralNetwork::feedForward(std::vector<float>& input) const
 {
     auto result = singleForward(input, 0);
 
@@ -34,7 +34,7 @@ const std::vector<float> NeuralNetwork::feedForward(const std::vector<float>& in
     return result;
 }
 
-std::vector<float> NeuralNetwork::singleForward(const std::vector<float>& input, size_t nextLayer) const
+std::vector<float> NeuralNetwork::singleForward(std::vector<float>& input, size_t nextLayer) const
 {
     std::vector<float> result(m_settings.m_hiddenLayersSizes[nextLayer]);
 
@@ -44,7 +44,7 @@ std::vector<float> NeuralNetwork::singleForward(const std::vector<float>& input,
 
             prod += getWeightAt(nextLayer, nextLayerIndex, layerIndex)* input[layerIndex];
         }
-        result[nextLayerIndex] = sigmoid(prod);
+        result[nextLayerIndex] = activate(prod);
     }
     return result;
 }
@@ -52,6 +52,18 @@ std::vector<float> NeuralNetwork::singleForward(const std::vector<float>& input,
 float NeuralNetwork::sigmoid(float x) const
 {
     return 1.0f / (1.0f + std::exp(-x));
+}
+
+float Utils::NeuralNetwork::relu(float x) const
+{
+	return x <= 0 ? 0 : x;
+}
+
+float Utils::NeuralNetwork::activate(float x) const
+{
+	if (m_settings.m_activationFc == ActivationFunction::RELU)
+		return relu(x);
+	return sigmoid(x);
 }
 
 float NeuralNetwork::getWeightAt(size_t layer, size_t inputIndex, size_t weightIndex) const
@@ -96,6 +108,11 @@ void NeuralNetwork::initWeights()
 void NeuralNetwork::setSettings(const NetworkSettings & settings)
 {
     m_settings = settings;
+}
+
+size_t Utils::NeuralNetwork::GetNumberOfInputs()
+{
+	return m_settings.m_inputs;
 }
 
 std::vector<float> Utils::NeuralNetwork::getWeights() const

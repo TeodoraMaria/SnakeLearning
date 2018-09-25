@@ -25,6 +25,11 @@ double Utils::Math::randomDouble(double lowerBound, double upperBound)
     return lowerBound + f * (upperBound - lowerBound);
 }
 
+double Utils::Math::normalize(double x, double minimum, double maximum, double floor, double ceil)
+{
+    return ((ceil - floor) * (x - minimum)) / (maximum - minimum) + floor;
+}
+
 
 
 /*

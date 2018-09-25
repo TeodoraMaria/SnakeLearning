@@ -7,8 +7,6 @@ file(GLOB srcs "*.cpp" "*.h" "*.hpp")
 file(GLOB includes
 	"${CMAKE_SOURCE_DIR}/includes/AI/${PROJECT_NAME}/*.h"
 	"${CMAKE_SOURCE_DIR}/includes/AI/${PROJECT_NAME}/*.hpp")
-
-
 add_library(${PROJECT_NAME} STATIC ${srcs} ${includes})
 
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -18,6 +16,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 target_link_libraries(${PROJECT_NAME}
 	Utils
+	GameLogic
 )
 
 SetDefaultTargetProperties()

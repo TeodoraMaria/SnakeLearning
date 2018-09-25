@@ -1,6 +1,7 @@
 #pragma once
 #include "GameUtils.h"
 #include "GameView/IGameRenderer.hpp"
+#include <string>
 
 /*
 ** If additional parameters are added to this model, please
@@ -15,7 +16,7 @@ struct GameOptions
 	size_t numFoods = 1;
 	
 	size_t initialSnakeSize = 3;
+	std::string gameplayLog = "";
 
 	GameView::IGameRenderer* gameRenderer = nullptr;
-	bool saveGameplay = false;
 };

@@ -13,6 +13,11 @@ GameState::GameState(const GameState& gamestate)
 
 }
 
+GameState::GameState():m_gameBoard(GameBoard()),m_snakes(std::vector<Snake>())
+{
+
+}
+
 GameState::~GameState()
 {
 }
@@ -43,14 +48,14 @@ std::vector<int> GameState::GetFieldOfView(
 {
 	std::vector<int> fieldOfView(width*length);
 	
-	const auto left = snake.GetOrientation().Rotate90Left();
-	const auto right = snake.GetOrientation().Rotate90Right();
+    const auto left = snake.GetOrientation().Rotate90Left(); Coordinate::LEFT;
+	const auto right = snake.GetOrientation().Rotate90Right(); 
 	const auto origin = snake.GetSnakeHead() + left * (length / 2);
 
 	for (auto x = 0; x < length; ++x)
 		for (auto y = 0; y < width; ++y)
 		{
-			const auto pos = origin + right * x + snake.GetOrientation() * y;
+            const auto pos = origin + right * x + snake.GetOrientation() * y; Coordinate::UP;
 			if (m_gameBoard.IsWallOrBeyond(pos))
 			{
 				fieldOfView[y*width+x] = BoardPart::WALL;
@@ -64,6 +69,11 @@ std::vector<int> GameState::GetFieldOfView(
 	
 	fieldOfView.shrink_to_fit();
 	return fieldOfView;
+}
+
+std::vector<int> GameState::GetMap() const
+{
+	return m_gameBoard.GetBoard();
 }
 
 bool GameState::IsSnakeHead(const Coordinate& coord) const

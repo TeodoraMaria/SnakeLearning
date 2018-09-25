@@ -5,10 +5,13 @@ using json = nlohmann::json;
 
 void GymEnv::StateObserver::to_json(json& j, const IStateObserver* observer)
 {
-	if (dynamic_cast<const GridObserver*>(observer))
+    if (dynamic_cast<const GridObserver*>(observer)) {
 		to_json(j, dynamic_cast<const GridObserver*>(observer));
-	else
+    } else if (dynamic_cast<const ThreeDirectionalObserver*>(observer)) {
+        to_json(j, dynamic_cast<const ThreeDirectionalObserver*>(observer));
+    } else {
 		throw "to_json() for the given Observer type was not implemented.";
+    }
 }
 
 void GymEnv::StateObserver::to_json(json& j, const GridObserver* observer)
@@ -21,14 +24,26 @@ void GymEnv::StateObserver::to_json(json& j, const GridObserver* observer)
 	};
 }
 
+void GymEnv::StateObserver::to_json(nlohmann::json & j, const ThreeDirectionalObserver * observer)
+{
+    j = {
+        {"type", "ThreeDirectionalObserver"},
+        {"cellInterpreter", json(observer->GetCellInterpreter())}
+    };
+
+}
+
 void GymEnv::StateObserver::from_json(const json& j, std::shared_ptr<IStateObserver>& observer)
 {
 	const auto observerType = j.at("type").get<std::string>();
 	
-	if (observerType == "GridObserver")
+    if (observerType == "GridObserver") {
 		observer = j.get<std::shared_ptr<GridObserver>>();
-	else
+    } else if (observerType == "ThreeDirectionalObserver") {
+        observer = j.get<std::shared_ptr<ThreeDirectionalObserver>>();
+    } else {
 		throw "Invalid Observer type.";
+    }
 }
 
 void GymEnv::StateObserver::from_json(const json& j, std::shared_ptr<GridObserver>& observer)
@@ -38,4 +53,11 @@ void GymEnv::StateObserver::from_json(const json& j, std::shared_ptr<GridObserve
 		j.at("width").get<size_t>(),
 		j.at("height").get<size_t>()
 	));
+}
+
+void GymEnv::StateObserver::from_json(const nlohmann::json& j, std::shared_ptr<ThreeDirectionalObserver>& observer)
+{
+    observer.reset(new ThreeDirectionalObserver(
+        j.at("cellInterpreter").get<GameLogic::CellInterpreter::ICellInterpreterPtr>()
+    ));
 }

@@ -38,6 +38,7 @@ int main(int nargs, char** args)
 {
 	srand(time(nullptr));
 
+//  GeneticSingleSnake();
 	MultisnakeMain();
 //	ConfigLoaderSandbox();
 //    GeneticSingleSnake();

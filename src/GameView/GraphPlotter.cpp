@@ -9,7 +9,6 @@ GraphPlotter::GraphPlotter()
     m_axisVertices[0].x = -10;
     m_axisVertices[0].y = 0;
 
-
     m_axisVertices[1].x = 300;
     m_axisVertices[1].y = 0;
 

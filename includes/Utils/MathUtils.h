@@ -8,6 +8,7 @@ namespace Utils { namespace Math
 	double Lerp(double a, double b, double scalar);
     double ruleOfThree(double value, double envMaxRange, double valueMaxRange);
     double randomDouble(double lwoerBound, double upperBound);
+    double normalize(double x, double minimum, double maximum, double floor, double ceil);
 
     template<typename T>
     T randomNumber(T lowerBound, T upperBound)

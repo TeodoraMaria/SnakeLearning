@@ -33,10 +33,10 @@ void GridObserver::Observe(
 {
 	assert(observationTab.size() >= NbOfObservations());
 	
-	const auto snake = gmState.GetSnake(snakeId);
+	const auto& snake = gmState.GetSnake(snakeId);
 	assert(snake.IsAlive());
 	
-	const auto gmBoard = gmState.GetGameBoard();
+	const auto& gmBoard = gmState.GetGameBoard();
 	
 	const auto forward = snake.GetOrientation();
 	const auto left = forward.Rotate90Left();
@@ -62,8 +62,10 @@ void GridObserver::Observe(
 			const auto interpretVal = GetCellInterpreter()->InterpretCell(snakeId, cellVal);
 			
 			assert(indx <= observationTab.size());
-			if (interpretVal != 0)
-				observationTab[indx + interpretVal - 1] = 1;
+            if (interpretVal != 0) {
+                observationTab[indx + interpretVal - 1] = 1;
+
+            }
 			
 			startOfIndex++;
 		}

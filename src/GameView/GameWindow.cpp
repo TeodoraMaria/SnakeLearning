@@ -14,6 +14,8 @@
 #include <chrono>
 
 
+
+
 namespace GameView
 {
 
@@ -31,6 +33,12 @@ namespace GameView
    
       m_board.reset(m_renderer.getBoard());
       m_controller->addBoard(m_board.get());
+
+      m_graphPlotter = std::make_shared<GraphPlotter>();
+
+      m_renderer.addGraphPlotter(m_graphPlotter.get());
+      m_controller->addGraphPlotter(m_graphPlotter.get());
+
    }
 
    GameWindow::~GameWindow()

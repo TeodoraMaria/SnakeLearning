@@ -35,7 +35,7 @@ public:
 	size_t GetBoardLength() const;
 	size_t GetBoardWidth() const;
 	size_t GetFoodPortions() const;
-	const std::vector<int>& GetBoardCells() const;
+	std::vector<int> GetBoard() const;
 
 	int& operator [](const Coordinate& coord);
 	int operator [](const Coordinate& coord) const;
@@ -55,6 +55,7 @@ public:
 	Coordinate GenerateCoordinate() const;
 
 	Coordinate FindClosestFood(const Coordinate& position) const;
+    const std::vector<int>& GetBoardCells() const;
 
 private:
 	

@@ -19,6 +19,7 @@ SnakeMove GeneticBot::GetNextAction(const GameState & gameState)
     const GameBoard& board = gameState.GetGameBoard();
 
     std::vector<double> input;
+    input.resize(m_observer->NbOfObservations());
 
     m_observer->Observe(input,gameState,GetSnakeNumber());
 
