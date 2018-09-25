@@ -44,7 +44,7 @@ void MultisnakeMain()
 		qoptions.numEpisodes = 10;
 		qoptions.noiseDecayFactor = 1.0 / (qoptions.numEpisodes * 10);
 		qoptions.learningRate = 0.1;
-		qoptions.noise = 0.001;
+		qoptions.minNoise = 0.001;
 		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
 		{
 			return 150u + (double)episode / qoptions.numEpisodes * 300.0;
