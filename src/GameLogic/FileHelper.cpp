@@ -10,12 +10,12 @@ FileHelper::~FileHelper()
 	m_file.close();
 }
 
-void FileHelper::WriteToFile(const int boardLength, const std::vector<int> view, SnakeMove move, const int snakeHeadPos)
+void FileHelper::WriteToFile(const int boardLength, const std::vector<int> view, SnakeMove move, const int snakeHeadPos, const int snakeNeckPos)
 {
 	m_file << boardLength << ",";
 	for(const auto& elem: view)
 	{
 		m_file << elem <<" ";
 	}
-	m_file<<","<< snakeHeadPos << "," << static_cast<int>(move)<<std::endl;
+	m_file<<","<< snakeHeadPos<<" "<<snakeNeckPos<< "," << static_cast<int>(move)<<std::endl;
 }

@@ -127,7 +127,9 @@ void Game::SaveMove(const GameState& gameState, const SnakeMove& move, const int
 	const auto snakeHead = gameState.GetSnake(snakeNumber).GetSnakeHead();
 	int snakeHeadPos = gameState.GetGameBoard().GetBoardLength()*snakeHead.GetX() + snakeHead.GetY();
 	int boardLength = gameState.GetGameBoard().GetBoardLength();
-	helper.WriteToFile(boardLength, view, move, snakeHeadPos);
+	const auto snakeNeck = gameState.GetSnake(snakeNumber).GetSnakeNeck();
+	int snakeNeckPos = gameState.GetGameBoard().GetBoardLength()*snakeNeck.GetX() + snakeNeck.GetY();
+	helper.WriteToFile(boardLength, view, move, snakeHeadPos, snakeNeckPos);
 }
 
 void Game::CheckIfGameOver() const

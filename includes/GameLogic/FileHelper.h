@@ -10,7 +10,7 @@ public:
 	FileHelper(const std::string& filename);
 	~FileHelper();
 
-	void WriteToFile(const int boardLength, const std::vector<int> view, SnakeMove move, const int snakeHeadPos);
+	void WriteToFile(const int boardLength, const std::vector<int> view, SnakeMove move, const int snakeHeadPos, const int snakeNeckPos);
 private:
 	std::ofstream m_file;
 };

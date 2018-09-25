@@ -31,6 +31,13 @@ Coordinate Snake::GetSnakeHead() const
 	return m_snakeBody.front();
 }
 
+Coordinate Snake::GetSnakeNeck() const
+{
+	auto neck = m_snakeBody.begin();
+	std::advance(neck, 1);
+	return *neck;
+}
+
 Coordinate Snake::GetSnakeTail() const
 {
 	return m_snakeBody.back();
