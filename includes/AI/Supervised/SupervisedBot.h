@@ -11,15 +11,15 @@ namespace AI {
 		class SupervisedBot : public IPlayer
 		{
 		public:
-
-			SupervisedBot();
+			SupervisedBot(const SupervisedNetwork::Settings& settings);
 			SnakeMove GetNextAction(const GameState& gameState) override;
+			SupervisedNetwork* GetNetwork() const;
 
 		private:
 			std::vector<double> ExtractInput(const GameState& gameState) const;
 			SnakeMove InterpretOutput(std::vector<double>) const;
 
-			SupervisedNetwork m_network;
+			SupervisedNetwork* m_network;
 		};
 	}
 }

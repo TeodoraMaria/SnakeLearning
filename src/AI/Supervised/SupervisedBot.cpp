@@ -5,84 +5,22 @@
 using namespace AI::Supervised;
 
 
-std::vector<int> OneHotEncoder(int x)
+AI::Supervised::SupervisedBot::SupervisedBot(const SupervisedNetwork::Settings& settings)
 {
-	std::vector<int> label = { 0,0,0 };
-	label[x] = 1;
-	return label;
-}
-
-TrainingData GetTrainingData()
-{
-	std::ifstream file;
-	int balance = 0;
-	file.open("D:\\SnakeData.txt", std::fstream::in);
-	TrainingSet ts;
-	int lines = 0;
-	while (!file.eof())
-	{
-		int val;
-		lines++;
-		TrainingEntry te;
-		for (int i = 0; i < 49; i++)
-		{
-			file >> val;
-			te.m_inputs.push_back(val);
-		}
-		file >> val;
-		if (val == 0)
-			balance++;
-		else balance--;
-		te.m_expectedOutputs = OneHotEncoder(val);
-		if(val!=0 || balance<-3)
-			ts.push_back(te);
-	}
-	file.close();
-	int nr = ts.size() / 5;
-
-	std::random_shuffle(ts.begin(), ts.end());
-	TrainingData td;
-
-	TrainingSet::const_iterator first = ts.begin();
-	TrainingSet::const_iterator last = ts.begin() + nr;
-	TrainingSet gen(first, last);
-	td.m_generalizationSet = gen;
-
-	first = ts.begin() + nr;
-	last = ts.begin() + 2 * nr;
-	TrainingSet val(first, last);
-	td.m_validationSet = val;
-
-	first = ts.begin() + 2 * nr;
-	last = ts.end();
-	TrainingSet train(first, last);
-	td.m_trainingSet = train;
-
-	return td;
-}
-
-AI::Supervised::SupervisedBot::SupervisedBot()
-	: m_network(SupervisedNetwork::Settings{ 49, 150, 3 } )
-{
-	SupervisedTrainer::Settings trainerSettings;
-	trainerSettings.m_learningRate = 0.0003;
-	trainerSettings.m_momentum = 0.9;
-	trainerSettings.m_useBatchLearning = true;
-	trainerSettings.m_maxEpochs = 1000;
-	trainerSettings.m_desiredAccuracy = 90;
-
-	SupervisedTrainer trainer(trainerSettings, &m_network);
-
-	TrainingData td = GetTrainingData();
-	trainer.Train(td);
+	m_network = new SupervisedNetwork(settings);
 }
 
 
 SnakeMove AI::Supervised::SupervisedBot::GetNextAction(const GameState & gameState)
 {
 	auto input = ExtractInput(gameState);
-	auto output = m_network.Evaluate(input);
+	auto output = m_network->Evaluate(input);
 	return InterpretOutput(output);
+}
+
+SupervisedNetwork * AI::Supervised::SupervisedBot::GetNetwork() const
+{
+	return m_network;
 }
 
 std::vector<double> AI::Supervised::SupervisedBot::ExtractInput(const GameState & gameState) const
@@ -126,4 +64,27 @@ SnakeMove AI::Supervised::SupervisedBot::InterpretOutput(std::vector<double> out
 	if (index == 2)
 		return SnakeMove::RIGHT;
 	return SnakeMove::FORWARD;
+}
+
+std::vector<int> AI::Supervised::SupervisedBot::GetFieldOfView() const
+{
+	std::vector<int> field;
+	int x = fieldX / 2;
+	int y = fieldY / 2;
+	int snakeX = snakeHead / cols;
+	int snakeY = snakeHead % cols;
+	int newX = snakeX - x;
+	int newY = snakeY - y;
+	for (auto i = 0; i < fieldX; ++i)
+	{
+		for (auto j = 0; j < fieldY; ++j)
+		{
+			auto val = (newX + i)*cols + (newY + j);
+			if (val < 0 || val >= map.size())
+				field.push_back(1);
+			else
+				field.push_back(map[val]);
+		}
+	}
+	return field;
 }

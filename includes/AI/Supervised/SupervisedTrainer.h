@@ -38,7 +38,7 @@ namespace AI {
 
 		public:
 
-			SupervisedTrainer(Settings const& settings, SupervisedNetwork* pNetwork);
+			SupervisedTrainer(const Settings & settings, SupervisedNetwork* pNetwork);
 
 			void Train(TrainingData const& trainingData);
 
