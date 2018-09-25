@@ -48,8 +48,8 @@ std::vector<double> AI::Supervised::SupervisedBot::ExtractInput(const GameState 
 SnakeMove AI::Supervised::SupervisedBot::InterpretOutput(std::vector<double> output) const
 {
 
-	/*auto it = std::max_element(output.begin(), output.end());
-	auto index = std::distance(output.begin(), it);*/
+	auto it = std::max_element(output.begin(), output.end());
+	auto index = std::distance(output.begin(), it);
 	if(index==0)
 		return SnakeMove::FORWARD;
 	if (index == 1)
