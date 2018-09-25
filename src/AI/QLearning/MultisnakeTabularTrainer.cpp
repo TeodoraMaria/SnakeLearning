@@ -166,7 +166,7 @@ IPlayer* MultisnakeTabularTrainer::Train()
 
 	for (const auto agent : agents)
 	{
-		agent->SetNoise(m_qoptions.maxRandActionChance);
+		agent->SetNoise(m_qoptions.maxNoise);
 	}
 	
 	bool startedToRender = false;
@@ -247,8 +247,8 @@ IPlayer* MultisnakeTabularTrainer::Train()
 				agent->SetNoise(
 					::Utils::Math::Lerp(
 						agent->GetNoise(),
-						m_qoptions.minRandActionChance,
-						m_qoptions.randActionDecayFactor));
+						m_qoptions.minNoise,
+						m_qoptions.noiseDecayFactor));
 			}
 			
 			if (episode >= m_qoptions.numEpisodes - m_qoptions.lastNGamesToRender)
