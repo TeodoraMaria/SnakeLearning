@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <iostream>
 
-AI::Supervised::SupervisedTrainer::SupervisedTrainer(Settings const & settings, SupervisedNetwork * pNetwork)
+AI::Supervised::SupervisedTrainer::SupervisedTrainer(const Settings & settings, SupervisedNetwork * pNetwork)
 	: m_pNetwork(pNetwork)
 	, m_learningRate(settings.m_learningRate)
 	, m_momentum(settings.m_momentum)
@@ -16,8 +16,12 @@ AI::Supervised::SupervisedTrainer::SupervisedTrainer(Settings const & settings, 
 	, m_trainingSetMSE(0)
 	, m_validationSetMSE(0)
 	, m_generalizationSetMSE(0)
+	, m_deltaInputHidden()         // Delta for input hidden layer
+	, m_deltaHiddenOutput ()       // Delta for hidden output layer
+	, m_errorGradientsHidden()    // Error gradients for the hidden layer
+	, m_errorGradientsOutput()
 {
-	assert(pNetwork != nullptr);
+	//assert(pNetwork != nullptr);
 
 	m_deltaInputHidden.resize(pNetwork->m_weightsInputHidden.size());
 	m_deltaHiddenOutput.resize(pNetwork->m_weightsHiddenOutput.size());
