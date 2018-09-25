@@ -4,7 +4,7 @@
 
 FileHelper::FileHelper(const std::string& filename):m_fileName(filename)
 {
-	m_file.open(filename, std::fstream::out);
+	m_file.open(filename, std::fstream::app);
 	m_file.close();
 	m_file.open(filename, std::fstream::in);
 }

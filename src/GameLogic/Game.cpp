@@ -251,7 +251,8 @@ void Game::RunRound()
 	GameState gameState = GetGameState();
 	if (m_gameRenderer != nullptr)
 	{
-		PrintBoard();
+//		PrintBoard();
+		m_gameRenderer->Render(GetGameState());
 	}
 	std::random_shuffle(m_players.begin(), m_players.end());
 	for (auto player : m_players)
