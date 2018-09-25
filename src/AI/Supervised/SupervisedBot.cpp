@@ -25,25 +25,17 @@ SupervisedNetwork * AI::Supervised::SupervisedBot::GetNetwork() const
 
 std::vector<double> AI::Supervised::SupervisedBot::ExtractInput(const GameState & gameState) const
 {
-	auto fieldOfView = gameState.GetFieldOfView(gameState.GetSnake(GetSnakeNumber()), 7, 7);
+	auto fieldOfView = gameState.GetFieldOfView(gameState.GetSnake(GetSnakeNumber()), 3, 3);
 	std::vector<double> input(fieldOfView.begin(), fieldOfView.end());
 	for (auto& elem : input)
 	{
 		if (elem == 0)
 		{
-			elem = 1;
-		}
-		else if (elem == 1)
-		{
-			elem = -2;
-		}
-		else if (elem == GetSnakeNumber())
-		{
 			elem = 0;
-		}
+		}		
 		else if (elem == 2)
 		{
-			elem = 2;
+			elem = 1;
 		}
 		else
 		{
@@ -64,27 +56,4 @@ SnakeMove AI::Supervised::SupervisedBot::InterpretOutput(std::vector<double> out
 	if (index == 2)
 		return SnakeMove::RIGHT;
 	return SnakeMove::FORWARD;
-}
-
-std::vector<int> AI::Supervised::SupervisedBot::GetFieldOfView() const
-{
-	std::vector<int> field;
-	int x = fieldX / 2;
-	int y = fieldY / 2;
-	int snakeX = snakeHead / cols;
-	int snakeY = snakeHead % cols;
-	int newX = snakeX - x;
-	int newY = snakeY - y;
-	for (auto i = 0; i < fieldX; ++i)
-	{
-		for (auto j = 0; j < fieldY; ++j)
-		{
-			auto val = (newX + i)*cols + (newY + j);
-			if (val < 0 || val >= map.size())
-				field.push_back(1);
-			else
-				field.push_back(map[val]);
-		}
-	}
-	return field;
 }

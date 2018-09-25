@@ -6,6 +6,7 @@
 #include "HumanPlayerQt.h"
 #include "AI/HardCoded/SingleBot.hpp"
 #include "AI/GeneticAlgorithm/GeneticBot.h"
+#include "AI/Supervised/SupervisedManager.h"
 
 #include "ConfigLoading/GeneticBotJson.h"
 
@@ -149,8 +150,10 @@ void GameScene::addPlayersToTheGame()
         m_playerNames.emplace(count++, "Qlearning bot" + std::to_string(i + 1) + ":");
     }
 
+	AI::Supervised::SupervisedManager sm;
     for (size_t i = 0; i < m_gameSettings.nbSupervisedBots; i++) {
-
+		sm.TrainSupervisedBot("D:\SnakeData.txt", 3, 3, AI::Supervised::TrainingWay::BASIC);
+		m_players.push_back(sm.GetSupervisedBot(3, 3, AI::Supervised::TrainingWay::BASIC));
         m_playerNames.emplace(count++, "Supervised bot" + std::to_string(i + 1) + ":");
     }
 

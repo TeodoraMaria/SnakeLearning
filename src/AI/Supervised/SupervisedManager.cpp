@@ -1,5 +1,7 @@
 #include "AI/Supervised/SupervisedManager.h"
 #include "AI/Supervised/SupervisedTrainer.h"
+#include "GameLogic/Snake.h"
+#include "GameLogic/Coordinate.h"
 #include <tuple>
 #include <string>
 #include <random>
@@ -16,7 +18,7 @@ AI::Supervised::SupervisedManager::~SupervisedManager()
 
 IPlayerPtr AI::Supervised::SupervisedManager::GetSupervisedBot(const int fieldX, const int fieldY, const TrainingWay trainingWay)
 {
-	if (m_bot = nullptr)
+	if (m_bot == nullptr)
 	{
 		InitializeBot(fieldX, fieldY);
 		std::string fileName = "SupervisedBot_";
@@ -60,7 +62,7 @@ TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX
 	TrainingSet unbalancedts;
 	int cols;
 	std::vector<int> map;
-	int snakeHead;
+	int snakeHead, snakeNeck;
 	while (!file.eof())
 	{
 		int val;
@@ -72,8 +74,8 @@ TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX
 			file >> val;
 			map.push_back(val);
 		}
-		file >>aux>> snakeHead>>aux;
-		std::vector<int> field = GetFieldOfView(map, snakeHead, fieldX, fieldY, cols);
+		file >>aux>> snakeHead>>snakeNeck>>aux;
+		std::vector<int> field = GetFieldOfView(map, snakeHead, snakeNeck, fieldX, fieldY, cols);
 		std::for_each(field.begin(), field.end(), [&](auto& val) {
 			if (trainingWay == TrainingWay::ENEMY)
 				val = EnemyTranslate(val);
@@ -138,26 +140,16 @@ TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX
 	return td;
 }
 
-std::vector<int> AI::Supervised::SupervisedManager::GetFieldOfView(const std::vector<int> map, const int snakeHead, const int fieldX, const int fieldY, const int cols) const
+std::vector<int> AI::Supervised::SupervisedManager::GetFieldOfView(const std::vector<int> map, const int snakeHead, const int snakeNeck, const int fieldX, const int fieldY, const int cols) const
 {
-	std::vector<int> field;
-	int x = fieldX / 2;
-	int y = fieldY / 2;
-	int snakeX = snakeHead / cols;
-	int snakeY = snakeHead % cols;
-	int newX = snakeX - x;
-	int newY = snakeY - y;
-	for (auto i = 0; i < fieldX; ++i)
-	{
-		for (auto j = 0; j < fieldY; ++j)
-		{
-			auto val = (newX + i)*cols + (newY + j);
-			if (val < 0 || val >= map.size())
-				field.push_back(1);
-			else 
-				field.push_back(map[val]);
-		}
-	}
+	Snake snake(map[snakeHead]);
+	Coordinate neck(snakeNeck / cols, snakeNeck%cols);
+	Coordinate head(snakeHead / cols, snakeHead%cols);
+	snake.Eat(neck);
+	snake.Eat(head);
+	GameBoard gb(map);
+	GameState gs(gb, std::vector<Snake>());
+	std::vector<int> field = gs.GetFieldOfView(snake, fieldX, fieldY);
 	return field;
 }
 

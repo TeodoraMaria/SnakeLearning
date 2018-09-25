@@ -248,7 +248,7 @@ void Game::RestockFood()
 void Game::RunRound()
 {
 	GameState gameState = GetGameState();
-	if (m_gameRenderer != nullptr)
+	if (m_gameRenderer == nullptr)
 	{
 		PrintBoard();
 	}

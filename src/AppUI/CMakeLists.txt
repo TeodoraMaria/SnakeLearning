@@ -38,6 +38,7 @@ target_link_libraries(${PROJECT_NAME}
 	GeneticAlgorithm
 	GameLogic
 	ConfigLoading
+	Supervised
 
 	Qt5::Widgets 
 	Qt5::Core 

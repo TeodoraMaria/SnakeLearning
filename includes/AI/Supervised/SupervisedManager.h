@@ -18,7 +18,7 @@ namespace AI {
 			void LoadSupervisedBot(std::string fileName);
 			void SaveSupervisedBot() const;
 			TrainingData GetTrainingData(const int fieldX, const int fieldY, const std::string & inputFilePath = "D:\\SnakeData.txt", const TrainingWay trainingWay = TrainingWay::BASIC) const;
-			std::vector<int> GetFieldOfView(const std::vector<int> map, const int snakeHead, const int fieldX, const int fieldY, const int cols) const;
+			std::vector<int> GetFieldOfView(const std::vector<int> map, const int snakeHead, const int snakeNeck, const int fieldX, const int fieldY, const int cols) const;
 
 			int BasicTranslate(int x) const;
 			int EnemyTranslate(int x) const;
