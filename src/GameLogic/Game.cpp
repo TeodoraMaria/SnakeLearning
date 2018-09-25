@@ -129,7 +129,8 @@ void Game::SaveMove(const GameState& gameState, const SnakeMove& move, const int
 	int boardLength = gameState.GetGameBoard().GetBoardLength();
 	const auto snakeNeck = gameState.GetSnake(snakeNumber).GetSnakeNeck();
 	int snakeNeckPos = gameState.GetGameBoard().GetBoardLength()*snakeNeck.GetX() + snakeNeck.GetY();
-	helper.WriteToFile(boardLength, view, move, snakeHeadPos, snakeNeckPos);
+	GameplayStep step(boardLength, view, move, snakeHeadPos, snakeNeckPos);
+	helper.WriteToFile(step);
 }
 
 void Game::CheckIfGameOver() const
@@ -248,7 +249,7 @@ void Game::RestockFood()
 void Game::RunRound()
 {
 	GameState gameState = GetGameState();
-	if (m_gameRenderer == nullptr)
+	if (m_gameRenderer != nullptr)
 	{
 		PrintBoard();
 	}
