@@ -3,7 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
-#include <json.hpp>
+#include <json_fwd.hpp>
 
 struct GameplayStep
 {
