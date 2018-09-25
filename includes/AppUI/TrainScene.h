@@ -27,12 +27,15 @@ namespace AppUI
         void backButtonPressed();
         void startButtonPressed();
         void updateGraph(const std::vector<double>& values);
+        void updateLoadingBar(double value);
+        void updateGameScene(GameState gamestate);
 
     private:
         QChart* m_chart;
         QLineSeries* m_maxFitnessValues;
         QLineSeries* m_avgFitnessValues;
         QWidget* m_centralWidget;
+
 
         GraphicBoard* m_board;
 

@@ -45,7 +45,7 @@ namespace AppUI
         std::shared_ptr<Ui_GameScene> ui;
 
         QTimer m_timer;
-        size_t m_timerSpeed = 100;
+        size_t m_timerSpeed = 30;
         QWidget* m_centralWidget;
 
         GraphicBoard* m_board;

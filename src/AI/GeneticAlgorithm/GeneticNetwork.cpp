@@ -33,10 +33,30 @@ SnakeMove GeneticNetwork::feedForward(const std::vector<double>& input) const
 
     const auto& result = Utils::NeuralNetwork::feedForward(floatInput);
 
-    std::vector<double> doubleInput(result.begin(), result.end());
+    double resultSum = 0;
+
+    for (const auto& val : result) {
+        resultSum += val;
+    }
+
+    double prob1 = result[0] / resultSum;
+    double prob2 = prob1 + result[1] / resultSum;
+    double prob3 = prob2 + result[2] / resultSum;
+
+    double randomNr = rand()/double(RAND_MAX);
+
+    size_t index=0;
+
+    if (randomNr <= prob1) {
+        index = 0;
+    } else if (randomNr <= prob2) {
+        index = 1;
+    } else if (randomNr <= prob3) {
+        index = 2;
+    }
 
     SnakeMove bestMove;
-    size_t index=std::distance(result.begin(), std::max_element(result.begin(), result.end()));
+    //size_t index=std::distance(result.begin(), std::max_element(result.begin(), result.end()));
     //size_t index = AI::QLearning::Utils::PickAction(doubleInput, 0, m_merseneTwister,true,0.001);
 
     switch (index) {
@@ -57,6 +77,7 @@ SnakeMove GeneticNetwork::feedForward(const std::vector<double>& input) const
             break;
         }
         default:
+            bestMove = SnakeMove::FORWARD;
             break;
     }
 
