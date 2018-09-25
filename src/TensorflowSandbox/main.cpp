@@ -86,19 +86,26 @@ QOptions GetQOptions()
 	qoptions.qDiscountFactor = 0.95;
 	qoptions.actionQualityEps = 0.05;
 
-	qoptions.numEpisodes = 1000;
-	qoptions.randActionDecayFactor = 1.0 / (100);
+	qoptions.numEpisodes = 2000;
 	qoptions.learningRate = 0.0001;
-	qoptions.maxRandActionChance = 10.0;
-	qoptions.minRandActionChance = 0.05;
+	
+	// Percentage of mean.
+	qoptions.maxNoise = 10.0;
+	qoptions.minNoise = 0.02;
+	qoptions.noiseDecayFactor = 1.0 / (qoptions.numEpisodes * 0.1);
+	
 	qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
 	{
 		return 70u + (double)episode / qoptions.numEpisodes * 150.0;
 	};
 
-	qoptions.foodReward = [](int episode) { return 1.0; };
-	qoptions.dieReward = [&](int episode) { return -0.1; };//+ (double)episode / qoptions.numEpisodes * (-100.0); };
-	qoptions.stepReward = [](int episode) { return 0; };
+	qoptions.foodReward = [](int episode)	{ return  1.0; };
+
+//	qoptions.dieReward = [&](int episode)	{ return -episode * episode / std::pow(qoptions.numEpisodes, 1.8); };
+	qoptions.dieReward = [&](int episode)	{ return 0; };
+	
+//	qoptions.stepReward = [](int episode)	{ return -0.001; };
+	qoptions.stepReward = [](int episode)	{ return 0; };
 
 	qoptions.milsToSleepBetweenFrames = 25;
 	qoptions.lastNGamesToRender = 10;
@@ -186,7 +193,7 @@ bool StateIsNone(const double* state)
 	return ::Utils::Math::Approx(state[0], NoneFlag, 0.1);
 }
 
-double ComputePartEqualityEps(const std::vector<double>& values, double percentage)
+double PositiveMean(const std::vector<double>& values)
 {
 	const auto sum = std::accumulate(
 		values.begin(),
@@ -196,16 +203,22 @@ double ComputePartEqualityEps(const std::vector<double>& values, double percenta
 		{
 			return val1 + std::abs(val2);
 		});
-	
-	return (sum / values.size()) * percentage;
+	return sum / values.size();
+}
+
+double ComputePartEqualityEps(const std::vector<double>& values, double percentage)
+{
+	return PositiveMean(values) * percentage;
 }
 
 int main()
 {
-	const auto learningRate = 0.01;
+	const auto learningRate = 0.0001;
+
+
 
 	auto cellInterpreter = std::make_shared<CellInterpreter::Basic3CellInterpreter>();
-	auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
+	auto observer = std::make_shared<GridObserver>(cellInterpreter, 10, 10);
 //	auto observer = std::make_shared<FullMapObserver>(cellInterpreter, 25 * 25);
 	
 	const int numInputs = observer->NbOfObservations();
@@ -219,6 +232,8 @@ int main()
 	std::vector<int> layersShape{
 	{
 		numInputs,
+		numInputs * 2,
+//		numInputs * 2,
 		numOutputs,
 	}};
 	
@@ -242,9 +257,12 @@ int main()
 		biassesAssign.emplace_back(assignB);
 	}
 	
-	auto layer1 = Add(scope, MatMul(scope, inputHolder, weights[0]), biasses[0]);
+	auto varIndx = 0u;
+	auto layer1 = Tanh(scope, Add(scope, MatMul(scope, inputHolder, weights[varIndx]), biasses[varIndx])); varIndx++;
+//	auto layer2 = Elu(scope, Add(scope, MatMul(scope, layer1, weights[varIndx]), biasses[varIndx])); varIndx++;
+	auto layer2= Add(scope, MatMul(scope, layer1, weights[varIndx]), biasses[varIndx]); varIndx++;
+	auto& networkOutput = layer2;
 	
-	auto& networkOutput = layer1;
 	auto targetQHolder = Placeholder(scope, DataType::DT_FLOAT);
 	
 	auto loss = ReduceMean(scope,
@@ -316,7 +334,7 @@ int main()
 	auto requiredOutput = std::vector<float>(IPlayer::possibleMoves.size());
 	auto startedToRender = false;
 
-	auto noise = qoptions.maxRandActionChance;
+	auto noise = qoptions.maxNoise;
 	auto networkOutCpy = std::vector<float>(numOutputs);
 
 	if (g_debugging)
@@ -371,11 +389,13 @@ int main()
 
 				int actionIndx = 0;
 				auto networkOutDbl = std::vector<double>(actionsQ, actionsQ + numOutputs);
+				
+				const auto positiveMean = PositiveMean(networkOutDbl);
 				actionIndx = AI::QLearning::Utils::PickActionAdditiveNoise(
 					networkOutDbl,
-					noise,
+					positiveMean * noise,
 					merseneTwister,
-					ComputePartEqualityEps(networkOutDbl, qoptions.actionQualityEps));
+					positiveMean * qoptions.actionQualityEps);
 				
 				if (g_debugging)
 				{
@@ -389,7 +409,7 @@ int main()
 						startedToRender = true;
 						std::system("play -q -n synth 1 sin 880");
 						std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-						qoptions.minRandActionChance = 0;
+						qoptions.minNoise = 0;
 					}
 					gmOptions.gameRenderer->Render(game.GetGameState());
 					if (qoptions.milsToSleepBetweenFrames != 0)
@@ -434,179 +454,90 @@ int main()
 				}
 				episodeMemory.RegisterMemory(observations, actionIndx, reward, nextObservations);
 				game.RestockFood();
-				
-				/*
-				** Training part.
-				*/
-				
-				std::vector<std::vector<double>> observationsBatch = { observations };
-				auto statesBatchTensor = MakeTensor(observationsBatch);
-				std::vector<Tensor> q_s_a;
+			}
+		}
+		
+		const auto discountedRewards = episodeMemory.GetDiscountedRewards(qoptions.qDiscountFactor);
+		for (int batch_i = episodeMemory.nbOfMemories - 1; batch_i >= 0; batch_i--)
+		{
+			const auto batchSize = 1;
+
+			std::vector<std::vector<double>> observationsBatch = { episodeMemory.states[batch_i] };
+			auto statesBatch = MakeTensor(observationsBatch);
+			std::vector<Tensor> q_s_a;
+			TF_CHECK_OK(session.Run(
+				{{ inputHolder, statesBatch }},
+				{ networkOutput },
+				&q_s_a
+			));
+
+			std::vector<std::vector<double>> nextObservationsBatch = { episodeMemory.nextStates[batch_i] };
+			auto nextStatesBatch = MakeTensor(nextObservationsBatch);
+			std::vector<Tensor> q_s_a_d;
+			TF_CHECK_OK(session.Run(
+				{{ inputHolder, nextStatesBatch }},
+				{ networkOutput },
+				&q_s_a_d
+			));
+
+			auto trainOutputBatch = Tensor(
+				DataTypeToEnum<float>::v(),
+				TensorShape{ (int)batchSize, (int)numOutputs });
+
+			std::copy_n(
+				q_s_a[0].matrix<float>().data(),
+				batchSize * numOutputs,
+				trainOutputBatch.matrix<float>().data()
+			);
+
+			const auto actionIndx = episodeMemory.actions[batch_i];
+			float finalActionReward = discountedRewards[batch_i];
+//			float finalActionReward = episodeMemory.rewards[batch_i];
+
+			if (!StateIsNone(episodeMemory.nextStates[batch_i].data()))
+			{
+				const float* thisBatch_q_s_a_d = q_s_a_d[0].matrix<float>().data();
+				const auto bestNextQ = *std::max_element(thisBatch_q_s_a_d, thisBatch_q_s_a_d + numOutputs);
+				finalActionReward += qoptions.qDiscountFactor * bestNextQ;
+			}
+			trainOutputBatch.matrix<float>()(actionIndx) = finalActionReward;
+
+			// Train.
+			{
+				auto stuffToBeComputed = std::vector<Output>();
+				for (auto& appliedGrad : appliedGrads)
+					stuffToBeComputed.push_back(appliedGrad);
+				stuffToBeComputed.push_back(networkOutput);
+				stuffToBeComputed.push_back(loss);
+
+				std::vector<Tensor> tfOutput;
 				TF_CHECK_OK(session.Run(
-					{{ inputHolder, statesBatchTensor }},
-					{ networkOutput },
-					&q_s_a
+					{
+						{ inputHolder, statesBatch },
+						{ targetQHolder, trainOutputBatch }
+					},
+					stuffToBeComputed,
+					&tfOutput
 				));
 
-				std::vector<std::vector<double>> nextObservationsBatch = { nextObservations };
-				auto nextStatesBatch = MakeTensor(nextObservationsBatch);
-				std::vector<Tensor> q_s_a_d;
-				TF_CHECK_OK(session.Run(
-					{{ inputHolder, nextStatesBatch }},
-					{ networkOutput },
-					&q_s_a_d
-				));
-				
-				const auto batchSize = 1;
-				auto trainOutputBatch = Tensor(
-					DataTypeToEnum<float>::v(),
-					TensorShape{ (int)batchSize, (int)numOutputs });
-
-				std::copy_n(
-					q_s_a[0].matrix<float>().data(),
-					batchSize * numOutputs,
-					trainOutputBatch.matrix<float>().data()
-				);
-
-				for (auto batch_i = 0u; batch_i < batchSize; batch_i++)
+				if (g_debugging)
 				{
-					float finalActionReward = reward;
-					float bestNextQ = 0;
-					if (!StateIsNone(nextObservations.data()))
-					{
-						const float* thisBatch_q_s_a_d = q_s_a_d[0].matrix<float>().data();
-						bestNextQ = *std::max_element(thisBatch_q_s_a_d, thisBatch_q_s_a_d + numOutputs);
-						finalActionReward += qoptions.qDiscountFactor * bestNextQ;
-					}
-					trainOutputBatch.matrix<float>()(actionIndx) = finalActionReward;
-					
-					if (g_debugging)
-					{
-						std::cout << "[BestNext]: " << bestNextQ << std::endl;
-						std::cout << "[Final]: " << finalActionReward << std::endl;
-						std::cout << "\033[36m " << trainOutputBatch.DebugString() << "\033[0m\n";
-					}
-				}
-
-				// Train.
-				{
-					auto stuffToBeComputed = std::vector<Output>();
-					for (auto& appliedGrad : appliedGrads)
-						stuffToBeComputed.push_back(appliedGrad);
-					stuffToBeComputed.push_back(networkOutput);
-					stuffToBeComputed.push_back(loss);
-
-					std::vector<Tensor> tfOutput;
-					TF_CHECK_OK(session.Run(
-						{
-							{ inputHolder, statesBatchTensor },
-							{ targetQHolder, trainOutputBatch }
-						},
-						stuffToBeComputed,
-						&tfOutput
-					));
-					
-					if (g_debugging)
-					{
-						std::cout
-							<< "------- [LOSS]:"
-							<< std::fixed << std::setprecision(2)
-							<< tfOutput.back().flat<float>()(0)
-							<< std::endl;
-					}
+					std::cout
+						<< "------- [LOSS]:"
+						<< std::fixed << std::setprecision(2)
+						<< tfOutput.back().flat<float>()(0)
+						<< std::endl;
 				}
 			}
 		}
 		
-//		const auto discountedRewards = episodeMemory.GetDiscountedRewards(qoptions.qDiscountFactor);
-//		const auto batchSize = episodeMemory.nbOfMemories;
-//
-//		auto statesBatch = MakeTensor(episodeMemory.states);
-//		std::vector<Tensor> q_s_a;
-//		TF_CHECK_OK(session.Run(
-//			{{ inputHolder, statesBatch }},
-//			{ networkOutput },
-//			&q_s_a
-//		));
-//
-//		auto nextStatesBatch = MakeTensor(episodeMemory.nextStates);
-//		std::vector<Tensor> q_s_a_d;
-//		TF_CHECK_OK(session.Run(
-//			{{ inputHolder, nextStatesBatch }},
-//			{ networkOutput },
-//			&q_s_a_d
-//		));
-//
-//		auto trainOutputBatch = Tensor(
-//			DataTypeToEnum<float>::v(),
-//			TensorShape{ (int)batchSize, (int)numOutputs });
-//
-//		std::copy_n(
-//			q_s_a[0].matrix<float>().data(),
-//			batchSize * numOutputs,
-//			trainOutputBatch.matrix<float>().data()
-//		);
-//
-//		for (auto batch_i = 0u; batch_i < batchSize; batch_i++)
-//		{
-//			const auto actionIndx = batch_i * numOutputs + episodeMemory.actions[batch_i];
-//
-////			trainOutputBatch.matrix<float>()(actionIndx) = discountedRewards[batch_i];
-////
-////			if (g_debugging)
-////			{
-////				std::cout
-////					<< "Discounted: "
-////					<< std::fixed << std::setprecision(2)
-////					<< discountedRewards[batch_i] << std::endl;
-////			}
-//
-//			float finalActionReward = episodeMemory.rewards[batch_i];
-//			if (episodeMemory.nextStates[batch_i][0] != NoneFlag)
-//			{
-//				const float* thisBatch_q_s_a_d =
-//					q_s_a_d[0].matrix<float>().data() + batch_i * numOutputs;
-//
-//				const auto bestNextQ = *std::max_element(thisBatch_q_s_a_d, thisBatch_q_s_a_d + numOutputs);
-//				finalActionReward += qoptions.qDiscountFactor * bestNextQ;
-//			}
-//		}
-//
-//
-//
-//		{
-//			auto stuffToBeComputed = std::vector<Output>();
-//			for (auto& appliedGrad : appliedGrads)
-//				stuffToBeComputed.push_back(appliedGrad);
-//			stuffToBeComputed.push_back(networkOutput);
-//			stuffToBeComputed.push_back(loss);
-//
-//			std::vector<Tensor> tfOutput;
-//			TF_CHECK_OK(session.Run(
-//				{
-//					{ inputHolder, statesBatch },
-//					{ targetQHolder, trainOutputBatch }
-//				},
-//				stuffToBeComputed,
-//				&tfOutput
-//			));
-//
-//			if (g_debugging)
-//			{
-//				std::cout
-//					<< "------- [LOSS]:"
-//					<< std::fixed << std::setprecision(2)
-//					<< tfOutput.back().flat<float>()(0)
-//					<< std::endl;
-//			}
-//		}
-		
 		printf(
-			"----------------- End of episode: %d with a reward of \033[32m %.2f \033[0m. Noise: %.2f\n",
+			"----------------- End of episode: %d with a reward of\033[32m %.2f\033[0m. Noise: %.2f. Die reward: %.2f\n",
 			episode,
 			episodeReward,
-			noise);
-		noise = ::Utils::Math::Lerp(noise, qoptions.minRandActionChance, qoptions.randActionDecayFactor);
+			noise,
+			qoptions.dieReward(episode));
+		noise = ::Utils::Math::Lerp(noise, qoptions.minNoise, qoptions.noiseDecayFactor);
 		
 //		char c;
 //		std::cin >> c;
