@@ -102,8 +102,8 @@ void TrainScene::updateGraph(const std::vector<double>& values)
     m_graphX++;
     m_graphY = values[0] > m_graphY ? values[0] : m_graphY;
 
-    ui->chartView->chart()->axisX()->setRange(0, m_graphX);
-    ui->chartView->chart()->axisY()->setRange(0, m_graphY);
+    ui->chartView->chart()->axisX()->setRange(0, (long long)m_graphX);
+    ui->chartView->chart()->axisY()->setRange(0, (long long)m_graphY);
 
     ui->chartView->chart()->update();
 }

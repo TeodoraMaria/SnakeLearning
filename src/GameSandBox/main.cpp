@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 		gameOptions.numFoods = 10;
 		gameOptions.initialSnakeSize = 2;
 		//gameOptions.playWithoutRenedring = true;
-		gameOptions.saveGameplay = false;
+//		gameOptions.saveGameplay = false;
 		gameOptions.gameRenderer = new GameView::OpenGLRenderer(500,500,10,10);
 	}
 	Game game(gameOptions, players);
@@ -38,6 +38,6 @@ int main(int argc, char** argv)
 	game.InitGame();
 	game.Play();
 	
-	delete gameOptions.gameRenderer;
+//	delete gameOptions.gameRenderer;
 	return 0;
 }

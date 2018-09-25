@@ -1,4 +1,4 @@
-#include "..\..\includes\ConfigLoading\SupervisedNNJson.h"
+#include "SupervisedNNJson.h"
 
 void to_json(nlohmann::json & j, const AI::Supervised::SupervisedNetwork * net)
 {
