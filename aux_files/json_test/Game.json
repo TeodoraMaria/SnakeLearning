@@ -3,16 +3,7 @@
 		"boardLength": 25,
 		"boardWidth": 25,
 		"numFoods": 10,
-		"initialSnakeSize": 3,
-		"renderer": {
-			"type": "TermRenderer",
-			"model": {
-				"resolutionX": 500,
-				"resolutionY": 500,
-				"lines": 25,
-				"cols": 25
-			}
-		}
+		"initialSnakeSize": 3
 	},
 	"players": [
 		{

@@ -272,9 +272,9 @@ void Game::RunRound()
 	RestockFood();
 }
 
-void Game::Play()
+void Game::Play(unsigned int maxNbOfSteps)
 {
-	while (!m_isGameOver)
+	for (auto i = 0u; i < maxNbOfSteps && !m_isGameOver; i++)
 	{
 		RunRound();
 		CheckIfGameOver();
