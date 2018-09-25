@@ -43,10 +43,12 @@ void FoodGraphicCell::paint(QPainter * painter, const QStyleOptionGraphicsItem *
 
     qreal centerX = newWidth / 2;
 
+    qreal drawingPortion = m_width / 8;
+
     painter->setBrush(QColor(Qt::black));
-    painter->drawRect(newX+centerX, newY+10, 4, -15);
+    painter->drawRect(newX+centerX, newY+2*drawingPortion, 2*drawingPortion, -5* drawingPortion);
 
     painter->setBrush(QColor(232,186,199));
-    painter->drawRect(newX + 4, newY + 4, 10, 10);
+    painter->drawRect(newX + drawingPortion, newY + drawingPortion, 3*drawingPortion, 3*drawingPortion);
 
 }

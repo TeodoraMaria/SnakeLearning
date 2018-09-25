@@ -4,6 +4,8 @@
 #include "AI/GeneticAlgorithm/GeneticTrainer.h"
 #include "AI/GeneticAlgorithm/GeneticOptions.h"
 
+#include "AI/GeneticAlgorithm/GeneticTrainerMultiSnake.h"
+
 #include "GymEnv/SingleSnakeRelativeView.hpp"
 #include "GymEnv/SingleSnakeGridView.hpp"
 #include "GameView/OpenGLRenderer.h"
@@ -11,15 +13,21 @@
 #include "GameLogic/CellInterpreter/Basic3CellInterpreter.hpp"
 #include "GameLogic/CellInterpreter/WallFoodBody.hpp"
 
+#include "ConfigLoading/GeneticBotJson.h"
+
 #include <stdlib.h>
 #include <time.h>
 #include <iostream>
+#include <fstream>
+#include <iomanip> 
+#include <json.hpp>
 
 using namespace AI::GeneticAlgorithm;
 using namespace GameLogic;
 
 void GeneticSnakeMain()
  {
+    /*
      auto gmOptions = GameOptions();
      {
          gmOptions.boardLength = 25;
@@ -47,7 +55,6 @@ void GeneticSnakeMain()
     // auto env = new GymEnv::SingleSnakeRelativeView(baseModel);
      auto env = new GymEnv::SingleSnakeGridView(gridModel);
 
-
      AI::GeneticAlgorithm::GeneticOptions options;
 
      options.crossoverProb = 0.5;
@@ -58,8 +65,32 @@ void GeneticSnakeMain()
 
      Utils::NetworkSettings settings;
      settings.m_inputs = env->GetObserver()->NbOfObservations() + 1;
-     settings.m_hiddenLayersSizes = {10,3};
+     settings.m_hiddenLayersSizes = {4,6,8,4,3};
 
      auto trainer = AI::GeneticAlgorithm::GeneticTrainer(settings,options, env);
-     trainer.Train();
+     GeneticBot& bot = dynamic_cast<GeneticBot&>(*trainer.Train());
+     */
+
+    GeneticTrainerMultiSnake s;
+    GeneticBot& bot = dynamic_cast<GeneticBot&>(*s.Train());
+    
+
+     const auto filePath = "D:\\fac\\snake\\aux_files\\genetic\\TrainedGenetic.json";
+     
+     std::ofstream outFileStream(filePath);
+
+
+
+     if (!outFileStream.is_open()) {
+         std::cout << "Failed to open " << filePath << std::endl;
+         return;
+     }
+
+     try {
+         outFileStream << std::setw(2) << nlohmann::json(&bot);
+         std::cout << "was written" << std::endl;
+         outFileStream.close();
+     } catch (...) {
+         std::cout << "Failed to save player." << std::endl;
+     }
  }

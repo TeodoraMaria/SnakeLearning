@@ -19,7 +19,7 @@ static void PrinCell(const Coordinate& coord, const GameState& gameState)
 	else if (cellValue == BoardPart::WALL)
 		std::cout << "\033[0;40m ";
 	else if (cellValue == BoardPart::FOOD)
-		std::cout << "\033[5;31m♥";
+		std::cout << "\033[31m♥";
 	else
 	{
 		const auto snakeIndex = cellValue - 10;

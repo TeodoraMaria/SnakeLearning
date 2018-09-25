@@ -49,6 +49,7 @@ void FoodDirectionDecorator::Observe(
 		normX = directionToFood.GetX() / magnitude;
 		normY = directionToFood.GetY() / magnitude;
 	}
+//	std::sqr
 //	const auto snakeOrientation = snake.GetOrientation();
 //
 //	const auto dirX = (double)normX - (double)snakeOrientation.GetX();

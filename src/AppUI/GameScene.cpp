@@ -120,7 +120,7 @@ void GameScene::addPlayersToTheGame()
     for (size_t i = 0; i < m_gameSettings.nbGeneticBots; i++) {
         
         const auto filePath = "D:\\fac\\snake\\aux_files\\genetic\\TrainedGenetic.json";
-
+       
         std::ifstream fileStream;
 
         fileStream.open(filePath);

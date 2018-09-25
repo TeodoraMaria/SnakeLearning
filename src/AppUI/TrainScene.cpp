@@ -14,9 +14,15 @@ using namespace AppUI;
 
 TrainScene::TrainScene(const std::string& name)
 {
+
     m_sceneName = name;
     qRegisterMetaType<std::vector<double>>("std::vector<double>");
+    qRegisterMetaType<size_t>("size_t");
+    qRegisterMetaType<GameState>("GameState");
+
     QObject::connect(&m_geneticAlg, SIGNAL(graphValues(const std::vector<double>&)), this, SLOT(updateGraph(const std::vector<double>&)));
+    QObject::connect(&m_geneticAlg, SIGNAL(loadingBar(double)), this, SLOT(updateLoadingBar(double)));
+    QObject::connect(&m_geneticAlg, SIGNAL(gameState(GameState)), this, SLOT(updateGameScene(GameState))); 
 }
 
 TrainScene::~TrainScene()
@@ -42,13 +48,14 @@ void TrainScene::createScene()
 
     m_chart->setTitle("Simple line chart example");
 
-    m_board = new GraphicBoard(550, 550);
+    m_board = new GraphicBoard(300, 300);
+    ui->graphicsView->setScene(m_board);
 
     ui->chartView->setChart(m_chart);
     ui->chartView->repaint();
     QObject::connect(ui->pushButtonStart, SIGNAL(released()), this, SLOT(startButtonPressed()));
     QObject::connect(ui->pushButtonBack, SIGNAL(released()), this, SLOT(backButtonPressed()));
-    
+    QObject::connect(ui->pushButtonDisplay, SIGNAL(released()), &m_geneticAlg, SLOT(switchDisplayEnabled()));
 }
 
 void TrainScene::release()
@@ -95,10 +102,20 @@ void TrainScene::updateGraph(const std::vector<double>& values)
     m_graphX++;
     m_graphY = values[0] > m_graphY ? values[0] : m_graphY;
 
-    ui->chartView->chart()->axisX()->setRange(0, m_graphX);
-    ui->chartView->chart()->axisY()->setRange(0, m_graphY);
+    ui->chartView->chart()->axisX()->setRange(0, (long long)m_graphX);
+    ui->chartView->chart()->axisY()->setRange(0, (long long)m_graphY);
 
     ui->chartView->chart()->update();
+}
+
+void TrainScene::updateLoadingBar(double value)
+{
+    ui->progressBar->setValue(value);
+}
+
+void AppUI::TrainScene::updateGameScene(GameState gamestate)
+{
+    m_board->updateBoard(gamestate);
 }
 
 

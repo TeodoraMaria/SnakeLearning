@@ -24,9 +24,9 @@ namespace AI { namespace QLearning
 		double actionQualityEps = 0.001;
 		
 		// Random action chance.
-		double maxRandActionChance = 1;
-		double minRandActionChance = 0.00;
-		double randActionDecayFactor = 1.0 / 100000;
+		double maxNoise = 1;
+		double minNoise = 0.00;
+		double noiseDecayFactor = 1.0 / 100000;
 		SizeTFunc maxStepsWithoutFood = [](int episode) { return 150; };
 		
 		// Rewards.
