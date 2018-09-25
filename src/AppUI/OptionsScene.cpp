@@ -23,6 +23,16 @@ void OptionsScene::createScene()
 
     m_centralWidget = m_ui->centralwidget;
 
+    m_ui->spinBoxHumans->setValue(m_gameSettings.nbHumanPlayers);
+    m_ui->spinBoxGeneticBots->setValue(m_gameSettings.nbGeneticBots);
+    m_ui->spinBoxQlearningBots->setValue(m_gameSettings.nbQlearningBots);
+    m_ui->spinBoxSupervisedBots->setValue(m_gameSettings.nbSupervisedBots);
+    m_ui->spinBoxNormalBots->setValue(m_gameSettings.nbNormalBots);
+
+    m_ui->spinBoxMapWidth->setValue(m_gameSettings.mapWidth);
+    m_ui->spinBoxMapHeight->setValue(m_gameSettings.mapHeight);
+    m_ui->spinBoxFoodCount->setValue(m_gameSettings.foodCount);
+
 
     QObject::connect(m_ui->pushButton, SIGNAL(released()), this, SLOT(quitButtonPressed()));
 }
