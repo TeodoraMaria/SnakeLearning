@@ -9,7 +9,7 @@ namespace Utils
     {
         size_t m_inputs=0;
         std::vector<size_t> m_hiddenLayersSizes = {0};
-		ActivationFunction m_activationFc = ActivationFunction::SIGMOID;
+		ActivationFunction m_activationFc = ActivationFunction::RELU;
     };
 
     class NeuralNetwork

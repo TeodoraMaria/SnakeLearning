@@ -52,9 +52,9 @@ void GeneticTrainerMultiSnake::displayBestNetwork()
     players.push_back(player);
 
     static GameOptions options;
-    options.boardLength = 25;
-    options.boardWidth = 25;
-    options.numFoods = 10;
+    options.boardLength = 10;
+    options.boardWidth = 10;
+    options.numFoods = 1;
 
     m_game = new Game(options, players);
     //  m_game= new Game(options, players);
@@ -122,7 +122,7 @@ void GeneticTrainerMultiSnake::runRound()
 void GeneticTrainerMultiSnake::setup()
 {
     auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
-    m_observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
+    m_observer = std::make_shared<GridObserver>(cellInterpreter, 7, 7);
     //m_observer = std::make_shared<ThreeDirectionalObserver>(cellInterpreter);
 
     m_options.crossoverProb = 0.5;
@@ -145,9 +145,9 @@ void GeneticTrainerMultiSnake::setup()
 void GeneticTrainerMultiSnake::runEpisode(size_t episode)
 {
     static GameOptions options;
-    options.boardLength = 25;
-    options.boardWidth = 25;
-    options.numFoods = 10;
+    options.boardLength = 10;
+    options.boardWidth = 10;
+    options.numFoods = 1;
     
 
     QFutureSynchronizer<void> synchronizer;
