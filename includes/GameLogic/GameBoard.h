@@ -30,7 +30,7 @@ public:
 		const GameBoardType& gameBoardType = GameBoardType::BOX,
 		const size_t& length = 10,
 		const size_t& width = 10);
-	GameBoard(std::vector<int> map);
+	GameBoard(std::vector<int> map, const int cols);
 	~GameBoard();
 
 	size_t GetBoardLength() const;

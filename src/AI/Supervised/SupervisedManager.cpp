@@ -18,7 +18,7 @@ AI::Supervised::SupervisedManager::~SupervisedManager()
 	m_bot = nullptr;
 }
 
-IPlayerPtr AI::Supervised::SupervisedManager::GetSupervisedBot(const int fieldX, const int fieldY, const TrainingWay trainingWay)
+SupervisedBot* AI::Supervised::SupervisedManager::GetSupervisedBot(const int fieldX, const int fieldY, const TrainingWay trainingWay)
 {
 	if (m_bot == nullptr)
 	{
@@ -27,7 +27,7 @@ IPlayerPtr AI::Supervised::SupervisedManager::GetSupervisedBot(const int fieldX,
 		fileName = fileName + std::to_string(fieldX)+"x"+std::to_string(fieldY)+"_"+std::to_string(trainingWay);
 		LoadSupervisedBot(fileName);
 	}
-	return IPlayerPtr(m_bot);
+	return m_bot;
 }
 
 void AI::Supervised::SupervisedManager::TrainSupervisedBot(const std::string & inputFilePath, const int fieldX, const int fieldY, const TrainingWay trainingWay)
@@ -56,7 +56,7 @@ void AI::Supervised::SupervisedManager::SaveSupervisedBot() const
 {
 }
 
-TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX,const int fieldY , const std::string & inputFilePath, const TrainingWay trainingWay) const
+TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX, const int fieldY , const std::string & inputFilePath, const TrainingWay trainingWay) const
 {
 	std::ifstream file;
 	int balance = 0;
@@ -69,26 +69,12 @@ TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX
 
 	nlohmann::json j;
 	file >> j;
-
-	std::vector<GameplayStep> a = j.get < std::vector<GameplayStep>>();
-
 	TrainingSet unbalancedts;
-	int cols;
-	std::vector<int> map;
-	int snakeHead, snakeNeck;
-	while (!file.eof())
+	std::vector<GameplayStep> steps = j.get < std::vector<GameplayStep>>();
+	for (const auto& step : steps)
 	{
-		int val;
-		char aux;
-		file >> cols >> aux;
 		TrainingEntry te;
-		for (int i = 0; i < 625; i++)
-		{
-			file >> val;
-			map.push_back(val);
-		}
-		file >>aux>> snakeHead>>snakeNeck>>aux;
-		std::vector<int> field = GetFieldOfView(map, snakeHead, snakeNeck, fieldX, fieldY, cols);
+		std::vector<int> field = GetFieldOfView(step.view, step.snakeHeadPos, step.snakeNeckPos, fieldX, fieldY, step.boardLength);
 		std::for_each(field.begin(), field.end(), [&](auto& val) {
 			if (trainingWay == TrainingWay::ENEMY)
 				val = EnemyTranslate(val);
@@ -98,11 +84,11 @@ TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX
 				val = BasicTranslate(val);
 			te.m_inputs.push_back(val);
 		});
-		file>>val;
-		te.m_expectedOutputs = OneHotEncoder(val);
+		te.m_expectedOutputs = OneHotEncoder(static_cast<int>(step.move));
 		//Normalize(te.m_inputs);
 		unbalancedts.push_back(te);
 	}
+
 	file.close();
 	std::vector<int> left = { 0,1,0 };
 	std::vector<int> right = { 0,0,1 };
@@ -130,7 +116,6 @@ TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX
 	});
 
 	std::random_shuffle(ts.begin(), ts.end());
-
 
 	TrainingData td;
 	int nr = ts.size() / 5;
@@ -160,7 +145,7 @@ std::vector<int> AI::Supervised::SupervisedManager::GetFieldOfView(const std::ve
 	Coordinate head(snakeHead / cols, snakeHead%cols);
 	snake.Eat(neck);
 	snake.Eat(head);
-	GameBoard gb(map);
+	GameBoard gb(map, cols);
 	GameState gs(gb, std::vector<Snake>());
 	std::vector<int> field = gs.GetFieldOfView(snake, fieldX, fieldY);
 	return field;

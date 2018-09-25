@@ -10,7 +10,7 @@ namespace AI {
 		public:
 			SupervisedManager();
 			~SupervisedManager();
-			IPlayerPtr GetSupervisedBot(const int fieldX, const int fieldY, const TrainingWay trainingWay);
+			SupervisedBot* GetSupervisedBot(const int fieldX, const int fieldY, const TrainingWay trainingWay);
 			void TrainSupervisedBot(const std::string& inputFilePath, const int fieldX, const int fieldY, const TrainingWay trainingWay);
 		private:
 			SupervisedBot* m_bot;
