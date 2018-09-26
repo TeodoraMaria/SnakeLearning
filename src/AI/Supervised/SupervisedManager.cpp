@@ -38,7 +38,7 @@ void AI::Supervised::SupervisedManager::TrainSupervisedBot(const std::string & i
 	trainerSettings.m_learningRate = 0.0003;
 	trainerSettings.m_momentum = 0.9;
 	trainerSettings.m_useBatchLearning = false;
-	trainerSettings.m_maxEpochs = 1000;
+	trainerSettings.m_maxEpochs = 1500;
 	trainerSettings.m_desiredAccuracy = 90;
 
 	SupervisedTrainer trainer(trainerSettings, m_bot->GetNetwork());
@@ -60,36 +60,40 @@ TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX
 {
 	std::ifstream file;
 	int balance = 0;
-
-	file.open(inputFilePath, std::fstream::in);
-	if (!file.is_open())
-	{
-		throw "File not found";
-	}
-
+	int i = 0;
 	nlohmann::json j;
-	file >> j;
 	TrainingSet unbalancedts;
-	std::vector<GameplayStep> steps = j.get < std::vector<GameplayStep>>();
-	for (const auto& step : steps)
+	std::string fileName = inputFilePath + std::to_string(i) + ".teo";
+	file.open(fileName, std::fstream::in);
+	while (file.is_open())
 	{
-		TrainingEntry te;
-		std::vector<int> field = GetFieldOfView(step.view, step.snakeHeadPos, step.snakeNeckPos, fieldX, fieldY, step.boardLength);
-		std::for_each(field.begin(), field.end(), [&](auto& val) {
-			if (trainingWay == TrainingWay::ENEMY)
-				val = EnemyTranslate(val);
-			else if (trainingWay == TrainingWay::FULL)
-				val = FullTranslate(val, 11); //fix this, add snake number support
-			else
-				val = BasicTranslate(val);
-			te.m_inputs.push_back(val);
-		});
-		te.m_expectedOutputs = OneHotEncoder(static_cast<int>(step.move));
-		//Normalize(te.m_inputs);
-		unbalancedts.push_back(te);
-	}
+		file >> j;
 
-	file.close();
+		std::vector<GameplayStep> steps = j.get < std::vector<GameplayStep>>();
+		for (const auto& step : steps)
+		{
+			TrainingEntry te;
+			std::vector<int> field = GetFieldOfView(step.view, step.snakeHeadPos, step.snakeNeckPos, fieldX, fieldY, step.boardLength);
+			std::for_each(field.begin(), field.end(), [&](auto& val) {
+				if (trainingWay == TrainingWay::ENEMY)
+					val = EnemyTranslate(val);
+				else if (trainingWay == TrainingWay::FULL)
+					val = FullTranslate(val, 11); //fix this, add snake number support
+				else
+					val = BasicTranslate(val);
+				te.m_inputs.push_back(val);
+			});
+			te.m_expectedOutputs = OneHotEncoder(static_cast<int>(step.move));
+			//Normalize(te.m_inputs);
+			unbalancedts.push_back(te);
+		}
+
+		file.close();
+		++i;
+		fileName = inputFilePath + std::to_string(i) + ".teo";
+		file.open(fileName, std::fstream::in);
+	}
+	//file.close();
 	std::vector<int> left = { 0,1,0 };
 	std::vector<int> right = { 0,0,1 };
 	auto lefts = std::count_if(unbalancedts.begin(), unbalancedts.end(), [left](const TrainingEntry& te) {return te.m_expectedOutputs == left;  });
