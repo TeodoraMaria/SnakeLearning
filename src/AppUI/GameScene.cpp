@@ -178,7 +178,7 @@ void GameScene::addPlayersToTheGame()
 	
     for (size_t i = 0; i < m_gameSettings.nbSupervisedBots; i++) {
 		AI::Supervised::SupervisedManager sm;
-		m_players.push_back(IPlayerPtr(sm.GetSupervisedBot(3, 3, AI::Supervised::TrainingWay::BASIC)));
+		m_players.push_back(sm.GetSupervisedBot(3, 3, AI::Supervised::TrainingWay::BASIC));
         m_playerNames.emplace(count++, "Supervised bot" + std::to_string(i + 1) + ":");
     }
 }

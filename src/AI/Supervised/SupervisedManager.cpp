@@ -19,7 +19,7 @@ AI::Supervised::SupervisedManager::~SupervisedManager()
 	m_bot = nullptr;
 }
 
-SupervisedBot* AI::Supervised::SupervisedManager::GetSupervisedBot(const int fieldX, const int fieldY, const TrainingWay trainingWay)
+IPlayerPtr AI::Supervised::SupervisedManager::GetSupervisedBot(const int fieldX, const int fieldY, const TrainingWay trainingWay)
 {
 	if (m_bot == nullptr)
 	{
@@ -28,7 +28,7 @@ SupervisedBot* AI::Supervised::SupervisedManager::GetSupervisedBot(const int fie
 		fileName = fileName + std::to_string(fieldX)+"x"+std::to_string(fieldY)+"_"+std::to_string(trainingWay)+".txt";
 		LoadSupervisedBot(fileName);
 	}
-	return m_bot.get();
+	return IPlayerPtr(m_bot);
 }
 
 void AI::Supervised::SupervisedManager::TrainSupervisedBot(const std::string & inputFilePath, const int fieldX, const int fieldY, const TrainingWay trainingWay)
@@ -39,7 +39,7 @@ void AI::Supervised::SupervisedManager::TrainSupervisedBot(const std::string & i
 IPlayerPtr AI::Supervised::SupervisedManager::Train(TrainCallbacks callbacks)
 {
 	int fieldX = 3, fieldY = 3, trainingWay = 0;
-	std::string inputFilePath = "F:\\SnakeLearning\\aux_files\\playLogs\\play_log";
+	std::string inputFilePath = "./aux_files/playLogs/play_log";
 	InitializeBot(fieldX, fieldY);
 
 	SupervisedTrainer::Settings trainerSettings;
