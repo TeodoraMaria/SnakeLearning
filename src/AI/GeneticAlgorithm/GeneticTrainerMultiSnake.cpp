@@ -47,58 +47,87 @@ void GeneticTrainerMultiSnake::displayBestNetwork()
     }
     auto player = std::make_shared<GeneticBot>(*bestNetwork, std::shared_ptr<GymEnv::StateObserver::IStateObserver>(m_observer));
 
-    std::vector<IPlayerPtr> players;
+    //std::vector<IPlayerPtr> players;
 
-    players.push_back(player);
+    //players.push_back(player);
 
-    static GameOptions options;
-    options.boardLength = 25;
-    options.boardWidth = 25;
-    options.numFoods = 10;
+    //static GameOptions options;
+    //options.boardLength = 25;
+    //options.boardWidth = 25;
+    //options.numFoods = 10;
 
-    m_game = new Game(options, players);
-    //  m_game= new Game(options, players);
-    m_game->InitGame();
+    //m_game = new Game(options, players);
+    ////  m_game= new Game(options, players);
+    //m_game->InitGame();
 
-    for (size_t i = 0; i < m_options.maxNumSteps && m_displayEnabled; i++) {
-        auto currentScore = m_game->GetAllSnakes().at(0).GetScore();
-        m_game->RunRound();
-        emit gameState(m_game->GetGameState());
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    
-        if (m_game->GetAllSnakes().at(0).GetScore() != currentScore) {
-            i = 0;
-        }
-        if (m_game->EveryoneIsDead()) {
-            break;
-        }
-    }
-    delete m_game;
+    //for (size_t i = 0; i < m_options.maxNumSteps && m_displayEnabled; i++) {
+    //    auto currentScore = m_game->GetAllSnakes().at(0).GetScore();
+    //    m_game->RunRound();
+    //    emitGameState(m_game->GetGameState());
+    //    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    //
+    //    if (m_game->GetAllSnakes().at(0).GetScore() != currentScore) {
+    //        i = 0;
+    //    }
+    //    if (m_game->EveryoneIsDead()) {
+    //        break;
+    //    }
+    //}
+    //delete m_game;
 }
 
-IPlayer * GeneticTrainerMultiSnake::Train()
+IPlayer * GeneticTrainerMultiSnake::Train(TrainCallbacks callbacks)
 {
     setup();
 
-    for (size_t i = 0; i < m_options.numEpisodes; i++) {
+    for (size_t i = 0; i < callbacks.numEpisodes; i++) {
         runEpisode(i);
 
-        if (m_displayEnabled) {
-           displayBestNetwork();
+        if(callbacks.emitDisplayGame)
+        {
+            const GeneticNetwork* bestNetwork;
+            double maxFitness = 0.0;
+            for (const auto& network : m_networks) {
+                if (maxFitness < network.getFitness()) {
+                    maxFitness = network.getFitness();
+                    bestNetwork = &network;
+                }
+            }
+            auto player = std::make_shared<GeneticBot>(*bestNetwork, std::shared_ptr<GymEnv::StateObserver::IStateObserver>(m_observer));
+
+            callbacks.emitDisplayGame(player, m_options.maxNumSteps);
         }
-        printFitnessInfo(i);
+
+        if (callbacks.emitGraphValues)
+        {
+            double maxFitness = 0;
+            double totalFitness = 0;
+            for (const auto& network : m_networks) {
+
+                double networkFitness = std::cbrt(network.getFitness());
+
+                if (maxFitness < networkFitness) {
+                    maxFitness = networkFitness;
+                }
+                totalFitness += networkFitness;
+            }
+        
+            std::vector<double> values = {maxFitness,totalFitness / m_networks.size()};
+
+            callbacks.emitGraphValues(values);
+        }
         selectNewNetworks();
         crossover();
         mutate();
 
-        if (i < m_options.numEpisodes - 1) {
+        if (i < callbacks.numEpisodes - 1) {
             resetFitness();       
         }
 
-        emitLoadingBar(i);
+        if (callbacks.emitStepEpisode) {
+            callbacks.emitStepEpisode(i+1);
+        }
     }
-
-    emitLoadingBar(m_options.numEpisodes);
 
     const GeneticNetwork* bestNetwork;
     double maxFitness = 0.0;
@@ -118,10 +147,7 @@ void GeneticTrainerMultiSnake::setEpisodes(size_t episodes)
 
 }
 
-void GeneticTrainerMultiSnake::endGame()
-{
-   // m_stop = true;
-}
+
 void GeneticTrainerMultiSnake::setup()
 {
     auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
@@ -195,7 +221,6 @@ void GeneticTrainerMultiSnake::crossover()
 
         crossoverValue = Utils::Math::randomDouble(0.00000001, 1.0);
         if (crossoverValue < m_options.crossoverProb) {
-
             m_networks[i].crossover(m_networks[i + 1]);
         }
     }
@@ -251,22 +276,7 @@ void GeneticTrainerMultiSnake::mutate()
 
 void GeneticTrainerMultiSnake::printFitnessInfo(size_t episode)
 {  
-    double maxFitness = 0;
-    double totalFitness = 0;
-    for (const auto& network : m_networks) {
 
-        double networkFitness = std::cbrt(network.getFitness());
-
-        if (maxFitness < networkFitness) {
-            maxFitness = networkFitness;
-        }
-        totalFitness += networkFitness;
-    }
-    //std::cout << " max fitness: " << maxFitness << " avg: " << totalFitness / m_networks.size() << std::endl;
-
-    std::vector<double> values = {maxFitness,totalFitness / m_networks.size()};
-
-    emitGraphValues(values); 
 }
 
 void GeneticTrainerMultiSnake::resetFitness()
@@ -277,18 +287,4 @@ void GeneticTrainerMultiSnake::resetFitness()
 }
 
 
-void GeneticTrainerMultiSnake::switchDisplayEnabled()
-{
-    m_displayEnabled = !m_displayEnabled;
-}
 
-void GeneticTrainerMultiSnake::emitGraphValues(const std::vector<double>& values)
-{
-    emit(graphValues(values));
-}
-
-void GeneticTrainerMultiSnake::emitLoadingBar(size_t episode)
-{
-    double value=static_cast<double>(Utils::Math::normalize(episode, 0, m_options.numEpisodes, 0, 100));
-    emit(loadingBar(value));
-}
