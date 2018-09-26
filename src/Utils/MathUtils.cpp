@@ -1,6 +1,7 @@
 #include "MathUtils.h"
 #include <cmath>
 #include <random>
+#include <numeric>
 
 using namespace Utils::Math;
 
