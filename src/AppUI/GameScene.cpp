@@ -42,8 +42,8 @@ void GameScene::createScene()
     ui->setupUi(m_mainWindow.get());
     m_centralWidget = ui->centralwidget;
 
-    ui->graphicsView->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-    //ui->graphicsView->setAlignment(Qt::AlignCenter);
+   // ui->graphicsView->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    ui->graphicsView->setAlignment(Qt::AlignCenter);
     m_board = new GraphicBoard(550, 550);
     ui->graphicsView->setScene(m_board);
         

@@ -52,9 +52,9 @@ void GeneticTrainerMultiSnake::displayBestNetwork()
     players.push_back(player);
 
     static GameOptions options;
-    options.boardLength = 10;
-    options.boardWidth = 10;
-    options.numFoods = 1;
+    options.boardLength = 25;
+    options.boardWidth = 25;
+    options.numFoods = 10;
 
     m_game = new Game(options, players);
     //  m_game= new Game(options, players);
@@ -82,13 +82,11 @@ IPlayer * GeneticTrainerMultiSnake::Train()
 
     for (size_t i = 0; i < m_options.numEpisodes; i++) {
         runEpisode(i);
-        //srand(i);
 
         if (m_displayEnabled) {
            displayBestNetwork();
         }
         printFitnessInfo(i);
-        //srand(time(nullptr));
         selectNewNetworks();
         crossover();
         mutate();
@@ -99,6 +97,7 @@ IPlayer * GeneticTrainerMultiSnake::Train()
 
         emitLoadingBar(i);
     }
+
     emitLoadingBar(m_options.numEpisodes);
 
     const GeneticNetwork* bestNetwork;
@@ -113,12 +112,16 @@ IPlayer * GeneticTrainerMultiSnake::Train()
     return new GeneticBot(*bestNetwork, std::shared_ptr<GymEnv::StateObserver::IStateObserver>(m_observer));
 }
 
-void GeneticTrainerMultiSnake::runRound()
+void GeneticTrainerMultiSnake::setEpisodes(size_t episodes)
 {
-    
-   
+    m_options.numEpisodes = episodes;
+
 }
 
+void GeneticTrainerMultiSnake::endGame()
+{
+   // m_stop = true;
+}
 void GeneticTrainerMultiSnake::setup()
 {
     auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
@@ -128,7 +131,7 @@ void GeneticTrainerMultiSnake::setup()
     m_options.crossoverProb = 0.5;
     m_options.maxNumSteps = 100;
     m_options.mutationProb = 0.1;
-    m_options.numEpisodes = 1000;
+    //m_options.numEpisodes = 1000;
     m_options.numOfNetworks = 50;
 
     m_networkSettings.m_inputs = m_observer.get()->NbOfObservations() + 1;
@@ -145,9 +148,9 @@ void GeneticTrainerMultiSnake::setup()
 void GeneticTrainerMultiSnake::runEpisode(size_t episode)
 {
     static GameOptions options;
-    options.boardLength = 10;
-    options.boardWidth = 10;
-    options.numFoods = 1;
+    options.boardLength = 25;
+    options.boardWidth = 25;
+    options.numFoods = 10;
     
 
     QFutureSynchronizer<void> synchronizer;
@@ -247,7 +250,7 @@ void GeneticTrainerMultiSnake::mutate()
 }
 
 void GeneticTrainerMultiSnake::printFitnessInfo(size_t episode)
-{
+{  
     double maxFitness = 0;
     double totalFitness = 0;
     for (const auto& network : m_networks) {
@@ -263,7 +266,7 @@ void GeneticTrainerMultiSnake::printFitnessInfo(size_t episode)
 
     std::vector<double> values = {maxFitness,totalFitness / m_networks.size()};
 
-    emitGraphValues(values);
+    emitGraphValues(values); 
 }
 
 void GeneticTrainerMultiSnake::resetFitness()

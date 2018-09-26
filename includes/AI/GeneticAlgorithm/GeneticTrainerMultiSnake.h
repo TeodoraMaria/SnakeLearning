@@ -28,9 +28,12 @@ namespace AI
 
             virtual IPlayer * Train() override;
 
+            void setEpisodes(size_t episodes);
+
         protected slots:
             void switchDisplayEnabled();
-            void runRound();
+            void endGame();
+            
 
         signals:
             void loadingBar(double value);

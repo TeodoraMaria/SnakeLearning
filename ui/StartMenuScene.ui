@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>720</width>
+    <width>800</width>
     <height>600</height>
    </rect>
   </property>
@@ -57,7 +57,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Snake A.I. 2.0</string>
+       <string>Snake Training</string>
       </property>
      </widget>
     </item>
