@@ -9,7 +9,8 @@ namespace Utils { namespace Math
     double ruleOfThree(double value, double envMaxRange, double valueMaxRange);
     double randomDouble(double lwoerBound, double upperBound);
     double normalize(double x, double minimum, double maximum, double floor, double ceil);
-
+	double PositiveMean(const std::vector<double>& values);
+	
     template<typename T>
     T randomNumber(T lowerBound, T upperBound)
     {

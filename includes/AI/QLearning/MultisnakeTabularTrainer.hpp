@@ -14,7 +14,7 @@ namespace AI { namespace QLearning
 	public:
 		MultisnakeTabularTrainer(
 			const GameOptions& gmOptions,
-			const QOptions& qoptions);
+			QOptions qoptions);
 	
 		IPlayerPtr Train(TrainCallbacks callbacks) override;
 		
@@ -22,7 +22,7 @@ namespace AI { namespace QLearning
 		void TryInitQField(QTable& qtable, const State key);
 	
 		const GameOptions& m_gmoptions;
-		const QOptions& m_qoptions;
+		QOptions m_qoptions;
 		std::mt19937 m_merseneTwister;
 	};
 }}

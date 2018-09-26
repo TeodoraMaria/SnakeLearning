@@ -314,19 +314,6 @@ void NeuralQAgent::SaveWeights(std::string filePath, bool compact)
 	stream.close();
 }
 
-static double PositiveMean(const std::vector<double>& values)
-{
-	const auto sum = std::accumulate(
-		values.begin(),
-		values.end(),
-		0.0, // Init value.
-		[](const auto val1, const auto val2)
-		{
-			return val1 + std::abs(val2);
-		});
-	return sum / values.size();
-}
-
 int NeuralQAgent::GetNextActionIndex(
 	const GameState& gmState,
 	double noise,
@@ -347,7 +334,7 @@ int NeuralQAgent::GetNextActionIndex(
 	const float* actionsQ = tfOutputs[0].flat<float>().data();
 	auto networkOutDbl = std::vector<double>(actionsQ, actionsQ + NumOutputs());
 
-	const auto positiveMean = PositiveMean(networkOutDbl);
+	const auto positiveMean = ::Utils::Math::PositiveMean(networkOutDbl);
 	return AI::QLearning::Utils::PickActionAdditiveNoise(
 		networkOutDbl,
 		positiveMean * noise,

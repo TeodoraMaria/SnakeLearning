@@ -17,6 +17,8 @@
 #include "GameLogic/CellInterpreter/WallFoodBody.hpp"
 #include "GameLogic/CellInterpreter/WallFoodEnemy.hpp"
 
+#include "ConfigLoading/QTabStudentJson.h"
+
 #include "Utils/MathUtils.h"
 #include "Utils/PrintUtils.h"
 #include "Utils/MatrixUtils.h"
@@ -37,7 +39,7 @@ using namespace GymEnv::Utils;
 
 MultisnakeTabularTrainer::MultisnakeTabularTrainer(
 	const GameOptions& gmOptions,
-	const QOptions& qoptions
+	QOptions qoptions
 ) :
 	m_gmoptions(gmOptions),
 	m_qoptions(qoptions),
@@ -118,16 +120,13 @@ void TrySavePlayer(const QTabStudent& student)
 
 IPlayerPtr MultisnakeTabularTrainer::Train(TrainCallbacks callbacks)
 {
+	m_qoptions.numEpisodes = callbacks.numEpisodes;
+	
 	auto agents = std::vector<std::shared_ptr<QTabStudent>>();
 	
+	for (auto i = 0u; i < 10u; i++)
 	{
-		//auto cellInterpreter1 = std::make_shared<WallFoodBody>();
-		auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
-//		auto cellInterpreter = std::make_shared<WallFoodEnemy>();
-
-//		auto gridObserver = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
-//		auto observer = std::make_shared<FoodDirectionDecorator>(cellInterpreter, gridObserver);
-		
+		auto cellInterpreter = std::make_shared<WallFoodEnemy>();
 		auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
 		
 		auto agent = std::make_shared<QTabStudent>(
@@ -135,26 +134,10 @@ IPlayerPtr MultisnakeTabularTrainer::Train(TrainCallbacks callbacks)
 			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); },
 			m_qoptions.actionQualityEps
 		);
-//		cellInterpreter->SetPlayer(agent);
+
 		agent->SetQTab(TryLoadQTab(*observer));
 		agents.push_back(agent);
 	}
-	
-//	{
-//		//auto cellInterpreter1 = std::make_shared<WallFoodBody>();
-//		//auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
-//		auto cellInterpreter = std::make_shared<WallFoodEnemy>();
-//		auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
-//		auto agent = std::make_shared<QTabStudent>(
-//			cellInterpreter,
-//			observer,
-//			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); },
-//			m_qoptions.actionQualityEps
-//		);
-//		cellInterpreter->SetPlayer(agent);
-//		agent->SetQTab(TryLoadQTab(*observer));
-//		agents.push_back(agent);
-//	}
 
 	auto players = std::vector<std::shared_ptr<IPlayer>>();
 	for (auto agent : agents)
@@ -243,12 +226,6 @@ IPlayerPtr MultisnakeTabularTrainer::Train(TrainCallbacks callbacks)
 				}
 				else
 					agent->SetStepsWithoutFood(agent->GetStepsWithoutFood() + 1);
-				
-				agent->SetNoise(
-					::Utils::Math::Lerp(
-						agent->GetNoise(),
-						m_qoptions.minNoise,
-						m_qoptions.noiseDecayFactor));
 			}
 			
 			if (episode >= m_qoptions.numEpisodes - m_qoptions.lastNGamesToRender)
@@ -272,17 +249,47 @@ IPlayerPtr MultisnakeTabularTrainer::Train(TrainCallbacks callbacks)
 		
 		if (episode % 100 == 0)
 		{
-			std::cout << "Step: " << step << std::endl;
+			printf("End of episode: %d\n", episode);
 			for (const auto& agent : agents)
 			{
-				printf(
-					"End of episode: %d with a reward of %.2f."
-					"Random action chance: %.2f\n",
-					episode,
+				printf("Reward of %4.2f. Noise: %2.2f\n",
 					agent->GetReward(),
 					agent->GetNoise());
 			}
 		}
+		
+		for (auto& agent : agents)
+		{
+			agent->SetNoise(
+				::Utils::Math::Lerp(
+					agent->GetNoise(),
+					m_qoptions.minNoise,
+					m_qoptions.noiseDecayFactor(callbacks.numEpisodes)));
+		}
+		
+		if (callbacks.emitStepEpisode)
+			callbacks.emitStepEpisode(static_cast<size_t>(episode));
+		
+		if (callbacks.emitGraphValues)
+		{
+			auto graphRewards = std::vector<double>();
+			auto rewardSum = 0.0;
+			for (const auto& agent : agents)
+			{
+				const auto reward = agent->GetReward();
+				
+				rewardSum += reward;
+				graphRewards.push_back(reward);
+			}
+			graphRewards.push_back(rewardSum / agents.size());
+			
+			// I want the mean to be the first one.
+			std::reverse(graphRewards.begin(), graphRewards.end());
+			callbacks.emitGraphValues(graphRewards);
+		}
+		
+		if (callbacks.emitDisplayGame)
+			callbacks.emitDisplayGame(agents[0], 1000);
 	}
 	
 	auto bestAgent = *std::max_element(agents.begin(), agents.end(),
@@ -292,6 +299,5 @@ IPlayerPtr MultisnakeTabularTrainer::Train(TrainCallbacks callbacks)
 		});
 	
 	TrySavePlayer(*bestAgent);
-
-	return nullptr;
+	return nlohmann::json(bestAgent.get()).get<std::shared_ptr<QTabStudent>>();
 }
