@@ -46,7 +46,7 @@ static void PrintDieStates(
 		std::cout << pair.first << ") " << pair.second << std::endl;
 }
 
-IPlayer* TabularTrainer::Train()
+IPlayerPtr TabularTrainer::Train(TrainCallbacks callbacks)
 {
 	auto trainSession = TrainSession();
 	trainSession.randomActionChance = m_qoptions.maxNoise;

@@ -1,3 +1,4 @@
+#include "NeuralQTrainer.hpp"
 #include "NeuralQAgent.hpp"
 #include "TrainMemory.h"
 #include "TrainSession.h"
@@ -95,8 +96,7 @@ QOptions GetQOptions()
 	qoptions.qDiscountFactor = 0.95;
 	qoptions.actionQualityEps = 0.05;
 
-	qoptions.numEpisodes = 10000;
-	qoptions.learningRate = 0.0001;
+	qoptions.numEpisodes = 500;
 	
 	// Percentage of mean.
 	qoptions.maxNoise = 1.5;
@@ -145,32 +145,35 @@ bool StateIsNone(const double* state)
 	return ::Utils::Math::Approx(state[0], NoneFlag, 0.1);
 }
 
-int main()
+IPlayerPtr NeuralQTrainer::Train(TrainCallbacks callbacks)
 {
 	auto scopePtr = std::make_shared<Scope>(Scope::NewRootScope());
 	auto sessionPtr = std::make_shared<ClientSession>(*scopePtr);
 
-	auto cellInterpreter1 = std::make_shared<CellInterpreter::Basic3CellInterpreter>();
-	auto observer1 = std::make_shared<GridObserver>(cellInterpreter1, 5, 5);
-	auto agent1 = std::make_shared<NeuralQAgent>(scopePtr, sessionPtr, observer1);
-
-	auto agent1WeightsFile = std::string("./aux_files/qneural/network.json");
-	try
+	auto agents = std::vector<std::shared_ptr<NeuralQAgent>>();
+	auto agentWeightsFile = std::string("./aux_files/qneural/network.json");
+	
+	for (auto i = 0; i < 10; i++)
 	{
-		agent1->LoadWeights(agent1WeightsFile);
+		auto cellInterpreter = std::make_shared<CellInterpreter::Basic3CellInterpreter>();
+		auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
+		auto agent = std::make_shared<NeuralQAgent>(scopePtr, sessionPtr, observer);
+	
+		try
+		{
+			agent->LoadWeights(agentWeightsFile);
+		}
+		catch (...)
+		{
+			std::cout << "[Warning] Failed to load network" << std::endl;
+		}
+		
+		agents.push_back(agent);
 	}
-	catch (...)
-	{
-		std::cout << "[Warning] Failed to load network" << std::endl;
-	}
-
+	
 	auto gmOptions = GetGameOptions();
 	auto qoptions = GetQOptions();
-
-	auto agents = std::vector<std::shared_ptr<NeuralQAgent>>
-	{{
-		agent1
-	}};
+	qoptions.numEpisodes = callbacks.numEpisodes;
 
 	auto players = std::vector<std::shared_ptr<IPlayer>>();
 	for (auto agent : agents)
@@ -233,6 +236,7 @@ int main()
 
 				if (episode >= qoptions.numEpisodes - qoptions.lastNGamesToRender)
 				{
+					
 					gmOptions.gameRenderer->Render(game.GetGameState());
 					if (qoptions.milsToSleepBetweenFrames != 0)
 						std::this_thread::sleep_for(std::chrono::milliseconds(qoptions.milsToSleepBetweenFrames));
@@ -325,20 +329,50 @@ int main()
 			noise,
 			qoptions.minNoise,
 			qoptions.noiseDecayFactor);
+		
+		/*
+		** Callbacks.
+		*/
+		
+		callbacks.emitStepEpisode(static_cast<size_t>(episode));
+		
+		// Emit graph.
+		auto graphRewards = std::vector<double>();
+		auto rewardSum = 0.0;
+		for (const auto& agent : agents)
+		{
+			const auto reward = trainSessions[agent->GetSnakeNumber()].episodeReward;
+			
+			rewardSum += reward;
+			graphRewards.push_back(reward);
+		}
+		graphRewards.push_back(rewardSum);
+		
+		// I want the mean to be the first one.
+		std::reverse(graphRewards.begin(), graphRewards.end());
+		callbacks.emitGraphValues(graphRewards);
+		
+		// Emit game.
+		callbacks.emitDisplayGame(agents[0], 1000);
 	}
 	
 	try
 	{
-		agent1->SaveWeights(agent1WeightsFile);
+		
+		agents[0]->SaveWeights(agentWeightsFile);
 	}
 	catch (...)
 	{
 		// Ignore.
 	}
 	
-	auto j = json(agent1.get());
-	auto test = j.get<std::shared_ptr<NeuralQAgent>>();
+	auto jsonAgentStream = std::ofstream("./aux_files/qneural/NeuralQAgent.json");
+	if (!jsonAgentStream.is_open())
+		throw std::runtime_error("Failed to open file");
 	
-	return 0;
+	json j(agents[0].get());
+	jsonAgentStream << std::setw(2) << j << std::endl;
+	jsonAgentStream.close();
+	
+	return j.get<std::shared_ptr<NeuralQAgent>>();
 }
-

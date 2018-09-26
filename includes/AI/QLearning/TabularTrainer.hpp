@@ -18,7 +18,7 @@ namespace AI { namespace QLearning
 		const QTable& GetQTable() const;
 		void SetQTable(const QTable& qtable);
 		
-		IPlayer* Train() override;
+		IPlayerPtr Train(TrainCallbacks callbacks) override;
 	
 	private:
 		typedef unsigned long long State;

@@ -146,7 +146,7 @@ void TrainScene::startButtonPressed()
     };
 
     auto func = [&]() {
-        AI::GeneticAlgorithm::GeneticBot& bot = dynamic_cast<AI::GeneticAlgorithm::GeneticBot&>(*m_geneticAlg.Train(trainCallbacks));
+        auto bot = std::dynamic_pointer_cast<AI::GeneticAlgorithm::GeneticBot>(m_geneticAlg.Train(trainCallbacks));
         const auto filePath = "D:\\fac\\snake\\aux_files\\genetic\\TrainedGenetic.json";
         std::ofstream outFileStream(filePath);
 
@@ -155,7 +155,7 @@ void TrainScene::startButtonPressed()
             return;
         }
         try {
-            outFileStream << std::setw(2) << nlohmann::json(&bot);
+            outFileStream << std::setw(2) << nlohmann::json(bot.get());
             std::cout << "was written" << std::endl;
             outFileStream.close();
         } catch (...) {

@@ -10,6 +10,7 @@ namespace AI
 	public:
         struct TrainCallbacks
         {
+            // For loading bar.
             std::function<void(size_t episode)> emitStepEpisode;
             std::function<void(std::vector<double>)> emitGraphValues;
             std::function<void(IPlayerPtr, size_t)> emitDisplayGame;
@@ -17,6 +18,6 @@ namespace AI
             size_t numEpisodes;
         };
 
-		virtual IPlayer* Train(TrainCallbacks callbacks) = 0;
+		virtual IPlayerPtr Train(TrainCallbacks callbacks) = 0;
 	};
 }

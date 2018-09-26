@@ -16,7 +16,7 @@ namespace AI { namespace QLearning
 			const GameOptions& gmOptions,
 			const QOptions& qoptions);
 	
-		IPlayer* Train() override;
+		IPlayerPtr Train(TrainCallbacks callbacks) override;
 		
 	private:
 		void TryInitQField(QTable& qtable, const State key);

@@ -76,7 +76,7 @@ void GeneticTrainerMultiSnake::displayBestNetwork()
     //delete m_game;
 }
 
-IPlayer * GeneticTrainerMultiSnake::Train(TrainCallbacks callbacks)
+IPlayerPtr GeneticTrainerMultiSnake::Train(TrainCallbacks callbacks)
 {
     setup();
 
@@ -138,7 +138,7 @@ IPlayer * GeneticTrainerMultiSnake::Train(TrainCallbacks callbacks)
         }
     }
 
-    return new GeneticBot(*bestNetwork, std::shared_ptr<GymEnv::StateObserver::IStateObserver>(m_observer));
+    return IPlayerPtr(new GeneticBot(*bestNetwork, std::shared_ptr<GymEnv::StateObserver::IStateObserver>(m_observer)));
 }
 
 void GeneticTrainerMultiSnake::setEpisodes(size_t episodes)
