@@ -5,7 +5,11 @@
 #include "ApplicationModel.h"
 
 #include "AI/GeneticAlgorithm/GeneticTrainerMultiSnake.h"
-//#include "AI/QLearning/"
+#include "AI/QLearning/MultisnakeTabularTrainer.hpp"
+
+#ifndef _WIN32
+	#include "TensorflowSandbox/NeuralQTrainer.hpp"
+#endif
 
 #include <QtConcurrent/qtconcurrentrun.h>
 #include <memory>
@@ -116,17 +120,23 @@ void TrainScene::startButtonPressed()
     auto selectedAlg=ui->comboBoxAlgorithm->currentText();  
     auto s = selectedAlg.toStdString();
     std::string filePath = "./aux_files/";
+
     //TODO: implement for other
     if (selectedAlg == geneticName) {
         m_trainer = std::make_unique<AI::GeneticAlgorithm::GeneticTrainerMultiSnake>();
         filePath += "genetic/TrainedGenetic.json";
     } else if (selectedAlg == tabularQName) {
-        filePath += "genetic/TrainedGenetic.json";
-        m_trainer;
-    } else if (selectedAlg == deepQName) {
-        filePath += "genetic/TrainedGenetic.json";
-        m_trainer;
-    } else if (selectedAlg == supervisedName) {
+    	m_trainer = std::make_unique<AI::QLearning::MultisnakeTabularTrainer>();
+        filePath += "qtabular/TrainedQTabAgent.json";
+    }
+    #ifndef _WIN32
+		else if (selectedAlg == deepQName)
+		{
+			m_trainer = std::make_unique<AI::QLearning::NeuralQTrainer>();
+			filePath += "qneural/NeuralQAgent.json";
+		}
+    #endif
+    else if (selectedAlg == supervisedName) {
         filePath += "genetic/TrainedGenetic.json";
         m_trainer;
     } else
@@ -145,6 +155,7 @@ void TrainScene::startButtonPressed()
     };
 
     trainCallbacks.emitDisplayGame = [&](IPlayerPtr player, size_t numOfStepsWithoutFood) {
+//    	std::this_thread::sleep_for(std::chrono::milliseconds(10));
         if (!m_displayEnabled) {
             return;
         }

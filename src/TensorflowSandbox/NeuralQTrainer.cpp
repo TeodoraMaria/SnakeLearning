@@ -153,7 +153,7 @@ IPlayerPtr NeuralQTrainer::Train(TrainCallbacks callbacks)
 	auto agents = std::vector<std::shared_ptr<NeuralQAgent>>();
 	auto agentWeightsFile = std::string("./aux_files/qneural/network.json");
 	
-	for (auto i = 0; i < 10; i++)
+	for (auto i = 0; i < 1; i++)
 	{
 		auto cellInterpreter = std::make_shared<CellInterpreter::Basic3CellInterpreter>();
 		auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);

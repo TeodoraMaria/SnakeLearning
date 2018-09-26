@@ -5,7 +5,7 @@ using namespace AppUI;
 
 SnakeGraphicCell::SnakeGraphicCell(size_t x, size_t y, size_t width, size_t height, int snakeNumber):GraphicCell(x,y, width,height)
 {
-    srand(snakeNumber * 100);
+    // srand(snakeNumber * 100);
     m_snakeNumber = snakeNumber;
    // m_baseColor = QColor(164,189,70);
     size_t red = ((snakeNumber*100 & 0xC0) >> 6) * 64;
@@ -14,7 +14,7 @@ SnakeGraphicCell::SnakeGraphicCell(size_t x, size_t y, size_t width, size_t heig
 
     //m_baseColor= QColor(red,green, blue);
     m_baseColor = QColor(red, green, blue);
-    srand(time(0));
+    // srand(time(0));
 }
 
 QPainterPath SnakeGraphicCell::shape() const

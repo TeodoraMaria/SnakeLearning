@@ -12,16 +12,14 @@ namespace AI { namespace QLearning
 	class MultisnakeTabularTrainer : public AI::ITrainer
 	{
 	public:
-		MultisnakeTabularTrainer(
-			const GameOptions& gmOptions,
-			QOptions qoptions);
+		MultisnakeTabularTrainer(bool renderByYourself = false);
 	
 		IPlayerPtr Train(TrainCallbacks callbacks) override;
 		
 	private:
 		void TryInitQField(QTable& qtable, const State key);
 	
-		const GameOptions& m_gmoptions;
+		GameOptions m_gmoptions;
 		QOptions m_qoptions;
 		std::mt19937 m_merseneTwister;
 	};

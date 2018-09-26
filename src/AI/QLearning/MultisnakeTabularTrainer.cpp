@@ -4,6 +4,8 @@
 #include "ActionPickingUtils.h"
 #include "QTabStudent.hpp"
 
+#include "GameView/TermRenderer.hpp"
+
 #include "AI/QLearning/QTable.h"
 #include "AI/QLearning/TabularQJsonUtils.h"
 #include "AI/HardCoded/SingleBot.hpp"
@@ -37,14 +39,65 @@ using namespace GameLogic::CellInterpreter;
 using namespace GymEnv::StateObserver;
 using namespace GymEnv::Utils;
 
-MultisnakeTabularTrainer::MultisnakeTabularTrainer(
-	const GameOptions& gmOptions,
-	QOptions qoptions
-) :
-	m_gmoptions(gmOptions),
-	m_qoptions(qoptions),
+MultisnakeTabularTrainer::MultisnakeTabularTrainer(bool renderByYourself) :
+	m_gmoptions(),
+	m_qoptions(),
 	m_merseneTwister(std::random_device()())
 {
+	auto& gmOptions = m_gmoptions;
+	auto& qoptions = m_qoptions;
+	
+	gmOptions = GameOptions();
+	{
+		gmOptions.boardLength = 25;
+		gmOptions.boardWidth = 25;
+		gmOptions.numFoods = 10;
+		gmOptions.initialSnakeSize = 3;
+		
+		if (!renderByYourself)
+			gmOptions.gameRenderer = nullptr;
+		else
+		{
+			gmOptions.gameRenderer = new GameView::TermRenderer();
+	//		gmOptions.gameRenderer = new GameView::OpenGLRenderer(
+	//			500, 500,
+	//			gmOptions.boardLength, gmOptions.boardWidth);
+		}
+	}
+	
+	qoptions = AI::QLearning::QOptions();
+	{
+		qoptions.maxNumSteps = [&](int episode)
+		{
+			return 50000;// + (double)episode / qoptions.numEpisodes * 3000;
+		};
+		qoptions.qDiscountFactor = 0.9;
+		qoptions.actionQualityEps = 0.01;
+		
+		qoptions.numEpisodes = 10;
+		qoptions.noiseDecayFactor = [](int numEpisodes) { return 1.0 / (numEpisodes * 0.1); };
+		qoptions.learningRate = 0.01;
+		qoptions.maxNoise = 1.5;
+		qoptions.minNoise = 0.001;
+		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
+		{
+			return 150u + (double)episode / qoptions.numEpisodes * 300.0;
+		};
+		
+		qoptions.foodReward = [](int episode) { return 1.0; };
+		qoptions.dieReward = [&](int episode) { return 0; };
+		qoptions.stepReward = [](int episode) { return 0; };
+		
+//		auto qInitDistrib = std::uniform_real_distribution<>(-1.0, 1.0);
+		qoptions.tabInitializer = [&](std::mt19937& merseneTwister)
+		{
+//			return 0;
+			return 0.5;
+//			return qInitDistrib(merseneTwister);
+		};
+		qoptions.milsToSleepBetweenFrames = 25;
+		qoptions.lastNGamesToRender = 5;
+	}
 }
 
 void MultisnakeTabularTrainer::TryInitQField(QTable& qtable, const State key)
@@ -124,7 +177,7 @@ IPlayerPtr MultisnakeTabularTrainer::Train(TrainCallbacks callbacks)
 	
 	auto agents = std::vector<std::shared_ptr<QTabStudent>>();
 	
-	for (auto i = 0u; i < 10u; i++)
+	for (auto i = 0u; i < 1u; i++)
 	{
 		auto cellInterpreter = std::make_shared<WallFoodEnemy>();
 		auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
@@ -236,7 +289,10 @@ IPlayerPtr MultisnakeTabularTrainer::Train(TrainCallbacks callbacks)
 					std::system("play -q -n synth 1 sin 880");
 					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 				}
-				m_gmoptions.gameRenderer->Render(game.GetGameState());
+
+				if (m_gmoptions.gameRenderer != nullptr)
+					m_gmoptions.gameRenderer->Render(game.GetGameState());
+
 				if (m_qoptions.milsToSleepBetweenFrames != 0)
 				{
 					std::this_thread::sleep_for(std::chrono::milliseconds(
@@ -267,25 +323,28 @@ IPlayerPtr MultisnakeTabularTrainer::Train(TrainCallbacks callbacks)
 					m_qoptions.noiseDecayFactor(callbacks.numEpisodes)));
 		}
 		
-		if (callbacks.emitStepEpisode)
-			callbacks.emitStepEpisode(static_cast<size_t>(episode));
-		
-		if (callbacks.emitGraphValues)
+		if (episode % 100 == 0 || episode == callbacks.numEpisodes - 1)
 		{
-			auto graphRewards = std::vector<double>();
-			auto rewardSum = 0.0;
-			for (const auto& agent : agents)
-			{
-				const auto reward = agent->GetReward();
-				
-				rewardSum += reward;
-				graphRewards.push_back(reward);
-			}
-			graphRewards.push_back(rewardSum / agents.size());
+			if (callbacks.emitStepEpisode)
+				callbacks.emitStepEpisode(static_cast<size_t>(episode + 1));
 			
-			// I want the mean to be the first one.
-			std::reverse(graphRewards.begin(), graphRewards.end());
-			callbacks.emitGraphValues(graphRewards);
+			if (callbacks.emitGraphValues)
+			{
+				auto graphRewards = std::vector<double>();
+				auto rewardSum = 0.0;
+				for (const auto& agent : agents)
+				{
+					const auto reward = agent->GetReward();
+					
+					rewardSum += reward;
+					graphRewards.push_back(reward);
+				}
+				graphRewards.push_back(rewardSum / agents.size());
+				
+				// I want the mean to be the first one.
+				std::reverse(graphRewards.begin(), graphRewards.end());
+				callbacks.emitGraphValues(graphRewards);
+			}
 		}
 		
 		if (callbacks.emitDisplayGame)
