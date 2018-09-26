@@ -52,7 +52,7 @@ MultisnakeTabularTrainer::MultisnakeTabularTrainer(bool renderByYourself) :
 		gmOptions.boardLength = 25;
 		gmOptions.boardWidth = 25;
 		gmOptions.numFoods = 10;
-		gmOptions.initialSnakeSize = 3;
+		gmOptions.initialSnakeSize = 50;
 		
 		if (!renderByYourself)
 			gmOptions.gameRenderer = nullptr;
@@ -76,7 +76,7 @@ MultisnakeTabularTrainer::MultisnakeTabularTrainer(bool renderByYourself) :
 		
 		qoptions.numEpisodes = 10;
 		qoptions.noiseDecayFactor = [](int numEpisodes) { return 1.0 / (numEpisodes * 0.1); };
-		qoptions.learningRate = 0.01;
+		qoptions.learningRate = 0.001;
 		qoptions.maxNoise = 1.5;
 		qoptions.minNoise = 0.001;
 		qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
@@ -85,7 +85,7 @@ MultisnakeTabularTrainer::MultisnakeTabularTrainer(bool renderByYourself) :
 		};
 		
 		qoptions.foodReward = [](int episode) { return 1.0; };
-		qoptions.dieReward = [&](int episode) { return -1 - (double)episode / qoptions.numEpisodes * (-50); };
+		qoptions.dieReward = [&](int episode) { return -1; };// + (double)episode / qoptions.numEpisodes * (-50); };
 		qoptions.stepReward = [](int episode) { return 0; };
 		
 //		auto qInitDistrib = std::uniform_real_distribution<>(-1.0, 1.0);
@@ -143,6 +143,7 @@ void TrySaveQTab(const GridObserver& observer, const QTable& qtab, std::string r
 	try
 	{
 		AI::QLearning::Utils::SaveQTable(qtab, filePath.c_str());
+		std::cout << "Saved QTab" << std::endl;
 	}
 	catch (...)
 	{
@@ -179,7 +180,7 @@ IPlayerPtr MultisnakeTabularTrainer::Train(TrainCallbacks callbacks)
 	
 	for (auto i = 0u; i < 1u; i++)
 	{
-		auto cellInterpreter = std::make_shared<WallFoodEnemy>();
+		auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
 		auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
 		
 		auto agent = std::make_shared<QTabStudent>(
@@ -187,6 +188,8 @@ IPlayerPtr MultisnakeTabularTrainer::Train(TrainCallbacks callbacks)
 			[&]() { return m_qoptions.tabInitializer(m_merseneTwister); },
 			m_qoptions.actionQualityEps
 		);
+		
+		
 
 		agent->SetQTab(TryLoadQTab(*observer));
 		agents.push_back(agent);
@@ -358,6 +361,11 @@ IPlayerPtr MultisnakeTabularTrainer::Train(TrainCallbacks callbacks)
 		{
 			return agent1->m_totalReward < agent2->m_totalReward;
 		});
+	
+	if (dynamic_cast<const GridObserver*>(bestAgent->GetObserver()))
+	{
+		TrySaveQTab(*dynamic_cast<const GridObserver*>(bestAgent->GetObserver()), bestAgent->GetQTab());
+	}
 	
 	TrySavePlayer(*bestAgent);
 	return nlohmann::json(bestAgent.get()).get<std::shared_ptr<QTabStudent>>();

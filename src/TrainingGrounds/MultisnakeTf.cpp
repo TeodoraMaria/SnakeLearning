@@ -6,7 +6,7 @@ void MultisnakeTfMain()
 	auto tfTrainer = AI::QLearning::NeuralQTrainer();
 	
 	auto trainCallbacks = AI::ITrainer::TrainCallbacks();
-	trainCallbacks.numEpisodes = 500;
+	trainCallbacks.numEpisodes = 5000;
 	
 	tfTrainer.Train(trainCallbacks);
 }
