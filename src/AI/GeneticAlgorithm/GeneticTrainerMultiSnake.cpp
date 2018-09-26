@@ -23,16 +23,11 @@ using namespace GymEnv::StateObserver;
 
 GeneticTrainerMultiSnake::GeneticTrainerMultiSnake()
 {
-    m_avgFitenss = new QtCharts::QLineSeries;
-    m_maxFitness = new QtCharts::QLineSeries;
-    m_timer.setInterval(100);
-   // QObject::connect(&m_timer, SIGNAL(timeout()), this, SLOT(runRound()));
 }
 
 GeneticTrainerMultiSnake::~GeneticTrainerMultiSnake()
 {
-    delete m_avgFitenss;
-    delete m_maxFitness;
+    int x = 0;
 }
 
 void GeneticTrainerMultiSnake::displayBestNetwork()
@@ -46,34 +41,6 @@ void GeneticTrainerMultiSnake::displayBestNetwork()
         }
     }
     auto player = std::make_shared<GeneticBot>(*bestNetwork, std::shared_ptr<GymEnv::StateObserver::IStateObserver>(m_observer));
-
-    //std::vector<IPlayerPtr> players;
-
-    //players.push_back(player);
-
-    //static GameOptions options;
-    //options.boardLength = 25;
-    //options.boardWidth = 25;
-    //options.numFoods = 10;
-
-    //m_game = new Game(options, players);
-    ////  m_game= new Game(options, players);
-    //m_game->InitGame();
-
-    //for (size_t i = 0; i < m_options.maxNumSteps && m_displayEnabled; i++) {
-    //    auto currentScore = m_game->GetAllSnakes().at(0).GetScore();
-    //    m_game->RunRound();
-    //    emitGameState(m_game->GetGameState());
-    //    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    //
-    //    if (m_game->GetAllSnakes().at(0).GetScore() != currentScore) {
-    //        i = 0;
-    //    }
-    //    if (m_game->EveryoneIsDead()) {
-    //        break;
-    //    }
-    //}
-    //delete m_game;
 }
 
 IPlayerPtr GeneticTrainerMultiSnake::Train(TrainCallbacks callbacks)

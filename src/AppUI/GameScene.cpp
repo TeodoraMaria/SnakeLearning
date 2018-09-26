@@ -170,10 +170,11 @@ void GameScene::addPlayersToTheGame()
     }
 	#endif
 
-	AI::Supervised::SupervisedManager sm;
+	
     for (size_t i = 0; i < m_gameSettings.nbSupervisedBots; i++) {
-		sm.TrainSupervisedBot("D:\\SnakeData.txt", 3, 3, AI::Supervised::TrainingWay::BASIC);
-		m_players.push_back(sm.GetSupervisedBot(3, 3, AI::Supervised::TrainingWay::BASIC));
+		AI::Supervised::SupervisedManager sm;
+		sm.TrainSupervisedBot("F:\\SnakeLearning\\aux_files\\playLogs\\play_log", 5, 5, AI::Supervised::TrainingWay::BASIC);
+		m_players.push_back(IPlayerPtr(sm.GetSupervisedBot(5, 5, AI::Supervised::TrainingWay::BASIC)));
         m_playerNames.emplace(count++, "Supervised bot" + std::to_string(i + 1) + ":");
     }
 }

@@ -3,9 +3,12 @@
 #include <stdint.h>
 #include <vector>
 #include <cmath>
+#include <json.hpp>
 
 namespace AI {
 	namespace Supervised {
+		
+
 		enum class ActivationFunctionType
 		{
 			Sigmoid
@@ -38,7 +41,7 @@ namespace AI {
 			};
 
 		public:
-
+			SupervisedNetwork() {}
 			SupervisedNetwork(Settings const& settings);
 			SupervisedNetwork(Settings const& settings, std::vector<double> const& weights);
 
@@ -46,6 +49,11 @@ namespace AI {
 
 			std::vector<double> const& GetInputHiddenWeights() const { return m_weightsInputHidden; }
 			std::vector<double> const& GetHiddenOutputWeights() const { return m_weightsHiddenOutput; }
+
+			friend void from_json(const nlohmann::json& j, SupervisedNetwork& net);
+			friend void to_json(nlohmann::json& j, const SupervisedNetwork& net);
+
+			void Initialize(const SupervisedNetwork& net);
 
 		private:
 
@@ -55,7 +63,7 @@ namespace AI {
 
 			int32_t GetInputHiddenWeightIndex(int32_t inputIdx, int32_t hiddenIdx) const { return inputIdx * m_numHidden + hiddenIdx; }
 			int32_t GetHiddenOutputWeightIndex(int32_t hiddenIdx, int32_t outputIdx) const { return hiddenIdx * m_numOutputs + outputIdx; }
-
+		
 		private:
 
 			int32_t                 m_numInputs;

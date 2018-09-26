@@ -28,7 +28,7 @@ GameBoard::GameBoard(
 	m_board.resize(m_width*m_length);
 }
 
-GameBoard::GameBoard(std::vector<int> map): m_board(map)
+GameBoard::GameBoard(std::vector<int> map, const int cols): m_board(map), m_length(cols), m_width(map.size()/cols)
 {
 }
 

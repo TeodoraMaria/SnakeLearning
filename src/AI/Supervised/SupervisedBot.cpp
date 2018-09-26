@@ -23,6 +23,11 @@ SupervisedNetwork * AI::Supervised::SupervisedBot::GetNetwork() const
 	return m_network;
 }
 
+void AI::Supervised::SupervisedBot::SetNetwork(const SupervisedNetwork & net)
+{
+	m_network->Initialize(net);
+}
+
 std::vector<double> AI::Supervised::SupervisedBot::ExtractInput(const GameState & gameState) const
 {
 	auto fieldOfView = gameState.GetFieldOfView(gameState.GetSnake(GetSnakeNumber()), 3, 3);
@@ -47,6 +52,7 @@ std::vector<double> AI::Supervised::SupervisedBot::ExtractInput(const GameState 
 
 SnakeMove AI::Supervised::SupervisedBot::InterpretOutput(std::vector<double> output) const
 {
+
 	auto it = std::max_element(output.begin(), output.end());
 	auto index = std::distance(output.begin(), it);
 	if(index==0)

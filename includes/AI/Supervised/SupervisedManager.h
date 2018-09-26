@@ -3,6 +3,8 @@
 #include "AI/Supervised/SupervisedBot.h"
 #include "AI/Supervised/SupervisedTrainer.h"
 
+#include <fstream>
+
 namespace AI {
 	namespace Supervised {
 		enum TrainingWay {BASIC, ENEMY, FULL};
@@ -10,13 +12,13 @@ namespace AI {
 		public:
 			SupervisedManager();
 			~SupervisedManager();
-			IPlayerPtr GetSupervisedBot(const int fieldX, const int fieldY, const TrainingWay trainingWay);
+			SupervisedBot* GetSupervisedBot(const int fieldX, const int fieldY, const TrainingWay trainingWay);
 			void TrainSupervisedBot(const std::string& inputFilePath, const int fieldX, const int fieldY, const TrainingWay trainingWay);
 		private:
 			SupervisedBot* m_bot;
 
 			void LoadSupervisedBot(std::string fileName);
-			void SaveSupervisedBot() const;
+			void SaveSupervisedBot(std::string fileName) const;
 			TrainingData GetTrainingData(const int fieldX, const int fieldY, const std::string & inputFilePath = "D:\\SnakeData.txt", const TrainingWay trainingWay = TrainingWay::BASIC) const;
 			std::vector<int> GetFieldOfView(const std::vector<int> map, const int snakeHead, const int snakeNeck, const int fieldX, const int fieldY, const int cols) const;
 

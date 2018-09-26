@@ -58,7 +58,8 @@ if (NOT WIN32)
 	list(APPEND project_Libs TensorflowSandbox)
 endif()
 
-target_link_libraries(${PROJECT_NAME} ${project_Libs})
+target_link_libraries(${PROJECT_NAME} ${project_Libs}
+)
 
 
 SetDefaultTargetProperties()

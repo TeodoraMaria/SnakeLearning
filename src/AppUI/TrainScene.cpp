@@ -1,6 +1,11 @@
 #include "TrainScene.h"
-#include "ConfigLoading/GeneticBotJson.h" 
+//#include "ConfigLoading/GeneticBotJson.h"
+//#include "ConfigLoading/IPlayerJson.h"
+#include "ConfigLoading/IPlayerJson.h"
 #include "ApplicationModel.h"
+
+#include "AI/GeneticAlgorithm/GeneticTrainerMultiSnake.h"
+//#include "AI/QLearning/"
 
 #include <QtConcurrent/qtconcurrentrun.h>
 #include <memory>
@@ -19,6 +24,10 @@
 
 using namespace AppUI;
 
+const char geneticName[] = "Genetic";
+const char tabularQName[] = "Tabular QLearning";
+const char deepQName[] = "Deep QLearning";
+const char supervisedName[] = "Supervised";
 
 TrainScene::TrainScene(const std::string& name)
 {
@@ -46,9 +55,13 @@ void TrainScene::createScene()
     m_centralWidget = ui->centralwidget;
     
     m_maxFitnessValues = new QLineSeries();
-    m_maxFitnessValues->setName("Max Fitness");
+   // m_maxFitnessValues->setName("Max Fitness");
     m_avgFitnessValues = new QLineSeries();
-    m_avgFitnessValues->setName("Avg. Fitness");
+    //m_avgFitnessValues->setName("Avg. Fitness");
+
+    m_graphValues.resize(200);
+
+
 
     //TODO fix this
     m_chart = new QChart();
@@ -57,6 +70,12 @@ void TrainScene::createScene()
     m_chart->legend()->setVisible(true);
     m_chart->legend()->setAlignment(Qt::AlignBottom);
     
+    for (auto& lineSeries : m_graphValues) {
+        lineSeries = new QLineSeries();
+        m_chart->addSeries(lineSeries);
+    }
+
+    m_chart->legend()->hide();
     m_chart->addSeries(m_maxFitnessValues);
     m_chart->addSeries(m_avgFitnessValues);
     m_chart->createDefaultAxes();
@@ -67,6 +86,12 @@ void TrainScene::createScene()
 
     ui->chartView->setChart(m_chart);
     ui->chartView->repaint();
+
+    QStringList list = (QStringList() << geneticName << tabularQName << deepQName << supervisedName);
+
+    ui->comboBoxAlgorithm->addItems(list);
+    
+
     QObject::connect(ui->pushButtonStart, SIGNAL(released()), this, SLOT(startButtonPressed()));
     QObject::connect(ui->pushButtonBack, SIGNAL(released()), this, SLOT(backButtonPressed()));
    
@@ -85,9 +110,28 @@ void TrainScene::backButtonPressed()
     emit sceneChange(ApplicationModel::startMenuSceneName);
 }
 
+
 void TrainScene::startButtonPressed()
 {
-    //m_geneticAlg.setEpisodes(ui->spinBoxEpisodes->value());   
+    auto selectedAlg=ui->comboBoxAlgorithm->currentText();  
+    auto s = selectedAlg.toStdString();
+    std::string filePath = "./aux_files/";
+    //TODO: implement for other
+    if (selectedAlg == geneticName) {
+        m_trainer = std::make_unique<AI::GeneticAlgorithm::GeneticTrainerMultiSnake>();
+        filePath += "genetic/TrainedGenetic.json";
+    } else if (selectedAlg == tabularQName) {
+        filePath += "genetic/TrainedGenetic.json";
+        m_trainer;
+    } else if (selectedAlg == deepQName) {
+        filePath += "genetic/TrainedGenetic.json";
+        m_trainer;
+    } else if (selectedAlg == supervisedName) {
+        filePath += "genetic/TrainedGenetic.json";
+        m_trainer;
+    } else
+        throw "Trainer not recognized";
+    
 
     AI::ITrainer::TrainCallbacks trainCallbacks;
     auto numEpisodes = trainCallbacks.numEpisodes = ui->spinBoxEpisodes->value();
@@ -100,7 +144,7 @@ void TrainScene::startButtonPressed()
         emit(graphValues(values));
     };
 
-    trainCallbacks.emitDisplayGame = [&](IPlayerPtr player, size_t numOfSteps=150) {
+    trainCallbacks.emitDisplayGame = [&](IPlayerPtr player, size_t numOfStepsWithoutFood) {
         if (!m_displayEnabled) {
             return;
         }
@@ -129,16 +173,15 @@ void TrainScene::startButtonPressed()
         }
     };
 
-    auto func = [&]() {
-        auto bot = std::dynamic_pointer_cast<AI::GeneticAlgorithm::GeneticBot>(m_geneticAlg.Train(trainCallbacks));
-        const auto filePath = "D:\\fac\\snake\\aux_files\\genetic\\TrainedGenetic.json";
+    auto func = [&, filePath, trainCallbacks]() {
+        auto bot = m_trainer->Train(trainCallbacks);
+       
         std::ofstream outFileStream(filePath);
 
         if (!outFileStream.is_open()) {
             std::cout << "Failed to open " << filePath << std::endl;
             return;
         }
-
         try {
             outFileStream << std::setw(2) << nlohmann::json(bot.get());
             std::cout << "was written" << std::endl;
@@ -153,14 +196,26 @@ void TrainScene::startButtonPressed()
 }
 
 void TrainScene::updateGraph(const std::vector<double>& values)
-{    
+{
+    /*
     m_maxFitnessValues->append(m_graphX, values[0]);
-    m_avgFitnessValues->append(m_graphX, values[1]);
+    if (values.size() > 1) {
+        m_avgFitnessValues->append(m_graphX, values[1]);
+    }
+    */
 
-    ui->chartView->chart()->axisX()->setRange(0, (long long)m_graphX);
+    for (size_t i = 0; i < values.size(); i++) {
+        m_graphValues[i]->append(m_graphX,values[i]);
+    }
+
+
     ui->chartView->chart()->axisY()->setRange(0, (long long)m_graphY);
+    ui->chartView->chart()->axisX()->setRange(0, (long long)m_graphX);
     m_graphX++;
-    m_graphY = values[0] > m_graphY ? values[0] : m_graphY;
+
+    auto maxValue = *std::max_element(values.begin(), values.end());
+
+    m_graphY = maxValue > m_graphY ? maxValue : m_graphY;
 
     ui->chartView->chart()->update();      
 }

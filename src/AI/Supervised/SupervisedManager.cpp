@@ -18,16 +18,16 @@ AI::Supervised::SupervisedManager::~SupervisedManager()
 	m_bot = nullptr;
 }
 
-IPlayerPtr AI::Supervised::SupervisedManager::GetSupervisedBot(const int fieldX, const int fieldY, const TrainingWay trainingWay)
+SupervisedBot* AI::Supervised::SupervisedManager::GetSupervisedBot(const int fieldX, const int fieldY, const TrainingWay trainingWay)
 {
 	if (m_bot == nullptr)
 	{
 		InitializeBot(fieldX, fieldY);
 		std::string fileName = "SupervisedBot_";
-		fileName = fileName + std::to_string(fieldX)+"x"+std::to_string(fieldY)+"_"+std::to_string(trainingWay);
+		fileName = fileName + std::to_string(fieldX)+"x"+std::to_string(fieldY)+"_"+std::to_string(trainingWay)+".txt";
 		LoadSupervisedBot(fileName);
 	}
-	return IPlayerPtr(m_bot);
+	return m_bot;
 }
 
 void AI::Supervised::SupervisedManager::TrainSupervisedBot(const std::string & inputFilePath, const int fieldX, const int fieldY, const TrainingWay trainingWay)
@@ -38,81 +38,91 @@ void AI::Supervised::SupervisedManager::TrainSupervisedBot(const std::string & i
 	trainerSettings.m_learningRate = 0.0003;
 	trainerSettings.m_momentum = 0.9;
 	trainerSettings.m_useBatchLearning = false;
-	trainerSettings.m_maxEpochs = 1000;
+	trainerSettings.m_maxEpochs = 50000;
 	trainerSettings.m_desiredAccuracy = 90;
 
 	SupervisedTrainer trainer(trainerSettings, m_bot->GetNetwork());
 
 	TrainingData td = GetTrainingData(fieldX, fieldY, inputFilePath, trainingWay);
 	trainer.Train(td);
+	std::string fileName = "SupervisedBot_";
+	fileName = fileName + std::to_string(fieldX) + "x" + std::to_string(fieldY) + "_" + std::to_string(trainingWay)+".txt";
+	SaveSupervisedBot(fileName);
 }
 
 void AI::Supervised::SupervisedManager::LoadSupervisedBot(std::string fileName)
 {
-	//do stuff
+	std::ifstream file(fileName);
+	nlohmann::json j;
+
+	file >> j;
+
+	SupervisedNetwork net = j.get<SupervisedNetwork>();
+
+	m_bot->SetNetwork(net);
+
+	file.close();
 }
 
-void AI::Supervised::SupervisedManager::SaveSupervisedBot() const
+void AI::Supervised::SupervisedManager::SaveSupervisedBot(std::string fileName) const
 {
+	std::ofstream file(fileName);
+	file << nlohmann::json(*(m_bot->GetNetwork()));
+	file.close();
 }
 
-TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX,const int fieldY , const std::string & inputFilePath, const TrainingWay trainingWay) const
+TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX, const int fieldY , const std::string & inputFilePath, const TrainingWay trainingWay) const
 {
 	std::ifstream file;
 	int balance = 0;
-
-	file.open(inputFilePath, std::fstream::in);
-	if (!file.is_open())
-	{
-		throw "File not found";
-	}
-
+	int i = 0;
 	nlohmann::json j;
-	file >> j;
-
-	std::vector<GameplayStep> a = j.get < std::vector<GameplayStep>>();
-
 	TrainingSet unbalancedts;
-	int cols;
-	std::vector<int> map;
-	int snakeHead, snakeNeck;
-	while (!file.eof())
+	std::string fileName = inputFilePath + std::to_string(i) + ".teo";
+	file.open(fileName, std::fstream::in);
+	while (file.is_open())
 	{
-		int val;
-		char aux;
-		file >> cols >> aux;
-		TrainingEntry te;
-		for (int i = 0; i < 625; i++)
+		file >> j;
+
+		std::vector<GameplayStep> steps = j.get < std::vector<GameplayStep>>();
+		for (const auto& step : steps)
 		{
-			file >> val;
-			map.push_back(val);
+			TrainingEntry te;
+			std::vector<int> field = GetFieldOfView(step.view, step.snakeHeadPos, step.snakeNeckPos, fieldX, fieldY, step.boardLength);
+			std::for_each(field.begin(), field.end(), [&](auto& val) {
+				if (trainingWay == TrainingWay::ENEMY)
+					val = EnemyTranslate(val);
+				else if (trainingWay == TrainingWay::FULL)
+					val = FullTranslate(val, 11); //fix this, add snake number support
+				else
+					val = BasicTranslate(val);
+				te.m_inputs.push_back(val);
+			});
+			te.m_expectedOutputs = OneHotEncoder(static_cast<int>(step.move));
+			//Normalize(te.m_inputs);
+			unbalancedts.push_back(te);
 		}
-		file >>aux>> snakeHead>>snakeNeck>>aux;
-		std::vector<int> field = GetFieldOfView(map, snakeHead, snakeNeck, fieldX, fieldY, cols);
-		std::for_each(field.begin(), field.end(), [&](auto& val) {
-			if (trainingWay == TrainingWay::ENEMY)
-				val = EnemyTranslate(val);
-			else if (trainingWay == TrainingWay::FULL)
-				val = FullTranslate(val, 11); //fix this, add snake number support
-			else
-				val = BasicTranslate(val);
-			te.m_inputs.push_back(val);
-		});
-		file>>val;
-		te.m_expectedOutputs = OneHotEncoder(val);
-		//Normalize(te.m_inputs);
-		unbalancedts.push_back(te);
+
+		file.close();
+		++i;
+		fileName = inputFilePath + std::to_string(i) + ".teo";
+		file.open(fileName, std::fstream::in);
 	}
 	file.close();
-	std::vector<int> left = { 0,1,0 };
+	std::random_shuffle(unbalancedts.begin(), unbalancedts.end());
+	/*std::vector<int> left = { 0,1,0 };
 	std::vector<int> right = { 0,0,1 };
 	auto lefts = std::count_if(unbalancedts.begin(), unbalancedts.end(), [left](const TrainingEntry& te) {return te.m_expectedOutputs == left;  });
 	auto rights = std::count_if(unbalancedts.begin(), unbalancedts.end(), [right](const TrainingEntry& te) {return te.m_expectedOutputs == right;  });
 	auto setNumber = lefts < rights ? lefts : rights;
-	int nrl = setNumber, nrr = setNumber, nrf= setNumber;
+	int nrl = setNumber, nrr = setNumber, nrf= setNumber;*/
 
 	TrainingSet ts;
-	std::for_each(unbalancedts.begin(), unbalancedts.end(), [&](const TrainingEntry& te) {
+	for (auto& elem : unbalancedts)
+	{
+		ts.push_back(elem);
+	}
+	/*std::for_each(unbalancedts.begin(), unbalancedts.end(), [&](const TrainingEntry& te) {
 		if (te.m_expectedOutputs == left)
 		{
 			if(--nrl>=0)
@@ -127,10 +137,9 @@ TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX
 			if(--nrf>=0) 
 				ts.push_back(te);
 		}
-	});
+	});*/
 
 	std::random_shuffle(ts.begin(), ts.end());
-
 
 	TrainingData td;
 	int nr = ts.size() / 5;
@@ -160,7 +169,7 @@ std::vector<int> AI::Supervised::SupervisedManager::GetFieldOfView(const std::ve
 	Coordinate head(snakeHead / cols, snakeHead%cols);
 	snake.Eat(neck);
 	snake.Eat(head);
-	GameBoard gb(map);
+	GameBoard gb(map, cols);
 	GameState gs(gb, std::vector<Snake>());
 	std::vector<int> field = gs.GetFieldOfView(snake, fieldX, fieldY);
 	return field;
