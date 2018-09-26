@@ -144,7 +144,7 @@ void TrainScene::startButtonPressed()
         emit(graphValues(values));
     };
 
-    trainCallbacks.emitDisplayGame = [&](IPlayerPtr player, size_t numOfSteps=150) {
+    trainCallbacks.emitDisplayGame = [&](IPlayerPtr player, size_t numOfStepsWithoutFood) {
         if (!m_displayEnabled) {
             return;
         }

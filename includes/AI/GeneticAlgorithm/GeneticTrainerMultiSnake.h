@@ -19,9 +19,8 @@ namespace AI
 {
     namespace GeneticAlgorithm{
     
-        class GeneticTrainerMultiSnake:public QObject,public ITrainer
+        class GeneticTrainerMultiSnake : public ITrainer
         {
-            Q_OBJECT
         public:
             GeneticTrainerMultiSnake();
             ~GeneticTrainerMultiSnake();
@@ -39,7 +38,6 @@ namespace AI
             void resetFitness();
 
             void displayBestNetwork();
-
             
             Utils::NetworkSettings m_networkSettings;
             GeneticOptions m_options;
@@ -48,10 +46,6 @@ namespace AI
             std::vector<IPlayerPtr> m_players;
 
             std::shared_ptr<GymEnv::StateObserver::GridObserver> m_observer;
-
-            //std::shared_ptr<GymEnv::StateObserver::ThreeDirectionalObserver> m_observer = nullptr;
-
-            QTimer m_timer;
         };
     }
 }
