@@ -118,7 +118,7 @@ void GeneticTrainerMultiSnake::setEpisodes(size_t episodes)
 void GeneticTrainerMultiSnake::setup()
 {
     auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
-    m_observer = std::make_shared<GridObserver>(cellInterpreter, 7, 7);
+    m_observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
     //m_observer = std::make_shared<ThreeDirectionalObserver>(cellInterpreter);
 
     m_options.crossoverProb = 0.5;
