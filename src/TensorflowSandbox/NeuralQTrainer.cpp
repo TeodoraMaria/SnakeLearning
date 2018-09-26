@@ -96,8 +96,7 @@ QOptions GetQOptions()
 	qoptions.qDiscountFactor = 0.95;
 	qoptions.actionQualityEps = 0.05;
 
-	qoptions.numEpisodes = 1000;
-	qoptions.learningRate = 0.0001;
+	qoptions.numEpisodes = 500;
 	
 	// Percentage of mean.
 	qoptions.maxNoise = 1.5;
@@ -151,27 +150,29 @@ IPlayer* NeuralQTrainer::Train()
 	auto scopePtr = std::make_shared<Scope>(Scope::NewRootScope());
 	auto sessionPtr = std::make_shared<ClientSession>(*scopePtr);
 
-	auto cellInterpreter1 = std::make_shared<CellInterpreter::Basic3CellInterpreter>();
-	auto observer1 = std::make_shared<GridObserver>(cellInterpreter1, 5, 5);
-	auto agent1 = std::make_shared<NeuralQAgent>(scopePtr, sessionPtr, observer1);
-
-	auto agent1WeightsFile = std::string("./aux_files/qneural/network.json");
-	try
+	auto agents = std::vector<std::shared_ptr<NeuralQAgent>>();
+	auto agentWeightsFile = std::string("./aux_files/qneural/network.json");
+	
+	for (auto i = 0; i < 10; i++)
 	{
-		agent1->LoadWeights(agent1WeightsFile);
+		auto cellInterpreter = std::make_shared<CellInterpreter::Basic3CellInterpreter>();
+		auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
+		auto agent = std::make_shared<NeuralQAgent>(scopePtr, sessionPtr, observer);
+	
+		try
+		{
+			agent->LoadWeights(agentWeightsFile);
+		}
+		catch (...)
+		{
+			std::cout << "[Warning] Failed to load network" << std::endl;
+		}
+		
+		agents.push_back(agent);
 	}
-	catch (...)
-	{
-		std::cout << "[Warning] Failed to load network" << std::endl;
-	}
-
+	
 	auto gmOptions = GetGameOptions();
 	auto qoptions = GetQOptions();
-
-	auto agents = std::vector<std::shared_ptr<NeuralQAgent>>
-	{{
-		agent1
-	}};
 
 	auto players = std::vector<std::shared_ptr<IPlayer>>();
 	for (auto agent : agents)
@@ -332,7 +333,7 @@ IPlayer* NeuralQTrainer::Train()
 	try
 	{
 		
-		agent1->SaveWeights(agent1WeightsFile);
+		agents[0]->SaveWeights(agentWeightsFile);
 	}
 	catch (...)
 	{
@@ -343,8 +344,9 @@ IPlayer* NeuralQTrainer::Train()
 	if (!jsonAgentStream.is_open())
 		throw std::runtime_error("Failed to open file");
 	
-	json j(agent1.get());
+	json j(agents[0].get());
 	jsonAgentStream << std::setw(2) << j << std::endl;
+	jsonAgentStream.close();
 	
 	return nullptr;
 }
