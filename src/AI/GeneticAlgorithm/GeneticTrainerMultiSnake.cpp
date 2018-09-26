@@ -52,9 +52,9 @@ void GeneticTrainerMultiSnake::displayBestNetwork()
     players.push_back(player);
 
     static GameOptions options;
-    options.boardLength = 10;
-    options.boardWidth = 10;
-    options.numFoods = 1;
+    options.boardLength = 25;
+    options.boardWidth = 25;
+    options.numFoods = 10;
 
     m_game = new Game(options, players);
     //  m_game= new Game(options, players);
@@ -148,9 +148,9 @@ void GeneticTrainerMultiSnake::setup()
 void GeneticTrainerMultiSnake::runEpisode(size_t episode)
 {
     static GameOptions options;
-    options.boardLength = 10;
-    options.boardWidth = 10;
-    options.numFoods = 1;
+    options.boardLength = 25;
+    options.boardWidth = 25;
+    options.numFoods = 10;
     
 
     QFutureSynchronizer<void> synchronizer;
