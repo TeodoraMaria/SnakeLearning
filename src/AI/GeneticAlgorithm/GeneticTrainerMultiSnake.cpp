@@ -80,25 +80,24 @@ IPlayer * GeneticTrainerMultiSnake::Train()
 {
     setup();
 
-    for (size_t i = 0; i < m_options.numEpisodes && !m_stop; i++) {
+    for (size_t i = 0; i < m_options.numEpisodes; i++) {
         runEpisode(i);
-        //srand(i);
 
         if (m_displayEnabled) {
            displayBestNetwork();
         }
         printFitnessInfo(i);
-        //srand(time(nullptr));
         selectNewNetworks();
         crossover();
         mutate();
 
-        if (i < m_options.numEpisodes - 1 && !m_stop) {
+        if (i < m_options.numEpisodes - 1) {
             resetFitness();       
         }
 
         emitLoadingBar(i);
     }
+
     emitLoadingBar(m_options.numEpisodes);
 
     const GeneticNetwork* bestNetwork;
@@ -121,7 +120,7 @@ void GeneticTrainerMultiSnake::setEpisodes(size_t episodes)
 
 void GeneticTrainerMultiSnake::endGame()
 {
-    m_stop = true;
+   // m_stop = true;
 }
 void GeneticTrainerMultiSnake::setup()
 {
@@ -132,7 +131,7 @@ void GeneticTrainerMultiSnake::setup()
     m_options.crossoverProb = 0.5;
     m_options.maxNumSteps = 100;
     m_options.mutationProb = 0.1;
-    m_options.numEpisodes = 1000;
+    //m_options.numEpisodes = 1000;
     m_options.numOfNetworks = 50;
 
     m_networkSettings.m_inputs = m_observer.get()->NbOfObservations() + 1;

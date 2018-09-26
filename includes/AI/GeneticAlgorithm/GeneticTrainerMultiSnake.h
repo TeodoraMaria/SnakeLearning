@@ -54,7 +54,6 @@ namespace AI
             void emitLoadingBar(size_t);
 
             bool m_displayEnabled=false;
-            bool m_stop = false;
 
             Game* m_game;
             Utils::NetworkSettings m_networkSettings;

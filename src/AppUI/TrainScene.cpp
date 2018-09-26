@@ -20,11 +20,6 @@ TrainScene::TrainScene(const std::string& name)
     qRegisterMetaType<size_t>("size_t");
     qRegisterMetaType<GameState>("GameState");
 
-    m_maxFitnessValues = new QLineSeries();
-    m_avgFitnessValues = new QLineSeries();
-    m_chart = new QChart();
-    m_board = new GraphicBoard(300, 300);
-
     QObject::connect(&m_geneticAlg, SIGNAL(graphValues(const std::vector<double>&)), this, SLOT(updateGraph(const std::vector<double>&)));
     QObject::connect(&m_geneticAlg, SIGNAL(loadingBar(double)), this, SLOT(updateLoadingBar(double)));
     QObject::connect(&m_geneticAlg, SIGNAL(gameState(GameState)), this, SLOT(updateGameScene(GameState))); 
@@ -32,8 +27,6 @@ TrainScene::TrainScene(const std::string& name)
 
 TrainScene::~TrainScene()
 {
-    delete m_maxFitnessValues;
-    delete m_avgFitnessValues;
     delete m_chart;
     delete m_board;
 }
@@ -44,16 +37,24 @@ void TrainScene::createScene()
     ui->setupUi(m_mainWindow.get());
 
     m_centralWidget = ui->centralwidget;
-
     
+    m_maxFitnessValues = new QLineSeries();
+    m_maxFitnessValues->setName("Max Fitness");
+    m_avgFitnessValues = new QLineSeries();
+    m_avgFitnessValues->setName("Avg. Fitness");
 
+    //TODO fix this
+    m_chart = new QChart();
+    m_board = new GraphicBoard(300, 300);
     
-    m_chart->legend()->hide();
+    m_chart->legend()->setVisible(true);
+    m_chart->legend()->setAlignment(Qt::AlignBottom);
+    
     m_chart->addSeries(m_maxFitnessValues);
     m_chart->addSeries(m_avgFitnessValues);
     m_chart->createDefaultAxes();
 
-    m_chart->setTitle("Simple line chart example");
+    m_chart->setTitle("Snake Generations");
 
     
     ui->graphicsView->setScene(m_board);
@@ -69,9 +70,9 @@ void TrainScene::createScene()
 
 void TrainScene::release()
 {
-   // m_chart->removeAllSeries();
-   // m_graphX = 0;
-    //m_graphY = 0;
+    m_chart->removeAllSeries();
+    m_graphX = 0;
+    m_graphY = 0;
 }
 
 void TrainScene::backButtonPressed()
@@ -107,16 +108,15 @@ void TrainScene::startButtonPressed()
 }
 
 void TrainScene::updateGraph(const std::vector<double>& values)
-{
-    
+{    
     m_maxFitnessValues->append(m_graphX, values[0]);
     m_avgFitnessValues->append(m_graphX, values[1]);
 
-    m_graphX++;
-    m_graphY = values[0] > m_graphY ? values[0] : m_graphY;
 
     ui->chartView->chart()->axisX()->setRange(0, (long long)m_graphX);
     ui->chartView->chart()->axisY()->setRange(0, (long long)m_graphY);
+    m_graphX++;
+    m_graphY = values[0] > m_graphY ? values[0] : m_graphY;
 
     ui->chartView->chart()->update();      
 }
