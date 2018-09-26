@@ -47,7 +47,8 @@ void OptionsScene::quitButtonPressed()
 {   
     m_gameSettings.nbHumanPlayers = m_ui->spinBoxHumans->value();
     m_gameSettings.nbGeneticBots = m_ui->spinBoxGeneticBots->value();
-    m_gameSettings.nbQlearningDeepBots = m_ui->spinBoxQlearningBots->value();
+    m_gameSettings.nbQlearningDeepBots = m_ui->spinBoxQlearningDeepBots->value();
+    m_gameSettings.nbQlearningTabularBots = m_ui->spinBoxQlearningTabularBots->value();
     m_gameSettings.nbSupervisedBots = m_ui->spinBoxSupervisedBots->value();
     m_gameSettings.nbNormalBots = m_ui->spinBoxNormalBots->value();
 

@@ -35,7 +35,7 @@
        </font>
       </property>
       <property name="maximum">
-       <number>10000</number>
+       <number>99999999</number>
       </property>
       <property name="value">
        <number>1000</number>
