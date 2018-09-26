@@ -3,6 +3,7 @@
 #include "GameLogic/Snake.h"
 #include "GameLogic/Coordinate.h"
 #include "GameLogic/FileHelper.h"
+#include "GameLogic/Game.h"
 #include <tuple>
 #include <string>
 #include <random>
@@ -27,27 +28,82 @@ SupervisedBot* AI::Supervised::SupervisedManager::GetSupervisedBot(const int fie
 		fileName = fileName + std::to_string(fieldX)+"x"+std::to_string(fieldY)+"_"+std::to_string(trainingWay)+".txt";
 		LoadSupervisedBot(fileName);
 	}
-	return m_bot;
+	return m_bot.get();
 }
 
 void AI::Supervised::SupervisedManager::TrainSupervisedBot(const std::string & inputFilePath, const int fieldX, const int fieldY, const TrainingWay trainingWay)
 {
+	//deprecated
+}
+
+IPlayerPtr AI::Supervised::SupervisedManager::Train(TrainCallbacks callbacks)
+{
+	int fieldX = 3, fieldY = 3, trainingWay = 0;
+	std::string inputFilePath = "F:\\SnakeLearning\\aux_files\\playLogs\\play_log";
 	InitializeBot(fieldX, fieldY);
 
 	SupervisedTrainer::Settings trainerSettings;
 	trainerSettings.m_learningRate = 0.0003;
 	trainerSettings.m_momentum = 0.9;
 	trainerSettings.m_useBatchLearning = false;
-	trainerSettings.m_maxEpochs = 50000;
+	trainerSettings.m_maxEpochs = callbacks.numEpisodes;
 	trainerSettings.m_desiredAccuracy = 90;
 
 	SupervisedTrainer trainer(trainerSettings, m_bot->GetNetwork());
+	trainer.Reset();
 
-	TrainingData td = GetTrainingData(fieldX, fieldY, inputFilePath, trainingWay);
-	trainer.Train(td);
+	//setup();
+	TrainingData td = GetTrainingData(fieldX, fieldY, inputFilePath, static_cast<TrainingWay>(trainingWay));
+
+	for (size_t i = 0; i < callbacks.numEpisodes; i++) {
+		trainer.RunEpoch(td.m_trainingSet);
+
+		if (callbacks.emitDisplayGame)
+		{
+			auto player = m_bot;
+
+			callbacks.emitDisplayGame(player, 100);
+		}
+
+		if (callbacks.emitGraphValues)
+		{
+			/*double loss, acc;
+			trainer.GetSetAccuracyAndMSE(td.m_generalizationSet, acc, loss);*/
+
+			static GameOptions options;
+			options.boardLength = 25;
+			options.boardWidth = 25;
+			options.numFoods = 10;
+
+			auto game = Game(options, { m_bot });
+			//  m_game= new Game(options, players);
+			game.InitGame();
+			int currentScore;
+			for (size_t i = 0; i < 100; i++) {
+				currentScore = game.GetAllSnakes().at(0).GetScore();
+				game.RunRound();
+
+				if (game.GetAllSnakes().at(0).GetScore() != currentScore) {
+					i = 0;
+				}
+				if (game.EveryoneIsDead()) {
+					break;
+				}
+			}
+			std::vector<double> values = { static_cast<double>(currentScore)};
+
+			callbacks.emitGraphValues(values);
+		}
+
+		if (callbacks.emitStepEpisode) {
+			callbacks.emitStepEpisode(i + 1);
+		}
+	}
 	std::string fileName = "SupervisedBot_";
-	fileName = fileName + std::to_string(fieldX) + "x" + std::to_string(fieldY) + "_" + std::to_string(trainingWay)+".txt";
+	
+	fileName = fileName + std::to_string(fieldX) + "x" + std::to_string(fieldY) + "_" + std::to_string(trainingWay) + ".txt";
 	SaveSupervisedBot(fileName);
+	return IPlayerPtr(m_bot);
 }
 
 void AI::Supervised::SupervisedManager::LoadSupervisedBot(std::string fileName)
@@ -230,5 +286,5 @@ void AI::Supervised::SupervisedManager::InitializeBot(const int fieldX, const in
 	settings.m_numHidden = 100;
 	settings.m_numOutputs = 3;
 
-	m_bot = new SupervisedBot(settings);
+	m_bot = std::make_shared<SupervisedBot>(settings);
 }

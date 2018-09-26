@@ -6,6 +6,7 @@
 #include "ICellInterpreterJson.h"
 #include "QTabStudentJson.h"
 #include "GeneticBotJson.h"
+#include "AI/Supervised/SupervisedManager.h"
 #include <fstream>
 
 using json = nlohmann::json;
@@ -20,7 +21,10 @@ void to_json(nlohmann::json& j, const IPlayer* player)
 		to_json(j, dynamic_cast<const AI::QLearning::QTabStudent*>(player));
     else if (dynamic_cast<const AI::GeneticAlgorithm::GeneticBot*>(player)) {
         to_json(j, dynamic_cast<const AI::GeneticAlgorithm::GeneticBot*>(player));
-    } else {
+	}
+	else if (dynamic_cast<const AI::Supervised::SupervisedManager*>(player)) {
+	}
+	else {
         throw "Undefined to_json for the given IPlayer.";
     }
 }

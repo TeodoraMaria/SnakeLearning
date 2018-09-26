@@ -40,18 +40,19 @@ namespace AI {
 
 			SupervisedTrainer(const Settings & settings, SupervisedNetwork* pNetwork);
 
+			void Reset();
 			void Train(TrainingData const& trainingData);
+			void RunEpoch(TrainingSet const& trainingSet);
+			void GetSetAccuracyAndMSE(TrainingSet const& trainingSet, double& accuracy, double& MSE) const;
 
 		private:
 
 			inline double GetOutputErrorGradient(double desiredValue, double outputValue) const { return outputValue * (1.0 - outputValue) * (desiredValue - outputValue); }
 			double GetHiddenErrorGradient(int32_t hiddenIdx) const;
 
-			void RunEpoch(TrainingSet const& trainingSet);
+			
 			void Backpropagate(std::vector<int32_t> const& expectedOutputs);
 			void UpdateWeights();
-
-			void GetSetAccuracyAndMSE(TrainingSet const& trainingSet, double& accuracy, double& MSE) const;
 
 		private:
 
