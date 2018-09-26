@@ -33,7 +33,6 @@ void OptionsScene::createScene()
     m_ui->spinBoxMapHeight->setValue(m_gameSettings.mapHeight);
     m_ui->spinBoxFoodCount->setValue(m_gameSettings.foodCount);
 
-
     QObject::connect(m_ui->pushButton, SIGNAL(released()), this, SLOT(quitButtonPressed()));
 }
 

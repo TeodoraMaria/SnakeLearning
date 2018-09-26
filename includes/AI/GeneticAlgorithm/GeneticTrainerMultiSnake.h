@@ -26,17 +26,9 @@ namespace AI
             GeneticTrainerMultiSnake();
             ~GeneticTrainerMultiSnake();
 
-            virtual IPlayer * Train() override;
+            virtual IPlayer * Train(TrainCallbacks callbacks) override;
 
-        protected slots:
-            void switchDisplayEnabled();
-            void runRound();
-
-        signals:
-            void loadingBar(double value);
-            void graphValues(const std::vector<double>& values);
-            void gameState(GameState gamestate);
-
+            void setEpisodes(size_t episodes);
         private:
             void setup();
             void runEpisode(size_t episode);
@@ -47,10 +39,6 @@ namespace AI
             void resetFitness();
 
             void displayBestNetwork();
-            void emitGraphValues(const std::vector<double>& values);
-            void emitLoadingBar(size_t);
-
-            bool m_displayEnabled=false;
 
             Game* m_game;
             Utils::NetworkSettings m_networkSettings;

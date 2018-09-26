@@ -19,7 +19,7 @@ GeneticTrainer::GeneticTrainer(Utils::NetworkSettings networkSettings,GeneticOpt
     }  
 }
 
-IPlayer *GeneticTrainer::Train()
+IPlayer *GeneticTrainer::Train(TrainCallbacks callbacks)
 {
     //on each train reset the networks;
     for (auto& network : m_networks) {

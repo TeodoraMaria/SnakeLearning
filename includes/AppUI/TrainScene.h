@@ -23,14 +23,24 @@ namespace AppUI
         virtual void createScene() override;
         virtual void release() override;
 
+
+    signals:
+        void loadingBar(double value);
+        void graphValues(const std::vector<double>& values);
+        void gameState(GameState gamestate);
+
     protected slots:
         void backButtonPressed();
         void startButtonPressed();
         void updateGraph(const std::vector<double>& values);
         void updateLoadingBar(double value);
         void updateGameScene(GameState gamestate);
+        void switchDisplayEnabled();
+
 
     private:
+
+
         QChart* m_chart;
         QLineSeries* m_maxFitnessValues;
         QLineSeries* m_avgFitnessValues;
@@ -45,6 +55,12 @@ namespace AppUI
         std::shared_ptr<Ui_TrainScene> ui;
 
         AI::GeneticAlgorithm::GeneticTrainerMultiSnake m_geneticAlg;
+
+        bool m_isTraining = false;
+        bool m_displayEnabled = false;
+
+
+       
 
     };
 }
