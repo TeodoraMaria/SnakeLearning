@@ -40,16 +40,10 @@ namespace AppUI
 
 
     private:
-
-
         QChart* m_chart;
 
         std::vector<QLineSeries*> m_graphValues;
-
-        QLineSeries* m_maxFitnessValues;
-        QLineSeries* m_avgFitnessValues;
         QWidget* m_centralWidget;
-
 
         GraphicBoard* m_board;
 
