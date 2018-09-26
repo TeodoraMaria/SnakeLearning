@@ -22,7 +22,7 @@ public:
 
 	void InitGame();
 	void RunRound();
-	void Play();
+	void Play(unsigned int maxNbOfSteps = std::numeric_limits<unsigned int>::max());
 	
 	void PrintBoard();
 	void DisplayScoreBoard();

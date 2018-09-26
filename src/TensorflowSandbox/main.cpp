@@ -6,6 +6,8 @@
 #include <tensorflow/cc/client/client_session.h>
 #include <tensorflow/cc/framework/gradients.h>
 #include <tensorflow/core/framework/tensor.h>
+#include <tensorflow/core/public/session.h>
+#include <tensorflow/core/protobuf/meta_graph.pb.h>
 
 #include "GameLogic/Game.h"
 #include "AI/QLearning/TabularTrainer.hpp"
@@ -46,6 +48,9 @@
 #include <fstream>
 #include <iomanip>
 #include <numeric>
+#include <json.hpp>
+
+using json = nlohmann::json;
 
 //auto g_debugging = true;
 auto g_debugging = false;
@@ -86,7 +91,7 @@ QOptions GetQOptions()
 	qoptions.qDiscountFactor = 0.95;
 	qoptions.actionQualityEps = 0.05;
 
-	qoptions.numEpisodes = 2000;
+	qoptions.numEpisodes = 500;
 	qoptions.learningRate = 0.0001;
 	
 	// Percentage of mean.
@@ -108,7 +113,7 @@ QOptions GetQOptions()
 	qoptions.stepReward = [](int episode)	{ return 0; };
 
 	qoptions.milsToSleepBetweenFrames = 25;
-	qoptions.lastNGamesToRender = 10;
+	qoptions.lastNGamesToRender = 2;
 
 	return qoptions;
 }
@@ -211,14 +216,97 @@ double ComputePartEqualityEps(const std::vector<double>& values, double percenta
 	return PositiveMean(values) * percentage;
 }
 
+json WeightsToJson(const ClientSession& session, const std::vector<Output>& vars)
+{
+	std::vector<Tensor> tfOuts;
+	
+	TF_CHECK_OK(session.Run(vars, &tfOuts));
+
+	std::vector<std::vector<float>> varValues;
+	for (auto& tfOut : tfOuts)
+	{
+		const float* flatData = tfOut.flat<float>().data();
+		const auto totalNumParameters = tfOut.dim_size(0) * tfOut.dim_size(1);
+		
+		varValues.push_back(std::vector<float>(flatData, flatData + totalNumParameters));
+	}
+	
+	return json(varValues);
+}
+
+void JsonToWeights(
+	ClientSession& session,
+	Scope& scope,
+	const json& data,
+	std::vector<Output>& vars)
+{
+	auto varValues = data.get<std::vector<std::vector<float>>>();
+	assert(varValues.size() == vars.size());
+	
+	std::vector<Tensor> tfOuts;
+	TF_CHECK_OK(session.Run(vars, &tfOuts));
+	
+	for (auto i = 0u; i < vars.size(); i++)
+	{
+		const auto totalNumParameters = tfOuts[i].dim_size(0) * tfOuts[i].dim_size(1);
+		assert(varValues[i].size() == totalNumParameters);
+		
+		auto paramsTensor = Tensor(
+			DataTypeToEnum<float>::v(),
+			TensorShape{ tfOuts[i].dim_size(0), tfOuts[i].dim_size(1) }
+		);
+		
+		std::copy_n(varValues[i].begin(), totalNumParameters, paramsTensor.flat<float>().data());
+		auto assign = Assign(scope, vars[i], paramsTensor, { 0, 1 });
+		
+		TF_CHECK_OK(session.Run({ assign }, nullptr));
+	}
+}
+
+void TrySaveWeights(std::string fileName, const ClientSession& session, const std::vector<Output>& vars)
+{
+	std::ofstream stream(fileName);
+	
+	if (!stream.is_open())
+	{
+		std::cout << "[Warning]: " << "Failed to open " << fileName << std::endl;
+		return;
+	}
+	
+	stream << std::setw(2) << WeightsToJson(session, vars);
+	stream.close();
+}
+
+void TryLoadWeights(
+	std::string fileName,
+	ClientSession& session,
+	Scope& scope,
+	std::vector<Output>& vars)
+{
+	std::ifstream stream;
+	
+	stream.open(fileName);
+	if (!stream.is_open())
+	{
+		std::cout << "[Warning]: " << "Failed to load TF network from " << fileName << std::endl;
+		return;
+	}
+	
+	json j;
+	stream >> j;
+	
+	JsonToWeights(session, scope, j, vars);
+	stream.close();
+	
+	std::cout << "Loaded: " << std::endl << std::setw(2) << j << std::endl;
+}
+
 int main()
 {
 	const auto learningRate = 0.0001;
 
-
-
 	auto cellInterpreter = std::make_shared<CellInterpreter::Basic3CellInterpreter>();
-	auto observer = std::make_shared<GridObserver>(cellInterpreter, 10, 10);
+	auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
 //	auto observer = std::make_shared<FullMapObserver>(cellInterpreter, 25 * 25);
 	
 	const int numInputs = observer->NbOfObservations();
@@ -258,7 +346,7 @@ int main()
 	}
 	
 	auto varIndx = 0u;
-	auto layer1 = Tanh(scope, Add(scope, MatMul(scope, inputHolder, weights[varIndx]), biasses[varIndx])); varIndx++;
+	auto layer1 = Elu(scope, Add(scope, MatMul(scope, inputHolder, weights[varIndx]), biasses[varIndx])); varIndx++;
 //	auto layer2 = Elu(scope, Add(scope, MatMul(scope, layer1, weights[varIndx]), biasses[varIndx])); varIndx++;
 	auto layer2= Add(scope, MatMul(scope, layer1, weights[varIndx]), biasses[varIndx]); varIndx++;
 	auto& networkOutput = layer2;
@@ -306,6 +394,14 @@ int main()
 	for (auto& b : biassesAssign)
 		assignedVars.push_back(b);
 	TF_CHECK_OK(session.Run(assignedVars, nullptr));
+
+	const std::string tfNetworkJsonFileName = "tfNetwork.json";
+	TryLoadWeights(tfNetworkJsonFileName, session, scope, variables);
+	
+	std::vector<Tensor> testWWW;
+	session.Run({ weights[0] }, &testWWW);
+	
+	std::cout << testWWW[0].DebugString() << std::endl;
 	
 	/*
 	** -------------------------------------------- End of network declaration -
@@ -542,6 +638,9 @@ int main()
 //		char c;
 //		std::cin >> c;
 	}
+	
+	TrySaveWeights(tfNetworkJsonFileName, session, variables);
+	
 	return 0;
 }
 

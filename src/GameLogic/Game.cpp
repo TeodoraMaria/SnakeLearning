@@ -129,7 +129,8 @@ void Game::SaveMove(const GameState& gameState, const SnakeMove& move, const int
 	int boardLength = gameState.GetGameBoard().GetBoardLength();
 	const auto snakeNeck = gameState.GetSnake(snakeNumber).GetSnakeNeck();
 	int snakeNeckPos = gameState.GetGameBoard().GetBoardLength()*snakeNeck.GetX() + snakeNeck.GetY();
-	helper.WriteToFile(boardLength, view, move, snakeHeadPos, snakeNeckPos);
+	GameplayStep step(boardLength, view, move, snakeHeadPos, snakeNeckPos);
+	helper.WriteToFile(step);
 }
 
 void Game::CheckIfGameOver() const
@@ -250,7 +251,8 @@ void Game::RunRound()
 	GameState gameState = GetGameState();
 	if (m_gameRenderer != nullptr)
 	{
-		PrintBoard();
+//		PrintBoard();
+		m_gameRenderer->Render(GetGameState());
 	}
 	std::random_shuffle(m_players.begin(), m_players.end());
 	for (auto player : m_players)
@@ -270,9 +272,9 @@ void Game::RunRound()
 	RestockFood();
 }
 
-void Game::Play()
+void Game::Play(unsigned int maxNbOfSteps)
 {
-	while (!m_isGameOver)
+	for (auto i = 0u; i < maxNbOfSteps && !m_isGameOver; i++)
 	{
 		RunRound();
 		CheckIfGameOver();

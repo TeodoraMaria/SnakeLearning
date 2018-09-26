@@ -21,6 +21,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	${CMAKE_SOURCE_DIR}/includes/
 )
 
+include_directories("${CMAKE_SOURCE_DIR}/third_party/json/")
+
 target_link_libraries(${PROJECT_NAME}
 	GameLogic
 	HardCoded

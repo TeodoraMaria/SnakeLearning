@@ -2,9 +2,11 @@
 #include "AI/Supervised/SupervisedTrainer.h"
 #include "GameLogic/Snake.h"
 #include "GameLogic/Coordinate.h"
+#include "GameLogic/FileHelper.h"
 #include <tuple>
 #include <string>
 #include <random>
+#include <json.hpp>
 
 AI::Supervised::SupervisedManager::SupervisedManager()
 {
@@ -58,11 +60,18 @@ TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX
 {
 	std::ifstream file;
 	int balance = 0;
+
 	file.open(inputFilePath, std::fstream::in);
 	if (!file.is_open())
 	{
 		throw "File not found";
 	}
+
+	nlohmann::json j;
+	file >> j;
+
+	std::vector<GameplayStep> a = j.get < std::vector<GameplayStep>>();
+
 	TrainingSet unbalancedts;
 	int cols;
 	std::vector<int> map;

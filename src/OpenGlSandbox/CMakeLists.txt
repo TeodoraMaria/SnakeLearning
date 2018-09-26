@@ -15,9 +15,13 @@ include_directories(${SDL2_INCLUDE_DIRS})
 target_include_directories(${PROJECT_NAME} PRIVATE
 	${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/
 	${CMAKE_SOURCE_DIR}/includes/)
-	
+
+include_directories("${CMAKE_SOURCE_DIR}/third_party/json/")
+
 target_link_libraries(${PROJECT_NAME}
 	GameView
+	GameLogic
+	Supervised
 	AppUI
 )
 
