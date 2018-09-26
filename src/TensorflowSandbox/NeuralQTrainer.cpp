@@ -1,3 +1,4 @@
+#include "NeuralQTrainer.hpp"
 #include "NeuralQAgent.hpp"
 #include "TrainMemory.h"
 #include "TrainSession.h"
@@ -95,7 +96,7 @@ QOptions GetQOptions()
 	qoptions.qDiscountFactor = 0.95;
 	qoptions.actionQualityEps = 0.05;
 
-	qoptions.numEpisodes = 10000;
+	qoptions.numEpisodes = 1000;
 	qoptions.learningRate = 0.0001;
 	
 	// Percentage of mean.
@@ -145,7 +146,7 @@ bool StateIsNone(const double* state)
 	return ::Utils::Math::Approx(state[0], NoneFlag, 0.1);
 }
 
-int main()
+IPlayer* NeuralQTrainer::Train()
 {
 	auto scopePtr = std::make_shared<Scope>(Scope::NewRootScope());
 	auto sessionPtr = std::make_shared<ClientSession>(*scopePtr);
@@ -233,6 +234,7 @@ int main()
 
 				if (episode >= qoptions.numEpisodes - qoptions.lastNGamesToRender)
 				{
+					
 					gmOptions.gameRenderer->Render(game.GetGameState());
 					if (qoptions.milsToSleepBetweenFrames != 0)
 						std::this_thread::sleep_for(std::chrono::milliseconds(qoptions.milsToSleepBetweenFrames));
@@ -329,6 +331,7 @@ int main()
 	
 	try
 	{
+		
 		agent1->SaveWeights(agent1WeightsFile);
 	}
 	catch (...)
@@ -336,9 +339,12 @@ int main()
 		// Ignore.
 	}
 	
-	auto j = json(agent1.get());
-	auto test = j.get<std::shared_ptr<NeuralQAgent>>();
+	auto jsonAgentStream = std::ofstream("./aux_files/qneural/NeuralQAgent.json");
+	if (!jsonAgentStream.is_open())
+		throw std::runtime_error("Failed to open file");
 	
-	return 0;
+	json j(agent1.get());
+	jsonAgentStream << std::setw(2) << j << std::endl;
+	
+	return nullptr;
 }
-

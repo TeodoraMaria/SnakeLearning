@@ -18,6 +18,9 @@ include_directories(${SDL2_INCLUDE_DIRS})
 
 include_directories("${CMAKE_SOURCE_DIR}/third_party/json/")
 
+find_package(Tensorflow)
+include_directories(${Tensorflow_INCLUDE_DIRS})
+
 target_link_libraries(${PROJECT_NAME} PUBLIC
 	HardCoded
 	GymEnv
@@ -25,6 +28,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 	GeneticAlgorithm
 	GameLogic
 	ConfigLoading
+	TensorflowSandbox
+
 	${SDL2_LIBRARIES}
 )
 

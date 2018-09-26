@@ -74,7 +74,7 @@ void TrainScene::startButtonPressed()
 {
     auto func = [&]() {
         AI::GeneticAlgorithm::GeneticBot& bot = dynamic_cast< AI::GeneticAlgorithm::GeneticBot&>(*m_geneticAlg.Train());
-        const auto filePath = "D:\\fac\\snake\\aux_files\\genetic\\TrainedGenetic.json";
+        const auto filePath = "./aux_files/genetic/TrainedGenetic.json";
         std::ofstream outFileStream(filePath);
 
         if (!outFileStream.is_open()) {

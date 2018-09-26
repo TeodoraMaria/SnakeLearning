@@ -31,14 +31,20 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	${CMAKE_SOURCE_DIR}/includes/
 )
 
+find_package(Tensorflow)
+include_directories(${Tensorflow_INCLUDE_DIRS})
+
 target_link_libraries(${PROJECT_NAME}
 	GameLogic
 	HardCoded
 	Utils
-	GeneticAlgorithm
 	GameLogic
 	ConfigLoading
+	
 	Supervised
+	GeneticAlgorithm
+
+	TensorflowSandbox
 
 	Qt5::Widgets 
 	Qt5::Core 

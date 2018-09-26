@@ -249,7 +249,7 @@ void AI::QLearning::to_json(nlohmann::json& j, NeuralQAgent* agent)
 	};
 }
 
-void AI::QLearning::from_json(const nlohmann::json& j, std::shared_ptr<NeuralQAgent> agent)
+void AI::QLearning::from_json(const nlohmann::json& j, std::shared_ptr<NeuralQAgent>& agent)
 {
 	auto scope = std::make_shared<Scope>(Scope::NewRootScope());
 	auto session = std::make_shared<ClientSession>(*scope);
@@ -275,7 +275,7 @@ void AI::QLearning::from_json(const nlohmann::json& j, std::shared_ptr<NeuralQAg
 	}
 	else if (j.find("brains") != j.end())
 	{
-		JsonToWeights(*agent->session, *agent->scope, j, agent->variables);
+		JsonToWeights(*agent->session, *agent->scope, j.at("brains"), agent->variables);
 	}
 	else
 	{

@@ -31,7 +31,7 @@ namespace AI { namespace QLearning
 		SnakeMove GetNextAction(const GameState& gameState) override;
 
 		friend void to_json(nlohmann::json& j, NeuralQAgent* agent);
-		friend void from_json(const nlohmann::json& j, std::shared_ptr<NeuralQAgent> agent);
+		friend void from_json(const nlohmann::json& j, std::shared_ptr<NeuralQAgent>& agent);
 
 		void LoadWeights(std::string filePath);
 		void SaveWeights(std::string filePath, bool compact = false);

@@ -10,6 +10,9 @@
 
 #include "ConfigLoading/GeneticBotJson.h"
 
+//#ifdef TENSORFLOW
+	#include "TensorflowSandbox/NeuralQAgent.hpp"
+//#endif
 
 #include <sstream>
 #include <memory>
@@ -51,7 +54,7 @@ void GameScene::createScene()
     options.boardLength = m_gameSettings.mapWidth;
     options.boardWidth =m_gameSettings.mapHeight;
     options.numFoods = m_gameSettings.foodCount;
-	options.gameplayLog = "D:\SnakeData.txt";
+//	options.gameplayLog = "D:\SnakeData.txt";
     addPlayersToTheGame();
 
     m_game = new Game(options, m_players);
@@ -120,7 +123,7 @@ void GameScene::addPlayersToTheGame()
 
     for (size_t i = 0; i < m_gameSettings.nbGeneticBots; i++) {
         
-        const auto filePath = "D:\\fac\\snake\\aux_files\\genetic\\TrainedGenetic.json";
+        const auto filePath = "./aux_files/genetic/TrainedGenetic.json";
        
         std::ifstream fileStream;
 
@@ -145,10 +148,25 @@ void GameScene::addPlayersToTheGame()
         m_playerNames.emplace(count++, "Normal bot" + std::to_string(i + 1) + ":");
     }
 
-    for (size_t i = 0; i < m_gameSettings.nbQlearningBots; i++) {
+//#ifdef TENSORFLOW
+    for (size_t i = 0; i < m_gameSettings.nbQlearningBots; i++)
+    {
+        const auto filePath = "./aux_files/qneural/NeuralQAgent.json";
+		
+        std::ifstream fileStream;
+        fileStream.open(filePath);
+        if (!fileStream.is_open())
+            throw std::runtime_error("Failed to open file.");
+
+        nlohmann::json fileJsonContent;
+
+        fileStream >> fileJsonContent;
+        auto player = fileJsonContent.get<std::shared_ptr<AI::QLearning::NeuralQAgent>>();
+        m_players.push_back(player);
 
         m_playerNames.emplace(count++, "Qlearning bot" + std::to_string(i + 1) + ":");
     }
+//#endif
 
 	AI::Supervised::SupervisedManager sm;
     for (size_t i = 0; i < m_gameSettings.nbSupervisedBots; i++) {
