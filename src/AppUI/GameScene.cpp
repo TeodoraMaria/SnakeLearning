@@ -51,7 +51,7 @@ void GameScene::createScene()
     options.boardLength = m_gameSettings.mapWidth;
     options.boardWidth =m_gameSettings.mapHeight;
     options.numFoods = m_gameSettings.foodCount;
-	options.gameplayLog = "D:\SnakeData.txt";
+	//options.gameplayLog = "D:\SnakeData.txt";
     addPlayersToTheGame();
 
     m_game = new Game(options, m_players);
@@ -150,10 +150,11 @@ void GameScene::addPlayersToTheGame()
         m_playerNames.emplace(count++, "Qlearning bot" + std::to_string(i + 1) + ":");
     }
 
-	AI::Supervised::SupervisedManager sm;
+	
     for (size_t i = 0; i < m_gameSettings.nbSupervisedBots; i++) {
-		sm.TrainSupervisedBot("F:\\SnakeLearning\\aux_files\\playLogs\\play_log", 3, 3, AI::Supervised::TrainingWay::BASIC);
-		m_players.push_back(IPlayerPtr(sm.GetSupervisedBot(3, 3, AI::Supervised::TrainingWay::BASIC)));
+		AI::Supervised::SupervisedManager sm;
+		sm.TrainSupervisedBot("F:\\SnakeLearning\\aux_files\\playLogs\\play_log", 5, 5, AI::Supervised::TrainingWay::BASIC);
+		m_players.push_back(IPlayerPtr(sm.GetSupervisedBot(5, 5, AI::Supervised::TrainingWay::BASIC)));
         m_playerNames.emplace(count++, "Supervised bot" + std::to_string(i + 1) + ":");
     }
 

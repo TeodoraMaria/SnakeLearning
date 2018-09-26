@@ -24,7 +24,7 @@ SupervisedBot* AI::Supervised::SupervisedManager::GetSupervisedBot(const int fie
 	{
 		InitializeBot(fieldX, fieldY);
 		std::string fileName = "SupervisedBot_";
-		fileName = fileName + std::to_string(fieldX)+"x"+std::to_string(fieldY)+"_"+std::to_string(trainingWay);
+		fileName = fileName + std::to_string(fieldX)+"x"+std::to_string(fieldY)+"_"+std::to_string(trainingWay)+".txt";
 		LoadSupervisedBot(fileName);
 	}
 	return m_bot;
@@ -38,22 +38,37 @@ void AI::Supervised::SupervisedManager::TrainSupervisedBot(const std::string & i
 	trainerSettings.m_learningRate = 0.0003;
 	trainerSettings.m_momentum = 0.9;
 	trainerSettings.m_useBatchLearning = false;
-	trainerSettings.m_maxEpochs = 1500;
+	trainerSettings.m_maxEpochs = 50000;
 	trainerSettings.m_desiredAccuracy = 90;
 
 	SupervisedTrainer trainer(trainerSettings, m_bot->GetNetwork());
 
 	TrainingData td = GetTrainingData(fieldX, fieldY, inputFilePath, trainingWay);
 	trainer.Train(td);
+	std::string fileName = "SupervisedBot_";
+	fileName = fileName + std::to_string(fieldX) + "x" + std::to_string(fieldY) + "_" + std::to_string(trainingWay)+".txt";
+	SaveSupervisedBot(fileName);
 }
 
 void AI::Supervised::SupervisedManager::LoadSupervisedBot(std::string fileName)
 {
-	//do stuff
+	std::ifstream file(fileName);
+	nlohmann::json j;
+
+	file >> j;
+
+	SupervisedNetwork net = j.get<SupervisedNetwork>();
+
+	m_bot->SetNetwork(net);
+
+	file.close();
 }
 
-void AI::Supervised::SupervisedManager::SaveSupervisedBot() const
+void AI::Supervised::SupervisedManager::SaveSupervisedBot(std::string fileName) const
 {
+	std::ofstream file(fileName);
+	file << nlohmann::json(*(m_bot->GetNetwork()));
+	file.close();
 }
 
 TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX, const int fieldY , const std::string & inputFilePath, const TrainingWay trainingWay) const
@@ -93,16 +108,21 @@ TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX
 		fileName = inputFilePath + std::to_string(i) + ".teo";
 		file.open(fileName, std::fstream::in);
 	}
-	//file.close();
-	std::vector<int> left = { 0,1,0 };
+	file.close();
+	std::random_shuffle(unbalancedts.begin(), unbalancedts.end());
+	/*std::vector<int> left = { 0,1,0 };
 	std::vector<int> right = { 0,0,1 };
 	auto lefts = std::count_if(unbalancedts.begin(), unbalancedts.end(), [left](const TrainingEntry& te) {return te.m_expectedOutputs == left;  });
 	auto rights = std::count_if(unbalancedts.begin(), unbalancedts.end(), [right](const TrainingEntry& te) {return te.m_expectedOutputs == right;  });
 	auto setNumber = lefts < rights ? lefts : rights;
-	int nrl = setNumber, nrr = setNumber, nrf= setNumber;
+	int nrl = setNumber, nrr = setNumber, nrf= setNumber;*/
 
 	TrainingSet ts;
-	std::for_each(unbalancedts.begin(), unbalancedts.end(), [&](const TrainingEntry& te) {
+	for (auto& elem : unbalancedts)
+	{
+		ts.push_back(elem);
+	}
+	/*std::for_each(unbalancedts.begin(), unbalancedts.end(), [&](const TrainingEntry& te) {
 		if (te.m_expectedOutputs == left)
 		{
 			if(--nrl>=0)
@@ -117,7 +137,7 @@ TrainingData AI::Supervised::SupervisedManager::GetTrainingData(const int fieldX
 			if(--nrf>=0) 
 				ts.push_back(te);
 		}
-	});
+	});*/
 
 	std::random_shuffle(ts.begin(), ts.end());
 

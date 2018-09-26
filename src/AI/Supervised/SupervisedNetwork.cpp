@@ -76,6 +76,21 @@ std::vector<double> const & AI::Supervised::SupervisedNetwork::Evaluate(std::vec
 	return m_clampedOutputs;
 }
 
+void AI::Supervised::SupervisedNetwork::Initialize(const SupervisedNetwork & net)
+{
+	m_clampedOutputs = net.m_clampedOutputs;
+	m_hiddenNeurons = net.m_hiddenNeurons;
+	m_inputNeurons = net.m_inputNeurons;
+
+	m_numHidden = net.m_numHidden;
+	m_numInputs = net.m_numInputs;
+	m_numOutputs = net.m_numOutputs;
+
+	m_outputNeurons = net.m_outputNeurons;
+	m_weightsHiddenOutput = net.m_weightsHiddenOutput;
+	m_weightsInputHidden = net.m_weightsInputHidden;
+}
+
 void AI::Supervised::SupervisedNetwork::InitializeNetwork()
 {
 	// Create storage and initialize the neurons and the outputs
@@ -158,4 +173,32 @@ void AI::Supervised::SupervisedNetwork::LoadWeights(std::vector<double> const & 
 		m_weightsHiddenOutput[HiddenOutputIdx] = weights[weightIdx];
 		weightIdx++;
 	}
+}
+
+void AI::Supervised::from_json(const nlohmann::json& j, SupervisedNetwork& net)
+{
+	net.m_clampedOutputs = j.at("m_clampedOutputs").get<std::vector<double>>();
+	net.m_hiddenNeurons = j.at("m_hiddenNeurons").get<std::vector<double>>();
+	net.m_inputNeurons = j.at("m_inputNeurons").get<std::vector<double>>();
+	net.m_numHidden = j.at("m_numHidden").get<int>();
+	net.m_numInputs = j.at("m_numInputs").get<int>();
+	net.m_numOutputs = j.at("m_numOutputs").get<int>();
+	net.m_outputNeurons = j.at("m_outputNeurons").get<std::vector<double>>();
+	net.m_weightsHiddenOutput = j.at("m_weightsHiddenOutput").get<std::vector<double>>();
+	net.m_weightsInputHidden = j.at("m_weightsInputHidden").get<std::vector<double>>();
+}
+
+void AI::Supervised::to_json(nlohmann::json& j, const SupervisedNetwork& net)
+{
+	j = nlohmann::json{
+		{ "m_clampedOutputs", net.m_clampedOutputs },
+		{ "m_hiddenNeurons", net.m_hiddenNeurons},
+		{ "m_inputNeurons", net.m_inputNeurons },
+		{ "m_numHidden", net.m_numHidden },
+		{ "m_numInputs", net.m_numInputs },
+		{ "m_numOutputs", net.m_numOutputs },
+		{ "m_outputNeurons", net.m_outputNeurons },
+		{ "m_weightsHiddenOutput", net.m_weightsHiddenOutput },
+		{ "m_weightsInputHidden", net.m_weightsInputHidden },
+	};
 }
