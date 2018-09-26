@@ -128,8 +128,8 @@ void TrainScene::startButtonPressed()
         filePath += "genetic/TrainedGenetic.json";
         m_trainer;
     } else if (selectedAlg == supervisedName) {
-        filePath += "genetic/TrainedGenetic.json";
-        m_trainer;
+        filePath += "supervised/SupervisedBot.json";
+		m_trainer = std::make_unique<AI::Supervised::SupervisedManager>();
     } else
         throw "Trainer not recognized";
     

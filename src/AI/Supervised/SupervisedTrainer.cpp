@@ -266,5 +266,4 @@ void AI::Supervised::SupervisedTrainer::GetSetAccuracyAndMSE(TrainingSet const &
 
 	accuracy = 100.0f - (numIncorrectResults / trainingSet.size() * 100.0);
 	MSE = MSE / (m_pNetwork->m_numOutputs * trainingSet.size());
-	return MSE;
 }

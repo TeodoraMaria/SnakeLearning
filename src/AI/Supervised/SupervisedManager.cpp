@@ -3,6 +3,7 @@
 #include "GameLogic/Snake.h"
 #include "GameLogic/Coordinate.h"
 #include "GameLogic/FileHelper.h"
+#include "GameLogic/Game.h"
 #include <tuple>
 #include <string>
 #include <random>
@@ -27,7 +28,7 @@ SupervisedBot* AI::Supervised::SupervisedManager::GetSupervisedBot(const int fie
 		fileName = fileName + std::to_string(fieldX)+"x"+std::to_string(fieldY)+"_"+std::to_string(trainingWay)+".txt";
 		LoadSupervisedBot(fileName);
 	}
-	return m_bot;
+	return m_bot.get();
 }
 
 void AI::Supervised::SupervisedManager::TrainSupervisedBot(const std::string & inputFilePath, const int fieldX, const int fieldY, const TrainingWay trainingWay)
@@ -59,14 +60,37 @@ IPlayerPtr AI::Supervised::SupervisedManager::Train(TrainCallbacks callbacks)
 
 		if (callbacks.emitDisplayGame)
 		{
-			callbacks.emitDisplayGame(IPlayerPtr(m_bot), 100);
+			auto player = m_bot;
+
+			callbacks.emitDisplayGame(player, 100);
 		}
 
 		if (callbacks.emitGraphValues)
 		{
-			double loss, acc;
-			trainer.GetSetAccuracyAndMSE(td.m_generalizationSet, acc, loss);
-			std::vector<double> values = { loss };
+			/*double loss, acc;
+			trainer.GetSetAccuracyAndMSE(td.m_generalizationSet, acc, loss);*/
+
+			static GameOptions options;
+			options.boardLength = 25;
+			options.boardWidth = 25;
+			options.numFoods = 10;
+
+			auto game = Game(options, { m_bot });
+			//  m_game= new Game(options, players);
+			game.InitGame();
+			int currentScore;
+			for (size_t i = 0; i < 100; i++) {
+				currentScore = game.GetAllSnakes().at(0).GetScore();
+				game.RunRound();
+
+				if (game.GetAllSnakes().at(0).GetScore() != currentScore) {
+					i = 0;
+				}
+				if (game.EveryoneIsDead()) {
+					break;
+				}
+			}
+			std::vector<double> values = { static_cast<double>(currentScore)};
 
 			callbacks.emitGraphValues(values);
 		}
@@ -262,5 +286,5 @@ void AI::Supervised::SupervisedManager::InitializeBot(const int fieldX, const in
 	settings.m_numHidden = 100;
 	settings.m_numOutputs = 3;
 
-	m_bot = new SupervisedBot(settings);
+	m_bot = std::make_shared<SupervisedBot>(settings);
 }

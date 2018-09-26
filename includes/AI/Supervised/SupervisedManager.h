@@ -17,7 +17,7 @@ namespace AI {
 			void TrainSupervisedBot(const std::string& inputFilePath, const int fieldX, const int fieldY, const TrainingWay trainingWay);
 			virtual IPlayerPtr Train(TrainCallbacks callbacks) override;
 		private:
-			SupervisedBot* m_bot;
+			std::shared_ptr<SupervisedBot> m_bot;
 
 			void LoadSupervisedBot(std::string fileName);
 			void SaveSupervisedBot(std::string fileName) const;
