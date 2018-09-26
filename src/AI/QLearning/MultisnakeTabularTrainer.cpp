@@ -85,7 +85,7 @@ MultisnakeTabularTrainer::MultisnakeTabularTrainer(bool renderByYourself) :
 		};
 		
 		qoptions.foodReward = [](int episode) { return 1.0; };
-		qoptions.dieReward = [&](int episode) { return 0; };
+		qoptions.dieReward = [&](int episode) { return -1 - (double)episode / qoptions.numEpisodes * (-50); };
 		qoptions.stepReward = [](int episode) { return 0; };
 		
 //		auto qInitDistrib = std::uniform_real_distribution<>(-1.0, 1.0);
@@ -274,7 +274,6 @@ IPlayerPtr MultisnakeTabularTrainer::Train(TrainCallbacks callbacks)
 					agent->SetStepsWithoutFood(0);
 				else if (agent->GetStepsWithoutFood() >= m_qoptions.maxStepsWithoutFood(episode))
 				{
-					std::cout << snakeId << " starved to death. ----- " << std::endl;
 					game.ForcefullyKillPlayer(snakeId);
 				}
 				else
@@ -303,14 +302,17 @@ IPlayerPtr MultisnakeTabularTrainer::Train(TrainCallbacks callbacks)
 			game.RestockFood();
 		}
 		
-		if (episode % 100 == 0)
+//		if (episode % 100 == 0)
 		{
 			printf("End of episode: %d\n", episode);
 			for (const auto& agent : agents)
 			{
-				printf("Reward of %4.2f. Noise: %2.2f\n",
+				printf("Reward of %4.2f. Noise: %2.2f%s\n",
 					agent->GetReward(),
-					agent->GetNoise());
+					agent->GetNoise(),
+					(agent->GetStepsWithoutFood() >= m_qoptions.maxStepsWithoutFood(episode)) ?
+						"\033[31m-- starved --\033[0m" : ""
+				);
 			}
 		}
 		

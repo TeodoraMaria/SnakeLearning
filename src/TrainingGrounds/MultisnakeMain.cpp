@@ -20,9 +20,9 @@
 
 void MultisnakeMain()
 {
-	auto trainer = AI::QLearning::MultisnakeTabularTrainer();
+	auto trainer = AI::QLearning::MultisnakeTabularTrainer(true);
 	
-	auto callbacks = AI::ITrainer::TrainCallbacks(true);
-	callbacks.numEpisodes = 5000;
+	auto callbacks = AI::ITrainer::TrainCallbacks();
+	callbacks.numEpisodes = 10000;
 	trainer.Train(callbacks);
 }
