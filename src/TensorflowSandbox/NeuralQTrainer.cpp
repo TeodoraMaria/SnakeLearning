@@ -145,7 +145,7 @@ bool StateIsNone(const double* state)
 	return ::Utils::Math::Approx(state[0], NoneFlag, 0.1);
 }
 
-IPlayer* NeuralQTrainer::Train()
+IPlayerPtr NeuralQTrainer::Train(TrainCallbacks callbacks)
 {
 	auto scopePtr = std::make_shared<Scope>(Scope::NewRootScope());
 	auto sessionPtr = std::make_shared<ClientSession>(*scopePtr);
@@ -173,6 +173,7 @@ IPlayer* NeuralQTrainer::Train()
 	
 	auto gmOptions = GetGameOptions();
 	auto qoptions = GetQOptions();
+	qoptions.numEpisodes = callbacks.numEpisodes;
 
 	auto players = std::vector<std::shared_ptr<IPlayer>>();
 	for (auto agent : agents)
@@ -328,6 +329,31 @@ IPlayer* NeuralQTrainer::Train()
 			noise,
 			qoptions.minNoise,
 			qoptions.noiseDecayFactor);
+		
+		/*
+		** Callbacks.
+		*/
+		
+		callbacks.emitStepEpisode(static_cast<size_t>(episode));
+		
+		// Emit graph.
+		auto graphRewards = std::vector<double>();
+		auto rewardSum = 0.0;
+		for (const auto& agent : agents)
+		{
+			const auto reward = trainSessions[agent->GetSnakeNumber()].episodeReward;
+			
+			rewardSum += reward;
+			graphRewards.push_back(reward);
+		}
+		graphRewards.push_back(rewardSum);
+		
+		// I want the mean to be the first one.
+		std::reverse(graphRewards.begin(), graphRewards.end());
+		callbacks.emitGraphValues(graphRewards);
+		
+		// Emit game.
+		callbacks.emitDisplayGame(agents[0], 1000);
 	}
 	
 	try
@@ -348,5 +374,5 @@ IPlayer* NeuralQTrainer::Train()
 	jsonAgentStream << std::setw(2) << j << std::endl;
 	jsonAgentStream.close();
 	
-	return nullptr;
+	return j.get<std::shared_ptr<NeuralQAgent>>();
 }

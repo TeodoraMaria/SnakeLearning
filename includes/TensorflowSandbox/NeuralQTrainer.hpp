@@ -7,6 +7,6 @@ namespace AI { namespace QLearning
 	class NeuralQTrainer : public ITrainer
 	{
 	public:
-		IPlayer* Train() override;
+		IPlayerPtr Train(TrainCallbacks callbacks) override;
 	};
 }}

@@ -13,7 +13,7 @@ namespace AI{namespace GeneticAlgorithm
     {
     public:
         GeneticTrainer(Utils::NetworkSettings networkSettings, GeneticOptions options, GymEnv::SingleSnakeEnvBase* env);
-        virtual IPlayer * Train(TrainCallbacks callbacks) override;
+        virtual IPlayerPtr Train(TrainCallbacks callbacks) override;
 
     private:
         void runEpisode(size_t episode);
