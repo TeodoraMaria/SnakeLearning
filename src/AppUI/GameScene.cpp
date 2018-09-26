@@ -71,6 +71,8 @@ void GameScene::release()
     m_timer.stop();
     m_gameStarted = false;
     m_players.clear();
+    m_playerNames.clear();
+
     delete m_game;
     delete m_centralWidget;
 }
