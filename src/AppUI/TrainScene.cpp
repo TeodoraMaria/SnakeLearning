@@ -1,6 +1,7 @@
 #include "TrainScene.h"
 #include "ConfigLoading/GeneticBotJson.h" 
 #include "ApplicationModel.h"
+#include "AI/Supervised/SupervisedManager.h"
 
 #include <QtConcurrent/qtconcurrentrun.h>
 #include <memory>
@@ -146,6 +147,8 @@ void TrainScene::startButtonPressed()
     };
 
     auto func = [&]() {
+		auto supBot = SupervisedManager();
+		supBot.Train(trainCallbacks);
         auto bot = std::dynamic_pointer_cast<AI::GeneticAlgorithm::GeneticBot>(m_geneticAlg.Train(trainCallbacks));
         const auto filePath = "D:\\fac\\snake\\aux_files\\genetic\\TrainedGenetic.json";
         std::ofstream outFileStream(filePath);

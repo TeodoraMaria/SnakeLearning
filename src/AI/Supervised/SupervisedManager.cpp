@@ -32,22 +32,54 @@ SupervisedBot* AI::Supervised::SupervisedManager::GetSupervisedBot(const int fie
 
 void AI::Supervised::SupervisedManager::TrainSupervisedBot(const std::string & inputFilePath, const int fieldX, const int fieldY, const TrainingWay trainingWay)
 {
+	//deprecated
+}
+
+IPlayerPtr AI::Supervised::SupervisedManager::Train(TrainCallbacks callbacks)
+{
+	int fieldX = 3, fieldY = 3, trainingWay = 0;
+	std::string inputFilePath = "F:\\SnakeLearning\\aux_files\\playLogs\\play_log";
 	InitializeBot(fieldX, fieldY);
 
 	SupervisedTrainer::Settings trainerSettings;
 	trainerSettings.m_learningRate = 0.0003;
 	trainerSettings.m_momentum = 0.9;
 	trainerSettings.m_useBatchLearning = false;
-	trainerSettings.m_maxEpochs = 50000;
+	trainerSettings.m_maxEpochs = callbacks.numEpisodes;
 	trainerSettings.m_desiredAccuracy = 90;
 
 	SupervisedTrainer trainer(trainerSettings, m_bot->GetNetwork());
+	trainer.Reset();
 
-	TrainingData td = GetTrainingData(fieldX, fieldY, inputFilePath, trainingWay);
-	trainer.Train(td);
+	//setup();
+	TrainingData td = GetTrainingData(fieldX, fieldY, inputFilePath, static_cast<TrainingWay>(trainingWay));
+
+	for (size_t i = 0; i < callbacks.numEpisodes; i++) {
+		trainer.RunEpoch(td.m_trainingSet);
+
+		if (callbacks.emitDisplayGame)
+		{
+			callbacks.emitDisplayGame(IPlayerPtr(m_bot), 100);
+		}
+
+		if (callbacks.emitGraphValues)
+		{
+			double loss, acc;
+			trainer.GetSetAccuracyAndMSE(td.m_generalizationSet, acc, loss);
+			std::vector<double> values = { loss };
+
+			callbacks.emitGraphValues(values);
+		}
+
+		if (callbacks.emitStepEpisode) {
+			callbacks.emitStepEpisode(i + 1);
+		}
+	}
 	std::string fileName = "SupervisedBot_";
-	fileName = fileName + std::to_string(fieldX) + "x" + std::to_string(fieldY) + "_" + std::to_string(trainingWay)+".txt";
+	
+	fileName = fileName + std::to_string(fieldX) + "x" + std::to_string(fieldY) + "_" + std::to_string(trainingWay) + ".txt";
 	SaveSupervisedBot(fileName);
+	return IPlayerPtr(m_bot);
 }
 
 void AI::Supervised::SupervisedManager::LoadSupervisedBot(std::string fileName)
