@@ -46,5 +46,7 @@ namespace AI { namespace QLearning
 		
 		size_t lastNGamesToRender = 10;
 		size_t milsToSleepBetweenFrames = 0;
+		
+		double ComputeReward(int episode, int rawReward) const;
 	};
 }}

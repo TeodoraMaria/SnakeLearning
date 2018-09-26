@@ -26,7 +26,7 @@ namespace AI
             GeneticTrainerMultiSnake();
             ~GeneticTrainerMultiSnake();
 
-            virtual IPlayer * Train(TrainCallbacks callbacks) override;
+            virtual IPlayerPtr Train(TrainCallbacks callbacks) override;
 
             void setEpisodes(size_t episodes);
         private:

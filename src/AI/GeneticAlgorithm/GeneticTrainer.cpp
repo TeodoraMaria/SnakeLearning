@@ -19,7 +19,7 @@ GeneticTrainer::GeneticTrainer(Utils::NetworkSettings networkSettings,GeneticOpt
     }  
 }
 
-IPlayer *GeneticTrainer::Train(TrainCallbacks callbacks)
+IPlayerPtr GeneticTrainer::Train(TrainCallbacks callbacks)
 {
     //on each train reset the networks;
     for (auto& network : m_networks) {
@@ -63,7 +63,7 @@ IPlayer *GeneticTrainer::Train(TrainCallbacks callbacks)
    
     auto observer = const_cast<GymEnv::StateObserver::IStateObserver*>(m_env->GetObserver());
 
-    return new GeneticBot(*bestNetwork, std::shared_ptr<GymEnv::StateObserver::IStateObserver>(observer));
+    return IPlayerPtr(new GeneticBot(*bestNetwork, std::shared_ptr<GymEnv::StateObserver::IStateObserver>(observer)));
 }
 
 void GeneticTrainer::runEpisode(size_t episode)
