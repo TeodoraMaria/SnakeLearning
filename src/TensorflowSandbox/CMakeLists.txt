@@ -25,6 +25,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 	GameLogic
 	Utils
 	QLearning
+	ConfigLoading
+
 	${Tensorflow_LIBRARIES}
 )
 
