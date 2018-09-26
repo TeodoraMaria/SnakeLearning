@@ -44,3 +44,16 @@ int Utils::Math::DoubleToBinaryInt(
 		return 0;
 	return 1;
 }
+
+double Utils::Math::PositiveMean(const std::vector<double>& values)
+{
+	const auto sum = std::accumulate(
+		values.begin(),
+		values.end(),
+		0.0, // Init value.
+		[](const auto val1, const auto val2)
+		{
+			return val1 + std::abs(val2);
+		});
+	return sum / values.size();
+}

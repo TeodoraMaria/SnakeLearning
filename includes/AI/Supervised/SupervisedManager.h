@@ -13,7 +13,7 @@ namespace AI {
 		public:
 			SupervisedManager();
 			~SupervisedManager();
-			SupervisedBot* GetSupervisedBot(const int fieldX, const int fieldY, const TrainingWay trainingWay);
+			IPlayerPtr GetSupervisedBot(const int fieldX, const int fieldY, const TrainingWay trainingWay);
 			void TrainSupervisedBot(const std::string& inputFilePath, const int fieldX, const int fieldY, const TrainingWay trainingWay);
 			virtual IPlayerPtr Train(TrainCallbacks callbacks) override;
 		private:

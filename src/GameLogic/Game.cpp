@@ -31,6 +31,7 @@ Game::~Game()
 
 void Game::InitGame()
 {
+//	srand(3);
 	m_isGameOver = false;
 	m_snakes.clear();
 	for (auto& player : m_players)
