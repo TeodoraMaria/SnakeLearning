@@ -151,7 +151,7 @@ void GameScene::addPlayersToTheGame()
     }
 
 	#ifndef _WIN32
-    for (size_t i = 0; i < m_gameSettings.nbQlearningBots; i++)
+    for (size_t i = 0; i < m_gameSettings.nbQlearningDeepBots; i++)
     {
         const auto filePath = "./aux_files/qneural/NeuralQAgent.json";
 		
@@ -166,15 +166,19 @@ void GameScene::addPlayersToTheGame()
         auto player = fileJsonContent.get<std::shared_ptr<AI::QLearning::NeuralQAgent>>();
         m_players.push_back(player);
 
-        m_playerNames.emplace(count++, "Qlearning bot" + std::to_string(i + 1) + ":");
+        m_playerNames.emplace(count++, "Qlearning Deep bot" + std::to_string(i + 1) + ":");
+    }
+
+    for (size_t i = 0; i < m_gameSettings.nbQlearningTabularBots; i++) {
+    
+        m_playerNames.emplace(count++, "Qlearning Tabular bot" + std::to_string(i + 1) + ":");
     }
 	#endif
 
 	
     for (size_t i = 0; i < m_gameSettings.nbSupervisedBots; i++) {
 		AI::Supervised::SupervisedManager sm;
-		sm.TrainSupervisedBot("F:\\SnakeLearning\\aux_files\\playLogs\\play_log", 5, 5, AI::Supervised::TrainingWay::BASIC);
-		m_players.push_back(IPlayerPtr(sm.GetSupervisedBot(5, 5, AI::Supervised::TrainingWay::BASIC)));
+		m_players.push_back(IPlayerPtr(sm.GetSupervisedBot(3, 3, AI::Supervised::TrainingWay::BASIC)));
         m_playerNames.emplace(count++, "Supervised bot" + std::to_string(i + 1) + ":");
     }
 	

@@ -16,6 +16,8 @@ namespace AI
             std::function<void(IPlayerPtr, size_t)> emitDisplayGame;
 
             size_t numEpisodes;
+			size_t fieldX;
+			size_t fieldY;
         };
 
 		virtual IPlayerPtr Train(TrainCallbacks callbacks) = 0;

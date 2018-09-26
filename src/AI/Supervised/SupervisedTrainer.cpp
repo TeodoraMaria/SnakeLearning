@@ -36,15 +36,7 @@ AI::Supervised::SupervisedTrainer::SupervisedTrainer(const Settings & settings, 
 
 void AI::Supervised::SupervisedTrainer::Train(TrainingData const & trainingData)
 {
-	// Reset training state
-	m_currentEpoch = 0;
-	m_trainingSetAccuracy = 0;
-	m_validationSetAccuracy = 0;
-	m_generalizationSetAccuracy = 0;
-	m_trainingSetMSE = 0;
-	m_validationSetMSE = 0;
-	m_generalizationSetMSE = 0;
-
+	Reset();
 	// Print header
 	//-------------------------------------------------------------------------
 
@@ -79,6 +71,17 @@ void AI::Supervised::SupervisedTrainer::Train(TrainingData const & trainingData)
 	std::cout << std::endl << "Training Complete!!! - > Elapsed Epochs: " << m_currentEpoch << std::endl;
 	std::cout << " Validation Set Accuracy: " << m_validationSetAccuracy << std::endl;
 	std::cout << " Validation Set MSE: " << m_validationSetMSE << std::endl << std::endl;
+}
+
+void AI::Supervised::SupervisedTrainer::Reset()
+{
+	m_currentEpoch = 0;
+	m_trainingSetAccuracy = 0;
+	m_validationSetAccuracy = 0;
+	m_generalizationSetAccuracy = 0;
+	m_trainingSetMSE = 0;
+	m_validationSetMSE = 0;
+	m_generalizationSetMSE = 0;
 }
 
 double AI::Supervised::SupervisedTrainer::GetHiddenErrorGradient(int32_t hiddenIdx) const

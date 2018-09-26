@@ -3,6 +3,7 @@
 //#include "ConfigLoading/IPlayerJson.h"
 #include "ConfigLoading/IPlayerJson.h"
 #include "ApplicationModel.h"
+#include "AI/Supervised/SupervisedManager.h"
 
 #include "AI/GeneticAlgorithm/GeneticTrainerMultiSnake.h"
 #include "AI/QLearning/MultisnakeTabularTrainer.hpp"
@@ -58,10 +59,6 @@ void TrainScene::createScene()
 
     m_centralWidget = ui->centralwidget;
     
-    m_maxFitnessValues = new QLineSeries();
-   // m_maxFitnessValues->setName("Max Fitness");
-    m_avgFitnessValues = new QLineSeries();
-    //m_avgFitnessValues->setName("Avg. Fitness");
 
     m_graphValues.resize(200);
 
@@ -80,8 +77,6 @@ void TrainScene::createScene()
     }
 
     m_chart->legend()->hide();
-    m_chart->addSeries(m_maxFitnessValues);
-    m_chart->addSeries(m_avgFitnessValues);
     m_chart->createDefaultAxes();
 
     m_chart->setTitle("Snake Generations");
@@ -117,6 +112,7 @@ void TrainScene::backButtonPressed()
 
 void TrainScene::startButtonPressed()
 {
+    
     auto selectedAlg=ui->comboBoxAlgorithm->currentText();  
     auto s = selectedAlg.toStdString();
     std::string filePath = "./aux_files/";
@@ -139,6 +135,9 @@ void TrainScene::startButtonPressed()
     else if (selectedAlg == supervisedName) {
         filePath += "genetic/TrainedGenetic.json";
         m_trainer;
+    } else if (selectedAlg == supervisedName) {
+        filePath += "supervised/SupervisedBot.json";
+		m_trainer = std::make_unique<AI::Supervised::SupervisedManager>();
     } else
         throw "Trainer not recognized";
     

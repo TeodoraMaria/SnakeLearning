@@ -20,6 +20,7 @@ include_directories("${CMAKE_SOURCE_DIR}/third_party/json/")
 target_link_libraries(${PROJECT_NAME}
 	QLearning
 	GeneticAlgorithm
+	Supervised
 )
 
 SetDefaultTargetProperties()

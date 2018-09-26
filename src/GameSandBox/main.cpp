@@ -11,11 +11,11 @@ int main(int argc, char** argv)
 	options.boardWidth =25;
 	options.numFoods = 5;
 
-	std::vector<IPlayerPtr> players = { sm.GetSupervisedBot(3, 3, AI::Supervised::TrainingWay::BASIC) };
+	//std::vector<IPlayerPtr> players = { sm.GetSupervisedBot(3, 3, AI::Supervised::TrainingWay::BASIC) };
 
-	Game game(options, players);
+	//Game game(options, players);
 
-	game.Play();
+	//game.Play();
 	
 	return 0;
 }

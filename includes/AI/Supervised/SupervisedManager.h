@@ -2,20 +2,22 @@
 #include "GameLogic/IPlayer.h"
 #include "AI/Supervised/SupervisedBot.h"
 #include "AI/Supervised/SupervisedTrainer.h"
+#include "AI/ITrainer.hpp"
 
 #include <fstream>
 
 namespace AI {
 	namespace Supervised {
 		enum TrainingWay {BASIC, ENEMY, FULL};
-		class SupervisedManager {
+		class SupervisedManager :public ITrainer{
 		public:
 			SupervisedManager();
 			~SupervisedManager();
 			SupervisedBot* GetSupervisedBot(const int fieldX, const int fieldY, const TrainingWay trainingWay);
 			void TrainSupervisedBot(const std::string& inputFilePath, const int fieldX, const int fieldY, const TrainingWay trainingWay);
+			virtual IPlayerPtr Train(TrainCallbacks callbacks) override;
 		private:
-			SupervisedBot* m_bot;
+			std::shared_ptr<SupervisedBot> m_bot;
 
 			void LoadSupervisedBot(std::string fileName);
 			void SaveSupervisedBot(std::string fileName) const;
