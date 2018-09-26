@@ -29,6 +29,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 	GameLogic
 	ConfigLoading
 	TensorflowSandbox
+	Utils
 
 	${SDL2_LIBRARIES}
 )

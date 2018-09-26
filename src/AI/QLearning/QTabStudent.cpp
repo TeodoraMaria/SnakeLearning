@@ -92,11 +92,12 @@ State QTabStudent::ObserveState(const GameState& gmState)
 unsigned int QTabStudent::PickAction(State fromState)
 {
 	TryInitQField(fromState);
+	const auto positiveMean = ::Utils::Math::PositiveMean(m_qtable[fromState]);
 	return QLearning::Utils::PickActionAdditiveNoise(
 		m_qtable[fromState],
-		m_noise,
+		m_noise * positiveMean,
 		m_merseneTwister,
-		m_actionQulityCompareEps);
+		m_actionQulityCompareEps * positiveMean);
 }
 
 double QTabStudent::GetBestQualityFromState(State state)

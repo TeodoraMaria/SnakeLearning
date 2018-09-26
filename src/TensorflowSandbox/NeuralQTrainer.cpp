@@ -101,7 +101,7 @@ QOptions GetQOptions()
 	// Percentage of mean.
 	qoptions.maxNoise = 1.5;
 	qoptions.minNoise = 0.02;
-	qoptions.noiseDecayFactor = 1.0 / (qoptions.numEpisodes * 0.1);
+	qoptions.noiseDecayFactor = [](int numEpisodes) { return 1.0 / (numEpisodes * 0.1); };
 	
 	qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
 	{
@@ -153,7 +153,7 @@ IPlayerPtr NeuralQTrainer::Train(TrainCallbacks callbacks)
 	auto agents = std::vector<std::shared_ptr<NeuralQAgent>>();
 	auto agentWeightsFile = std::string("./aux_files/qneural/network.json");
 	
-	for (auto i = 0; i < 10; i++)
+	for (auto i = 0; i < 1; i++)
 	{
 		auto cellInterpreter = std::make_shared<CellInterpreter::Basic3CellInterpreter>();
 		auto observer = std::make_shared<GridObserver>(cellInterpreter, 5, 5);
@@ -328,32 +328,36 @@ IPlayerPtr NeuralQTrainer::Train(TrainCallbacks callbacks)
 		noise = ::Utils::Math::Lerp(
 			noise,
 			qoptions.minNoise,
-			qoptions.noiseDecayFactor);
+			qoptions.noiseDecayFactor(callbacks.numEpisodes));
 		
 		/*
 		** Callbacks.
 		*/
 		
-		callbacks.emitStepEpisode(static_cast<size_t>(episode));
+		if (callbacks.emitStepEpisode)
+			callbacks.emitStepEpisode(static_cast<size_t>(episode));
 		
 		// Emit graph.
-		auto graphRewards = std::vector<double>();
-		auto rewardSum = 0.0;
-		for (const auto& agent : agents)
+		if (callbacks.emitGraphValues)
 		{
-			const auto reward = trainSessions[agent->GetSnakeNumber()].episodeReward;
+			auto graphRewards = std::vector<double>();
+			auto rewardSum = 0.0;
+			for (const auto& agent : agents)
+			{
+				const auto reward = trainSessions[agent->GetSnakeNumber()].episodeReward;
+				
+				rewardSum += reward;
+				graphRewards.push_back(reward);
+			}
+			graphRewards.push_back(rewardSum / agents.size());
 			
-			rewardSum += reward;
-			graphRewards.push_back(reward);
+			// I want the mean to be the first one.
+			std::reverse(graphRewards.begin(), graphRewards.end());
+			callbacks.emitGraphValues(graphRewards);
 		}
-		graphRewards.push_back(rewardSum);
 		
-		// I want the mean to be the first one.
-		std::reverse(graphRewards.begin(), graphRewards.end());
-		callbacks.emitGraphValues(graphRewards);
-		
-		// Emit game.
-		callbacks.emitDisplayGame(agents[0], 1000);
+		if (callbacks.emitDisplayGame)
+			callbacks.emitDisplayGame(agents[0], 1000);
 	}
 	
 	try

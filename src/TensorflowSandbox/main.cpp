@@ -101,7 +101,7 @@ QOptions GetQOptions()
 	// Percentage of mean.
 	qoptions.maxNoise = 1.5;
 	qoptions.minNoise = 0.02;
-	qoptions.noiseDecayFactor = 1.0 / (qoptions.numEpisodes * 0.1);
+	qoptions.noiseDecayFactor = [](int numEpisodes) { return 1.0 / (numEpisodes * 0.1); };
 	
 	qoptions.maxStepsWithoutFood = [&](int episode) -> size_t
 	{
@@ -324,7 +324,7 @@ int main()
 		noise = ::Utils::Math::Lerp(
 			noise,
 			qoptions.minNoise,
-			qoptions.noiseDecayFactor);
+			qoptions.noiseDecayFactor(qoptions.numEpisodes));
 	}
 	
 	try

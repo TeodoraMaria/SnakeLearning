@@ -51,8 +51,8 @@ namespace AI { namespace QLearning
 		std::vector<double> nextObservationContainer;
 
 		// Things used only for performance (after training).
-		double internalNoise = 0.01;
-		double internalActionEqualityTreshold = 0.01;
+		double internalNoise = 0.02;
+		double internalActionEqualityTreshold = 0.02;
 		std::mt19937 internalMerseneTwister = std::mt19937(std::random_device()());
 
 	private:

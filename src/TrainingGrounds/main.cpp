@@ -56,11 +56,11 @@ int main(int nargs, char** args)
 	srand(time(nullptr));
 
 //  GeneticSingleSnake();
-//	MultisnakeMain();
+	MultisnakeMain();
 //	ConfigLoaderSandbox();
 //  GeneticSingleSnake();
 	
-	MultisnakeTfMain();
+//	MultisnakeTfMain();
 
 	// Data generation for Teo
 //	for (auto i = 0; i < 100; i++)

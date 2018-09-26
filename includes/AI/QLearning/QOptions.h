@@ -26,7 +26,7 @@ namespace AI { namespace QLearning
 		// Random action chance.
 		double maxNoise = 1;
 		double minNoise = 0.00;
-		double noiseDecayFactor = 1.0 / 100000;
+		std::function<double(int)> noiseDecayFactor = [](int) { return 1.0 / 100000; };
 		SizeTFunc maxStepsWithoutFood = [](int episode) { return 150; };
 		
 		// Rewards.

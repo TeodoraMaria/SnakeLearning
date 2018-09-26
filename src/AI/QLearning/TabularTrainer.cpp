@@ -53,7 +53,7 @@ IPlayerPtr TabularTrainer::Train(TrainCallbacks callbacks)
 	trainSession.dieStates = std::unordered_map<State, int>();
 	
 	// Train.
-	for (auto episode = 0; episode < m_qoptions.numEpisodes; episode++)
+	for (auto episode = 0; episode < callbacks.numEpisodes; episode++)
 	{
 		trainSession.episodeIndex = episode;
 		RunEpisode(trainSession);
@@ -139,7 +139,7 @@ void TabularTrainer::RunEpisode(TrainSession& trainSession)
 		trainSession.randomActionChance = ::Utils::Math::Lerp(
 			trainSession.randomActionChance,
 			m_qoptions.minNoise,
-			m_qoptions.noiseDecayFactor);
+			m_qoptions.noiseDecayFactor(m_qoptions.numEpisodes));
 	}
 
 	printf(
