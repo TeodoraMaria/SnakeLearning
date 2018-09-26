@@ -16,7 +16,7 @@ GraphicBoard::GraphicBoard(size_t windowWidth, size_t windowHeigth):QGraphicsSce
 void GraphicBoard::updateBoard(const GameState & gameState)
 {
     clear();
-    auto gameBoard=gameState.GetGameBoard();
+   const auto& gameBoard=gameState.GetGameBoard();
     size_t rows = gameBoard.GetBoardLength();
     size_t cols = gameBoard.GetBoardWidth();
     auto width = sceneRect().width();
