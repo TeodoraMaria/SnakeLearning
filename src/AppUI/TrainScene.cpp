@@ -43,7 +43,7 @@ TrainScene::TrainScene(const std::string& name)
 
     QObject::connect(this, SIGNAL(graphValues(const std::vector<double>&)), this, SLOT(updateGraph(const std::vector<double>&)));
     QObject::connect(this, SIGNAL(loadingBar(double)), this, SLOT(updateLoadingBar(double)));
-    QObject::connect(this, SIGNAL(gameState(GameState)), this, SLOT(updateGameScene(GameState)));
+    QObject::connect(this, SIGNAL(gameState(GameState)), this, SLOT(updateGameScene(GameState)), Qt::ConnectionType::BlockingQueuedConnection);
 }
 
 TrainScene::~TrainScene()
@@ -168,8 +168,13 @@ void TrainScene::startButtonPressed()
         for (size_t i = 0; i < numOfStepsWithoutFood; i++) {
             auto currentScore = game.GetAllSnakes().at(0).GetScore();
             game.RunRound();
+
+			QElapsedTimer timer;
+			timer.start();
             emit gameState(game.GetGameState());
-            std::this_thread::sleep_for(std::chrono::milliseconds(20));
+			int64_t sleepTime = std::max(0ll, 20 - timer.elapsed());
+			std::cout << sleepTime;
+            std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
 
             if (game.GetAllSnakes().at(0).GetScore() != currentScore) {
                 i = 0;
