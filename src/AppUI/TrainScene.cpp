@@ -158,11 +158,11 @@ void TrainScene::startButtonPressed()
         //  m_game= new Game(options, players);
         game.InitGame();
 
-        for (size_t i = 0; i < numOfSteps; i++) {
+        for (size_t i = 0; i < numOfStepsWithoutFood; i++) {
             auto currentScore = game.GetAllSnakes().at(0).GetScore();
             game.RunRound();
             emit gameState(game.GetGameState());
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
             if (game.GetAllSnakes().at(0).GetScore() != currentScore) {
                 i = 0;
