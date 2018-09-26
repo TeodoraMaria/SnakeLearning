@@ -2,7 +2,8 @@
 
 #include "AppUI/IScene.h"
 #include "GraphicBoard.h"
-#include "AI/GeneticAlgorithm/GeneticTrainerMultiSnake.h"
+#include "AI/ITrainer.hpp"
+
 #include "qobject.h"
 #include "ui_TrainScene.h"
 #include <string>
@@ -42,6 +43,9 @@ namespace AppUI
 
 
         QChart* m_chart;
+
+        std::vector<QLineSeries*> m_graphValues;
+
         QLineSeries* m_maxFitnessValues;
         QLineSeries* m_avgFitnessValues;
         QWidget* m_centralWidget;
@@ -54,13 +58,9 @@ namespace AppUI
 
         std::shared_ptr<Ui_TrainScene> ui;
 
-        AI::GeneticAlgorithm::GeneticTrainerMultiSnake m_geneticAlg;
+        std::unique_ptr<AI::ITrainer> m_trainer;
 
         bool m_isTraining = false;
         bool m_displayEnabled = false;
-
-
-       
-
     };
 }

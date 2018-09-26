@@ -5,6 +5,7 @@
 #include "GameLogic/HumanPlayer.h"
 #include "ICellInterpreterJson.h"
 #include "QTabStudentJson.h"
+#include "GeneticBotJson.h"
 #include <fstream>
 
 using json = nlohmann::json;
@@ -17,8 +18,11 @@ void to_json(nlohmann::json& j, const IPlayer* player)
 		to_json(j, dynamic_cast<const HumanPlayer*>(player));
 	else if (dynamic_cast<const AI::QLearning::QTabStudent*>(player))
 		to_json(j, dynamic_cast<const AI::QLearning::QTabStudent*>(player));
-	else
-		throw "Undefined to_json for the given IPlayer.";
+    else if (dynamic_cast<const AI::GeneticAlgorithm::GeneticBot*>(player)) {
+        to_json(j, dynamic_cast<const AI::GeneticAlgorithm::GeneticBot*>(player));
+    } else {
+        throw "Undefined to_json for the given IPlayer.";
+    }
 }
 
 void to_json(nlohmann::json& j, const HumanPlayer* player)
