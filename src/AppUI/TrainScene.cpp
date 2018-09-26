@@ -1,6 +1,11 @@
 #include "TrainScene.h"
-#include "ConfigLoading/GeneticBotJson.h" 
+//#include "ConfigLoading/GeneticBotJson.h"
+//#include "ConfigLoading/IPlayerJson.h"
+#include "ConfigLoading/IPlayerJson.h"
 #include "ApplicationModel.h"
+
+#include "AI/GeneticAlgorithm/GeneticTrainerMultiSnake.h"
+//#include "AI/QLearning/"
 
 #include <QtConcurrent/qtconcurrentrun.h>
 #include <memory>
@@ -19,6 +24,10 @@
 
 using namespace AppUI;
 
+const char geneticName[] = "Genetic";
+const char tabularQName[] = "Tabular QLearning";
+const char deepQName[] = "Deep QLearning";
+const char supervisedName[] = "Supervised";
 
 TrainScene::TrainScene(const std::string& name)
 {
@@ -78,7 +87,7 @@ void TrainScene::createScene()
     ui->chartView->setChart(m_chart);
     ui->chartView->repaint();
 
-    QStringList list = (QStringList() << "Genetic" << "Tabular QLearning" << "Deep QLearning"<<"Supervised");
+    QStringList list = (QStringList() << geneticName << tabularQName << deepQName << supervisedName);
 
     ui->comboBoxAlgorithm->addItems(list);
     
@@ -101,9 +110,28 @@ void TrainScene::backButtonPressed()
     emit sceneChange(ApplicationModel::startMenuSceneName);
 }
 
+
 void TrainScene::startButtonPressed()
 {
-    //m_geneticAlg.setEpisodes(ui->spinBoxEpisodes->value());   
+    auto selectedAlg=ui->comboBoxAlgorithm->currentText();  
+    auto s = selectedAlg.toStdString();
+    std::string filePath = "./aux_files/";
+    //TODO: implement for other
+    if (selectedAlg == geneticName) {
+        m_trainer = std::make_unique<AI::GeneticAlgorithm::GeneticTrainerMultiSnake>();
+        filePath += "genetic/TrainedGenetic.json";
+    } else if (selectedAlg == tabularQName) {
+        filePath += "genetic/TrainedGenetic.json";
+        m_trainer;
+    } else if (selectedAlg == deepQName) {
+        filePath += "genetic/TrainedGenetic.json";
+        m_trainer;
+    } else if (selectedAlg == supervisedName) {
+        filePath += "genetic/TrainedGenetic.json";
+        m_trainer;
+    } else
+        throw "Trainer not recognized";
+    
 
     AI::ITrainer::TrainCallbacks trainCallbacks;
     auto numEpisodes = trainCallbacks.numEpisodes = ui->spinBoxEpisodes->value();
@@ -145,9 +173,9 @@ void TrainScene::startButtonPressed()
         }
     };
 
-    auto func = [&]() {
-        auto bot = std::dynamic_pointer_cast<AI::GeneticAlgorithm::GeneticBot>(m_geneticAlg.Train(trainCallbacks));
-        const auto filePath = "D:\\fac\\snake\\aux_files\\genetic\\TrainedGenetic.json";
+    auto func = [&, filePath, trainCallbacks]() {
+        auto bot = m_trainer->Train(trainCallbacks);
+       
         std::ofstream outFileStream(filePath);
 
         if (!outFileStream.is_open()) {

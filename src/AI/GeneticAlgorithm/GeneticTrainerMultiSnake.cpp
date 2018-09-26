@@ -23,16 +23,13 @@ using namespace GymEnv::StateObserver;
 
 GeneticTrainerMultiSnake::GeneticTrainerMultiSnake()
 {
-    m_avgFitenss = new QtCharts::QLineSeries;
-    m_maxFitness = new QtCharts::QLineSeries;
     m_timer.setInterval(100);
    // QObject::connect(&m_timer, SIGNAL(timeout()), this, SLOT(runRound()));
 }
 
 GeneticTrainerMultiSnake::~GeneticTrainerMultiSnake()
 {
-    delete m_avgFitenss;
-    delete m_maxFitness;
+
 }
 
 void GeneticTrainerMultiSnake::displayBestNetwork()
