@@ -54,10 +54,6 @@ void TrainScene::createScene()
 
     m_centralWidget = ui->centralwidget;
     
-    m_maxFitnessValues = new QLineSeries();
-   // m_maxFitnessValues->setName("Max Fitness");
-    m_avgFitnessValues = new QLineSeries();
-    //m_avgFitnessValues->setName("Avg. Fitness");
 
     m_graphValues.resize(200);
 
@@ -76,8 +72,6 @@ void TrainScene::createScene()
     }
 
     m_chart->legend()->hide();
-    m_chart->addSeries(m_maxFitnessValues);
-    m_chart->addSeries(m_avgFitnessValues);
     m_chart->createDefaultAxes();
 
     m_chart->setTitle("Snake Generations");
@@ -113,6 +107,7 @@ void TrainScene::backButtonPressed()
 
 void TrainScene::startButtonPressed()
 {
+    
     auto selectedAlg=ui->comboBoxAlgorithm->currentText();  
     auto s = selectedAlg.toStdString();
     std::string filePath = "./aux_files/";
