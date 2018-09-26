@@ -80,7 +80,7 @@ IPlayer * GeneticTrainerMultiSnake::Train()
 {
     setup();
 
-    for (size_t i = 0; i < m_options.numEpisodes; i++) {
+    for (size_t i = 0; i < m_options.numEpisodes && !m_stop; i++) {
         runEpisode(i);
         //srand(i);
 
@@ -93,7 +93,7 @@ IPlayer * GeneticTrainerMultiSnake::Train()
         crossover();
         mutate();
 
-        if (i < m_options.numEpisodes - 1) {
+        if (i < m_options.numEpisodes - 1 && !m_stop) {
             resetFitness();       
         }
 
@@ -113,12 +113,16 @@ IPlayer * GeneticTrainerMultiSnake::Train()
     return new GeneticBot(*bestNetwork, std::shared_ptr<GymEnv::StateObserver::IStateObserver>(m_observer));
 }
 
-void GeneticTrainerMultiSnake::runRound()
+void GeneticTrainerMultiSnake::setEpisodes(size_t episodes)
 {
-    
-   
+    m_options.numEpisodes = episodes;
+
 }
 
+void GeneticTrainerMultiSnake::endGame()
+{
+    m_stop = true;
+}
 void GeneticTrainerMultiSnake::setup()
 {
     auto cellInterpreter = std::make_shared<Basic3CellInterpreter>();
@@ -247,7 +251,7 @@ void GeneticTrainerMultiSnake::mutate()
 }
 
 void GeneticTrainerMultiSnake::printFitnessInfo(size_t episode)
-{
+{  
     double maxFitness = 0;
     double totalFitness = 0;
     for (const auto& network : m_networks) {
@@ -263,7 +267,7 @@ void GeneticTrainerMultiSnake::printFitnessInfo(size_t episode)
 
     std::vector<double> values = {maxFitness,totalFitness / m_networks.size()};
 
-    emitGraphValues(values);
+    emitGraphValues(values); 
 }
 
 void GeneticTrainerMultiSnake::resetFitness()

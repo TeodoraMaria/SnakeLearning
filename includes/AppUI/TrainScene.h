@@ -46,5 +46,9 @@ namespace AppUI
 
         AI::GeneticAlgorithm::GeneticTrainerMultiSnake m_geneticAlg;
 
+        bool m_isTraining = false;
+        bool isDisplaying = false;
+       
+
     };
 }

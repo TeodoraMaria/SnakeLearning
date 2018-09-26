@@ -20,6 +20,11 @@ TrainScene::TrainScene(const std::string& name)
     qRegisterMetaType<size_t>("size_t");
     qRegisterMetaType<GameState>("GameState");
 
+    m_maxFitnessValues = new QLineSeries();
+    m_avgFitnessValues = new QLineSeries();
+    m_chart = new QChart();
+    m_board = new GraphicBoard(300, 300);
+
     QObject::connect(&m_geneticAlg, SIGNAL(graphValues(const std::vector<double>&)), this, SLOT(updateGraph(const std::vector<double>&)));
     QObject::connect(&m_geneticAlg, SIGNAL(loadingBar(double)), this, SLOT(updateLoadingBar(double)));
     QObject::connect(&m_geneticAlg, SIGNAL(gameState(GameState)), this, SLOT(updateGameScene(GameState))); 
@@ -27,7 +32,10 @@ TrainScene::TrainScene(const std::string& name)
 
 TrainScene::~TrainScene()
 {
-
+    delete m_maxFitnessValues;
+    delete m_avgFitnessValues;
+    delete m_chart;
+    delete m_board;
 }
 
 void TrainScene::createScene()
@@ -37,10 +45,9 @@ void TrainScene::createScene()
 
     m_centralWidget = ui->centralwidget;
 
-    m_maxFitnessValues = new QLineSeries();
-    m_avgFitnessValues = new QLineSeries();
+    
 
-    m_chart = new QChart();
+    
     m_chart->legend()->hide();
     m_chart->addSeries(m_maxFitnessValues);
     m_chart->addSeries(m_avgFitnessValues);
@@ -48,21 +55,23 @@ void TrainScene::createScene()
 
     m_chart->setTitle("Simple line chart example");
 
-    m_board = new GraphicBoard(300, 300);
+    
     ui->graphicsView->setScene(m_board);
 
     ui->chartView->setChart(m_chart);
     ui->chartView->repaint();
     QObject::connect(ui->pushButtonStart, SIGNAL(released()), this, SLOT(startButtonPressed()));
     QObject::connect(ui->pushButtonBack, SIGNAL(released()), this, SLOT(backButtonPressed()));
+    QObject::connect(ui->pushButtonBack, SIGNAL(released()), &m_geneticAlg, SLOT(endGame()));
     QObject::connect(ui->pushButtonDisplay, SIGNAL(released()), &m_geneticAlg, SLOT(switchDisplayEnabled()));
+    
 }
 
 void TrainScene::release()
 {
-    m_chart->removeAllSeries();
-    m_graphX = 0;
-    m_graphY = 0;
+   // m_chart->removeAllSeries();
+   // m_graphX = 0;
+    //m_graphY = 0;
 }
 
 void TrainScene::backButtonPressed()
@@ -72,8 +81,10 @@ void TrainScene::backButtonPressed()
 
 void TrainScene::startButtonPressed()
 {
+    m_geneticAlg.setEpisodes(ui->spinBoxEpisodes->value());
+
     auto func = [&]() {
-        AI::GeneticAlgorithm::GeneticBot& bot = dynamic_cast< AI::GeneticAlgorithm::GeneticBot&>(*m_geneticAlg.Train());
+        AI::GeneticAlgorithm::GeneticBot& bot = dynamic_cast<AI::GeneticAlgorithm::GeneticBot&>(*m_geneticAlg.Train());
         const auto filePath = "D:\\fac\\snake\\aux_files\\genetic\\TrainedGenetic.json";
         std::ofstream outFileStream(filePath);
 
@@ -88,14 +99,16 @@ void TrainScene::startButtonPressed()
             outFileStream.close();
         } catch (...) {
             std::cout << "Failed to save player." << std::endl;
-        }   
+        }
     };
     QFuture<void> future = QtConcurrent::run(func);
-    
+    ui->pushButtonStart->setDisabled(true);
+    ui->pushButtonBack->setDisabled(true);
 }
 
 void TrainScene::updateGraph(const std::vector<double>& values)
 {
+    
     m_maxFitnessValues->append(m_graphX, values[0]);
     m_avgFitnessValues->append(m_graphX, values[1]);
 
@@ -105,12 +118,16 @@ void TrainScene::updateGraph(const std::vector<double>& values)
     ui->chartView->chart()->axisX()->setRange(0, (long long)m_graphX);
     ui->chartView->chart()->axisY()->setRange(0, (long long)m_graphY);
 
-    ui->chartView->chart()->update();
+    ui->chartView->chart()->update();      
 }
 
 void TrainScene::updateLoadingBar(double value)
 {
     ui->progressBar->setValue(value);
+    if (value == 100) {
+        ui->pushButtonStart->setDisabled(false);
+        ui->pushButtonBack->setDisabled(false);
+    }
 }
 
 void AppUI::TrainScene::updateGameScene(GameState gamestate)
