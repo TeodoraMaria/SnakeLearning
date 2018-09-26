@@ -5,8 +5,11 @@
 #include "ApplicationModel.h"
 #include "HumanPlayerQt.h"
 #include "AI/HardCoded/SingleBot.hpp"
+#include "AI/QLearning/QTabStudent.hpp"
 #include "AI/GeneticAlgorithm/GeneticBot.h"
 #include "AI/Supervised/SupervisedManager.h"
+
+#include "ConfigLoading/QTabStudentJson.h"
 
 #include "ConfigLoading/GeneticBotJson.h"
 
@@ -168,12 +171,24 @@ void GameScene::addPlayersToTheGame()
 
         m_playerNames.emplace(count++, "Qlearning Deep bot" + std::to_string(i + 1) + ":");
     }
+	#endif
+	
+	for (size_t i = 0; i < m_gameSettings.nbQlearningTabularBots; i++) {
+		const auto filePath = "./aux_files/qtabular/TrainedQTabAgent.json";
+		
+        std::ifstream fileStream;
+        fileStream.open(filePath);
+        if (!fileStream.is_open())
+            throw std::runtime_error("Failed to open file.");
 
-    for (size_t i = 0; i < m_gameSettings.nbQlearningTabularBots; i++) {
-    
+        nlohmann::json fileJsonContent;
+
+        fileStream >> fileJsonContent;
+        auto player = fileJsonContent.get<std::shared_ptr<AI::QLearning::QTabStudent>>();
+        m_players.push_back(player);
+		
         m_playerNames.emplace(count++, "Qlearning Tabular bot" + std::to_string(i + 1) + ":");
     }
-	#endif
 
 	
     for (size_t i = 0; i < m_gameSettings.nbSupervisedBots; i++) {

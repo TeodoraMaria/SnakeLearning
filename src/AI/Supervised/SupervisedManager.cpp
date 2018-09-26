@@ -24,7 +24,7 @@ IPlayerPtr AI::Supervised::SupervisedManager::GetSupervisedBot(const int fieldX,
 	if (m_bot == nullptr)
 	{
 		InitializeBot(fieldX, fieldY);
-		std::string fileName = "SupervisedBot_";
+		std::string fileName = "./aux_files/SupervisedBot_";
 		fileName = fileName + std::to_string(fieldX)+"x"+std::to_string(fieldY)+"_"+std::to_string(trainingWay)+".txt";
 		LoadSupervisedBot(fileName);
 	}
@@ -99,7 +99,7 @@ IPlayerPtr AI::Supervised::SupervisedManager::Train(TrainCallbacks callbacks)
 			callbacks.emitStepEpisode(i + 1);
 		}
 	}
-	std::string fileName = "SupervisedBot_";
+	std::string fileName = "./aux_files/SupervisedBot_";
 	
 	fileName = fileName + std::to_string(fieldX) + "x" + std::to_string(fieldY) + "_" + std::to_string(trainingWay) + ".txt";
 	SaveSupervisedBot(fileName);
