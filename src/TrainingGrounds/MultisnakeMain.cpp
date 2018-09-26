@@ -66,5 +66,7 @@ void MultisnakeMain()
 	}
 	
 	auto trainer = AI::QLearning::MultisnakeTabularTrainer(gmOptions, qoptions);
-	trainer.Train();
+	
+	auto callbacks = AI::ITrainer::TrainCallbacks();
+	trainer.Train(callbacks);
 }

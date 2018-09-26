@@ -72,7 +72,7 @@ void GeneticSnakeMain()
      */
 
     GeneticTrainerMultiSnake s;
-    GeneticBot& bot = dynamic_cast<GeneticBot&>(*s.Train());
+    GeneticBot& bot = dynamic_cast<GeneticBot&>(*s.Train(AI::ITrainer::TrainCallbacks()));
     
 
      const auto filePath = "D:\\fac\\snake\\aux_files\\genetic\\TrainedGenetic.json";

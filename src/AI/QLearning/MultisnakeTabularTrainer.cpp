@@ -116,7 +116,7 @@ void TrySavePlayer(const QTabStudent& student)
 	}
 }
 
-IPlayer* MultisnakeTabularTrainer::Train()
+IPlayerPtr MultisnakeTabularTrainer::Train(TrainCallbacks callbacks)
 {
 	auto agents = std::vector<std::shared_ptr<QTabStudent>>();
 	

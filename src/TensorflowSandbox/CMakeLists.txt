@@ -7,7 +7,7 @@ file(GLOB srcs "*.cpp" "*.h" "*.hpp")
 file(GLOB includes
 	"${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/*.h"
 	"${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/*.hpp")
-add_executable(${PROJECT_NAME} ${srcs} ${includes})
+add_library(${PROJECT_NAME} STATIC ${srcs} ${includes})
 
 target_include_directories(${PROJECT_NAME} PRIVATE
 	${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/
@@ -25,6 +25,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 	GameLogic
 	Utils
 	QLearning
+	ConfigLoading
+
 	${Tensorflow_LIBRARIES}
 )
 

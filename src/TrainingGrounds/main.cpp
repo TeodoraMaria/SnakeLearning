@@ -58,36 +58,38 @@ int main(int nargs, char** args)
 //  GeneticSingleSnake();
 //	MultisnakeMain();
 //	ConfigLoaderSandbox();
-//    GeneticSingleSnake();
+//  GeneticSingleSnake();
 	
-	
-	for (auto i = 0; i < 100; i++)
-	{
-		const auto jsonFile = "./aux_files/json_test/Game.json";
-		std::ifstream stream(jsonFile);
+	MultisnakeTfMain();
 
-		json j;
-		stream >> j;
-
-		std::cout << std::setw(2) << j << std::endl;
-
-		auto gmOptions = j.at("gameOptions").get<GameOptions>();
-		auto players = j.at("players").get<std::vector<IPlayerPtr>>();
-		gmOptions.gameplayLog = "aux_files/playLogs/play_log" + std::to_string(i) + ".teo";
-		
-		std::ofstream logStream(gmOptions.gameplayLog);
-		if (!logStream.is_open())
-		{
-			throw "Failed to open file.";
-		}
-		
-		logStream << "[]" << std::endl;
-		logStream.close();
-
-		auto game = Game(gmOptions, players);
-
-		game.InitGame();
-		game.Play(2000);
-	}
+	// Data generation for Teo
+//	for (auto i = 0; i < 100; i++)
+//	{
+//		const auto jsonFile = "./aux_files/json_test/Game.json";
+//		std::ifstream stream(jsonFile);
+//
+//		json j;
+//		stream >> j;
+//
+//		std::cout << std::setw(2) << j << std::endl;
+//
+//		auto gmOptions = j.at("gameOptions").get<GameOptions>();
+//		auto players = j.at("players").get<std::vector<IPlayerPtr>>();
+//		gmOptions.gameplayLog = "aux_files/playLogs/play_log" + std::to_string(i) + ".teo";
+//
+//		std::ofstream logStream(gmOptions.gameplayLog);
+//		if (!logStream.is_open())
+//		{
+//			throw "Failed to open file.";
+//		}
+//
+//		logStream << "[]" << std::endl;
+//		logStream.close();
+//
+//		auto game = Game(gmOptions, players);
+//
+//		game.InitGame();
+//		game.Play(2000);
+//	}
 	return 0;
 }

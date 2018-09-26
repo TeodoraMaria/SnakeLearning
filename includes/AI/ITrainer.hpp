@@ -1,12 +1,23 @@
 #pragma once
 
 #include "GameLogic/IPlayer.h"
+#include <functional>
 
 namespace AI
 {
 	class ITrainer
 	{
 	public:
-		virtual IPlayer* Train() = 0;
+        struct TrainCallbacks
+        {
+            // For loading bar.
+            std::function<void(size_t episode)> emitStepEpisode;
+            std::function<void(std::vector<double>)> emitGraphValues;
+            std::function<void(IPlayerPtr, size_t)> emitDisplayGame;
+
+            size_t numEpisodes;
+        };
+
+		virtual IPlayerPtr Train(TrainCallbacks callbacks) = 0;
 	};
 }
