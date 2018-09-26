@@ -32,5 +32,3 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 
 SetDefaultTargetProperties()
 SetCompileFlags_IfParentRequiresIt()
-
-add_compile_definitions(TENSORFLOW)

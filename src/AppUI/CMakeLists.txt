@@ -31,10 +31,11 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	${CMAKE_SOURCE_DIR}/includes/
 )
 
-find_package(Tensorflow)
-include_directories(${Tensorflow_INCLUDE_DIRS})
+if (NOT WIN32)
+	
+endif()
 
-target_link_libraries(${PROJECT_NAME}
+set(project_Libs
 	GameLogic
 	HardCoded
 	Utils
@@ -44,13 +45,20 @@ target_link_libraries(${PROJECT_NAME}
 	Supervised
 	GeneticAlgorithm
 
-	TensorflowSandbox
-
 	Qt5::Widgets 
 	Qt5::Core 
 	Qt5::Gui
 	Qt5::Charts
 )
+
+if (NOT WIN32)
+	find_package(Tensorflow)
+	include_directories(${Tensorflow_INCLUDE_DIRS})	
+
+	list(APPEND project_Libs TensorflowSandbox)
+endif()
+
+target_link_libraries(${PROJECT_NAME} ${project_Libs})
 
 
 SetDefaultTargetProperties()
