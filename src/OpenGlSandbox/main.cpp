@@ -14,7 +14,7 @@ int main(int argc,char** argv)
 
     AppUI::Application app(appModel);
 
-    app.start("lol", 500, 500);
+    app.start("SnakeLearning", 500, 500);
 
     qApplication.exec();
 

@@ -20,6 +20,9 @@ void Application::start(const std::string & appTitle, size_t width, size_t heigh
 {
     m_mainWindow = std::make_unique<QMainWindow>();
     m_mainWindow->setWindowTitle(QString::fromUtf8(appTitle.c_str()));
+    m_mainWindow->setWindowTitle("SnakeLearning");
+
+    m_mainWindow->setObjectName("SnakeLearning");
     m_mainWindow->resize(width, height);
 
     m_sceneManager = new SceneManager(m_appModel->getScenes(),m_mainWindow, m_appModel->getInitialSceneName());

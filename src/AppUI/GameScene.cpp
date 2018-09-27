@@ -47,6 +47,7 @@ void GameScene::createScene()
     ui = std::make_shared<Ui_GameScene>();
     ui->setupUi(m_mainWindow.get());
     m_centralWidget = ui->centralwidget;
+    m_mainWindow.get()->setWindowTitle("Snake Learning");
 
    // ui->graphicsView->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     ui->graphicsView->setAlignment(Qt::AlignCenter);

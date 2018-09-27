@@ -21,6 +21,7 @@ void StartMenuScene::createScene()
 {
     auto ui = std::make_unique<Ui_StartMenuScene>();
     ui->setupUi(m_mainWindow.get());
+    m_mainWindow.get()->setWindowTitle("Snake Learning");
     
     m_centralWidget = ui->centralwidget;
 

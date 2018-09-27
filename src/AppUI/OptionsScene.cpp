@@ -20,6 +20,7 @@ void OptionsScene::createScene()
 {
     m_ui = std::make_shared<Ui_OptionsScene>();
     m_ui->setupUi(m_mainWindow.get());
+    m_mainWindow.get()->setWindowTitle("Snake Learning");
 
     m_centralWidget = m_ui->centralwidget;
 
